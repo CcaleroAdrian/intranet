@@ -3,7 +3,7 @@ include("intraHeader.php");
 if ( $USUARIO == "" OR  $USUARIO == null ) { 
 		header('Location: index.php');
 	}
-
+ 
 	$ID_USR;
 	$VisualizarR = false;
 
@@ -71,22 +71,23 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 		          <th data-priority="2">Fecha Fin</th>
 		          <th data-priority="3">Dias Correspondientes</th>
 		          <th data-priority="4">Dias Solicitados</th>
-		          <th data-priority="5">Dias Adicionales</th>
-		          <th data-priority="6" colspan="2">Acción</th>
+		          <th onclick="">as Adicionales</th>
+		          <th  colspan="2">Acción</th>
 		        </tr>
 		      	</thead>
 		      	<tbody id="cuerpo">
 		      		<?php 
+		      		//print_r($usuarios);
 		      			foreach($usuarios as $fil) {
 		      				
 		      				$us = $objUsuarios-> notificarUsuario($fil["user_ID"]);
 		      				
 		      				foreach ($us as $key) {
 		      					$nombre = utf8_encode($key['nombre'].' '.$key['paterno'].' '.$key['materno']);
-		      					echo '<tr><td>'.$nombre.'</td><td style="display:none">'.$key['usrIntranet'].'</td>
+		      					echo '<tr><td>'.$nombre.'</td><td style="display:none">'.$fil["user_ID"].'</td>
 									<td>'.$fil["fechaI"].'</td><td>'.$fil["fechaF"].'</td>
 									<td>'.$fil["diasCorrespondientes"].'</td><td>'.$fil["diasSolicitados"].'</td>
-									<td>'.$fil["diasAdicionales"].'</td><td><a onclik="aceptar()">Aceptar</a></td><td><a onclik=rechazar()>Rechazar</a></td></tr>';
+									<td>'.$fil["diasAdicionales"].'</td><td><a onclick="aceptar('.$fil['user_ID'].')"  href="">Aceptar</a></td><td><a onclick="rechazar('.$fil['user_ID'].')"  href="">Rechazar</a></td></tr>';
 		      				}
 							
 						}		

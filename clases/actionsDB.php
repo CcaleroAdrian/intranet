@@ -547,16 +547,16 @@ class ActionsDB{
 	public function verSolicitudesID($LiderId,$inicio = "" ,$TAMANO_PAGINA = "", $nombre = ""){
 		$query = "";
 
-		if($LiderId != 2 and $nombre == ""){
+		if($LiderId != 16 and $nombre == ""){
 
 			$query = "SELECT user_ID,fechaI,fechaF,diasCorrespondientes,diasSolicitados,diasAdicionales FROM solicitudvaciones  where lider_ID = '".$LiderId."' and aprobacion_L = 0 LIMIT ".$inicio.",".$TAMANO_PAGINA;
-		}else if ($LiderId == 2 and $nombre == "") {
+		}else if ($LiderId == 16 and $nombre == "") {
 
 			$query = "SELECT user_ID,fechaI,fechaF,diasCorrespondientes,diasSolicitados,diasAdicionales FROM solicitudvaciones  where Director_ID ='".$LiderId."' and aprobacion_D = 0 order by user_ID limit".$inicio.",".$TAMANO_PAGINA;
-		}else if($LiderId != 2 and $nombre != ""){
+		}else if($LiderId != 16 and $nombre != ""){
 
 			$query = "SELECT S.user_ID,S.fechaI,S.fechaF,S.diasCorrespondientes,S.diasSolicitados,S.diasAdicionales FROM solicitudvaciones as S left JOIN  usuarios as us on S.user_ID = us.idUsuario WHERE S.lider_ID ='".$LiderId."' AND S.aprobacion_L = 0 and us.nombre LIKE '%".$nombre."%'";
-		}else if($LiderId = 2 and $nombre != ""){
+		}else if($LiderId = 16 and $nombre != ""){
 
 			$query = "SELECT S.user_ID,S.fechaI,S.fechaF,S.diasCorrespondientes,S.diasSolicitados,S.diasAdicionales FROM solicitudvaciones as S left JOIN  usuarios as us on S.user_ID = us.idUsuario WHERE S.Director_ID ='".$LiderId."' AND S.aprobacion_D = 0 and us.nombre LIKE '%".$nombre."%'";
 		}
@@ -711,6 +711,30 @@ class ActionsDB{
 			}
 			$mysqli->close();
 		}
+	}
+
+	public function procesarSolicitudes($id,$opcion = null){
+
+		if ($opcion == 1) {
+			$query = "UPDATE `solicitudvaciones` SET `aprobacion_D`= 1 WHERE `user_ID` ='".$id."'";
+		
+		} else if ($opcion ==2 ) {
+			$query = "UPDATE `solicitudvaciones` SET `documentoURL`='".$nombre."'  WHERE solicitud_ID ='".$Archivo."'";
+		}
+
+		$resultado = false;
+		
+		$mysqli = $this->objDb->getConnAdmin();
+		if ($mysqli->connect_errno) {
+			$resultado = false; 
+		}else{
+			if ( $mysqli->query($query) ) {
+				$resultado = true; 
+			}
+			$mysqli->close();
+		} 
+		return $resultado;
+
 	}
 
 }

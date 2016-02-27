@@ -4,7 +4,7 @@
  		var success = "<?php echo $success; ?>";
 
  		
-		function getGET(){
+		function getGET(){ 
 	 		var url= location.search.replace("?", "");
 	    	var arrUrl = url.split("&");
 	    	var urlObj={};   

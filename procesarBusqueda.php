@@ -1,4 +1,4 @@
-<?php
+<?php 
 	require 'clases/actionsDB.php'; 
 
 	$nombre = $_POST['q'];

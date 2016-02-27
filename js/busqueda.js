@@ -2,9 +2,7 @@ function busqueda(opcion){
 		/*$("#filtroTabla").keypress(function(event){
 			event.preventDefault();
 		});*/
-
 			var xmlhttp;
-		
 			var nombre = document.getElementById('filtroTabla').value;
 			var op = opcion.opcion;
 			var id = opcion.id;
@@ -30,4 +28,14 @@ function busqueda(opcion){
 			xmlhttp.open("POST","procesarBusqueda.php",true);
 			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 			xmlhttp.send("q="+nombre+"&b="+op+"&id="+id);
+}
+
+function aceptar(id){
+	var url = "procesarSolicitudes.php?id="+id+"&opcion=1";
+	window.open(url,"_parent");
+}
+
+function rechazar(id){
+	var url = "procesarSolicitudes.php?id="+id+"&opcion=2";
+	window.open(url,"_parent");
 }

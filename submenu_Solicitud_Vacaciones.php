@@ -26,9 +26,8 @@ $usr = $objOperaciones->getDatosPerfil($USUARIO);
 	} 
 
 	$dat = $objOperaciones->verSolicitudes($ID_USR);
-
 	//print_r($dat);
-	If ($dat == 0 ) {
+	If ($dat == 0 OR $dat == -1) {
 		$VisualizarR = false;
 		$error2 = "No fué posible recuperar las solicitudes realizadas anteriormente";
 	}else{
@@ -78,7 +77,7 @@ if ($btn == "Enviar") {
 	$otro = date("d-F-Y", $date);//fecha inicial de vacaciones
 	$FechaFinal =date("d-F-Y", $dates);//fecha final de vacaciones
 	$fechaIngreso = date("d-F-Y", $fechaIn);//fecha de ingreso
-	$director = 2;
+	$director = 16;
 
 	if ($diasSoli > $diasVa) {
 		
@@ -94,30 +93,34 @@ if ($btn == "Enviar") {
 	}
 
 	$objectAlta = new ActionsDB();
-	$lider = $objectAlta->verLider($usr["Proyecto_id"]);
+	/*$lider = $objectAlta->verLider($usr["Proyecto_id"]);
+	
+	foreach ($lider as $key) {
+		$lide= $key['usuario_ID'];
+	}*/
+
 	if ($diasSoli == 0) {
 		echo "no hay dias solicitados";
 	}else{
 
 		//envio de correo
 		//Consultar usuarios a quien enviar correos
-		//echo $lider['usuario_ID'];
-		
+
 		//SELECT usrIntranet, nombre, paterno, materno from usuarios where idUsuario ='".$usuario.
 		$DIRECTOR = $objectAlta->notificarUsuario($director);
-
 		foreach ($DIRECTOR as $key) {
 			$correo = $key['usrIntranet'];
 			$nombre = utf8_encode($key["nombre"].' '.$key["paterno"].' '.$key["materno"]);	
 		}
 
-		//$LIDER = $$objectAlta-> notificarUsuario($lider['usuario_ID']);
 		
+		//$LIDER = $$objectAlta-> notificarUsuario($lide);
+		//print_r($LIDER);
 		/*foreach ($LIDER as $k) {
 			$correo2 = $k['usrIntranet'];
 			$nombre2 = utf8_encode($k['nombre'].' '.$k['paterno'].' '.$k['materno']);
 		}*/
-
+		
 		$mail = new PHPMailer();
 		$mail->IsSMTP();//indicamos el uso de SMTP
 		$mail->SMTPAuth = true;//Especificamos la seguridad de la conexion
@@ -128,7 +131,7 @@ if ($btn == "Enviar") {
 		$mail->Port = 465;  //puerto de salida
 		$mail->From = "webmaster@itw.mx";  	
 		$mail->FromName = "ITWORKERS";
-		$mail->AddAddress( $correo,$nombre);
+		$mail->AddAddress($correo , $nombre);
 		//$mail->AddAddress($correo2 ,$nombre2);
 		$mail->IsHTML(true); // El correo se envía como HTML
 		$mail->Subject = "Solicitud de vacaciones" ; // Este es el titulo del email.
@@ -137,51 +140,46 @@ if ($btn == "Enviar") {
 				<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 				<!-- Latest compiled and minified JavaScript -->
 				<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-				<script type="text/javascript">
-					function documents(){
-					window.location="submenu_SolicitudesVacaciones_Recibidas.php";
-					}
-				</script>
 				<div style="width: 50%; height: 150px;">
 					<table>
-						<td><img  width="100%" src="../intranet/intraImg/Header.png"></td>
+						<td><img  width="100%" src="http://www.intranet.itw.mx/intraImg/Header.png"></td>
 					</table>
 				<div class="col-md-12">
-				<p>El usuario: <strong>'.$nombre.'</strong> <br><br>
-				Desea solicitar los <strong><?php echo $diasSoli; ?></strong> días de vacaciones correspondientes al año en curso, haciendo constar por escrito, su deseo de hacer validos los días de vacaciones que le corresponden.<br><br>No habiendo ningún inconveniente de su parte, hace de su conocimiento para disfrutar un plazo vacacional del día <strong><?php echo $otro;?></strong> al <strong><?php echo $FechaFinal;?></strong> del presente año.</p>
+				<p>El usuario: <strong>'.utf8_decode($nombre).'</strong> <br><br>
+				Desea solicitar los <strong>'.$diasSoli.'</strong> d&iacute;as de vacaciones correspondientes al a&ntilde;o en curso, haciendo constar por escrito, su deseo de hacer validos los d&iacute;as de vacaciones que le corresponden.<br><br>No habiendo ning&uacute;n inconveniente de su parte, hace de su conocimiento para disfrutar un plazo vacacional del d&iacute;a <strong>'.$otro.'</strong> al <strong>'.$FechaFinal.'</strong> del presente a&ntilde;o.</p>
 				</div><br><br><hr>
 				<div class="col-md-8"></div><br><br/>
-				<div align="center"><table class="table"><tr>
-				<td><label style="font-size:11px;">Área:</label></td>
-				<td><input style="background: #ffffff; border: 1px solid #ffffff;" size="15" type="text" value="<?php echo $a ;?>" disabled/></td>
+				<div align="center"><form method="post" action="http://www.intranet.itw.mx/index.php"><table class="table"><tr><br><br>
+				<td><label style="font-size:11px;">&Aacute;rea:</label></td>
+				<td><input style="background: #ffffff; border: 1px solid #ffffff;" size="15" type="text" value="'.$a.'" disabled/></td>
 				<td><label style="font-size:11px;">Fecha de ingreso:</label></td>
-				<td><input style="background: #ffffff; border: 1px solid #ffffff;" size="15" type="text" value="<?php echo $fechaIngreso;?>" disabled/></td></tr><tr></tr><tr>
+				<td><input style="background: #ffffff; border: 1px solid #ffffff;" size="15" type="text" value="'.$fechaIngreso.'" disabled/></td></tr><tr>
 				<td><label style="font-size:11px;">Del:</label></td>
-				<td><input style="background: #ffffff; border: 1px solid #ffffff;" size="15" type="text" value="<?php echo $otro;?>" disabled></td>
+				<td><input style="background: #ffffff; border: 1px solid #ffffff;" size="15" type="text" value="'.$otro.'" disabled></td>
 				<td><label style="font-size:11px;">Al:</label></td>
-				<td><input style="background: #ffffff; border: 1px solid #ffffff;" size="15" type="text" value="<?php echo $FechaFinal;?>" disabled></td></tr><tr>
-			<td><label style="font-size:11px;">Días a disfrutar:</label></td>
-			<td><input style="background: #ffffff; border: 1px solid #ffffff;" type="text" size="5" value="<?php echo $diasLey;?>" disabled></td>
-			<td><label style="font-size:11px;">Días Solicitados</label></td>
-			<td><input style="background: #ffffff; border: 1px solid #ffffff;" size="5" type="text" value="<?php echo $diasSolicitados;?>" disabled></td></tr><tr>
-			<td><label style="font-size:11px;">Días pendientes:</label></td>
-			<td><input style="background: #ffffff; border: 1px solid #ffffff;" type="text" size="5" value="<?php echo $diasRestantes;?>" disabled></td>
-			<td><label style="font-size:11px;" >Días adicionales</label></td>
-			<td><input style="background: #ffffff; border: 1px solid #ffffff;" size="5" type="text" value="<?php echo $diasAdicionales; ?>" disabled></td></tr></table></div><br>
-			<div align="center"><input type="submit" class="btn btn-primary" name="btnAprobar" value="Aprobar" onclick="documents()">
-			</div> <hr>
-			<div align="justifi"><p style="font-size:11px">“Este mensaje y cualquier archivo que se adjunte al mismo es propiedad de <strong>ITWorkers</strong> y podría contener información privada y privilegiada para uso exclusivo del destinatario. Si usted ha recibido esta comunicación por error, no está autorizado para copiar, retransmitir, utilizar o divulgar este mensaje ni los archivos adjuntos. Gracias.”</p>
-			</div><br><br><table><td><img  width="100%" src="../intraImg/Footer.png"></td></table> </div></body>';
+				<td><input style="background: #ffffff; border: 1px solid #ffffff;" size="15" type="text" value="'.$FechaFinal.'" disabled></td></tr><tr>
+			<td><label style="font-size:11px;">D&iacute;as a disfrutar:</label></td>
+			<td><input style="background: #ffffff; border: 1px solid #ffffff;" type="text" size="5" value="'.$diasVa.'" disabled></td>
+			<td><label style="font-size:11px;">D&iacute;as Solicitados</label></td>
+			<td><input style="background: #ffffff; border: 1px solid #ffffff;" size="5" type="text" value="'.$diasSoli.'" disabled></td></tr><tr>
+			<td><label style="font-size:11px;">D&iacute;as pendientes:</label></td>
+			<td><input style="background: #ffffff; border: 1px solid #ffffff;" type="text" size="5" value="'.$diasRestantes.'" disabled></td>
+			<td><label style="font-size:11px;" >D&iacute;as adicionales</label></td>
+			<td><input style="background: #ffffff; border: 1px solid #ffffff;" size="5" type="text" value="'.$diasAdi.'" disabled></td></tr><tr></tr></table><div align="center"><input type="submit" class="btn btn-primary" name="btnAprobar" value="Aprobar">
+			</div></form></div><br><hr>
+			<div align="justifi"><p style="font-size:11px">&#8220;Este mensaje y cualquier archivo que se adjunte al mismo es propiedad de <strong>ITWorkers</strong> y podr&iacute;a contener informaci&oacute;n privada y privilegiada para uso exclusivo del destinatario. Si usted ha recibido esta comunicaci&oacute;n por error, no est&aacute; autorizado para copiar, retransmitir, utilizar o divulgar este mensaje ni los archivos adjuntos. Gracias.&#8221;</p>
+			</div><br><br><table><td><img  width="100%" src="http://www.intranet.itw.mx/intraImg/Footer.png"></td></table> </div></body>';
 		
 		$mail->Body = $body; // Mensaje a enviar
 		$exito = $mail->Send();
 		//echo $exito;
 		if ($exito) {
-
-			$resultado = $objectAlta->insertSolicitud($ID_USR,$fechaI,$fechaF,$diasVa,$diasSoli,$diasAdi,$lider['usuario_ID'],$director);
+		
+			$resultado = $objectAlta->insertSolicitud($ID_USR,$fechaI,$fechaF,$diasVa,$diasSoli,$diasAdi,14,$director);
+			
 			if( $resultado ) {
 				$success = "Se realiz&oacute; el registro de su solicitud " ;
-				echo $success;
+				echo"<script language='javascript'>window.location='/intranet/index.php'</script>";
 			} else { 
 				$error1 = "Hubo un error al registrar su solicitud. Favor de intentarlo más tarde";
 				echo $error1;
@@ -291,7 +289,6 @@ $vacaciones = 0;
 			<tbody id="jod">
 				<?php 
 					$nume = 0;
-
 		      		foreach($usuarios as $row) {
 		      		$nume +=1;
 		      		if ($row["aprobacion1"] == 0 OR $row["aprobacion2"] == 0) {

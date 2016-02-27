@@ -28,13 +28,17 @@
 			} else {
 				//Instanciamos la clase sesión
 				$objSesion = new Sesion();
+
 				//Iniciamos la sesion
 				$objSesion->init();
+				session_set_cookie_params(0, "/", $HTTP_SERVER_VARS["HTTP_HOST"], 0);
 				//Guardamos en sesión el usuario, el idPerfil, la desc. del perfil y su ID
 				$objSesion->set('USUARIO', $objRegistro["usrIntranet"] );
 				$objSesion->set('ID_PERFIL', $objRegistro["idPerfil"]);
 				$objSesion->set('DESC_PERFIL', $objRegistro["descPerfil"]);
 				$objSesion->set('IDUSUARIO',$objRegistro["idUsuario"]);
+				//Guardar hora de inicio de sesion
+				$objSesion->set('HoraIngreso', date("Y-n-j H:i:s"));
 				
 				//Redirigir a la página index
 				header('Location: index.php');

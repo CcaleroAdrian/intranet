@@ -65,7 +65,8 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
     		<table class="table table-responsive table-bordered" id="myTable">
     			<thead>
 		        <tr>
-		          <th data-priority="7">Nombre</th>
+		          <th >Nombre</th>
+		          <th style="display: none;">correo</th>
 		          <th data-priority="1">Fecha Inicio</th>
 		          <th data-priority="2">Fecha Fin</th>
 		          <th data-priority="3">Dias Correspondientes</th>
@@ -82,10 +83,10 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 		      				
 		      				foreach ($us as $key) {
 		      					$nombre = utf8_encode($key['nombre'].' '.$key['paterno'].' '.$key['materno']);
-		      					echo '<tr><td>'.$nombre.'</td>
+		      					echo '<tr><td>'.$nombre.'</td><td style="display:none">'.$key['usrIntranet'].'</td>
 									<td>'.$fil["fechaI"].'</td><td>'.$fil["fechaF"].'</td>
 									<td>'.$fil["diasCorrespondientes"].'</td><td>'.$fil["diasSolicitados"].'</td>
-									<td>'.$fil["diasAdicionales"].'</td><td><a href="#">Aceptar</a></td><td><a href="#">Rechazar</a></td></tr>';
+									<td>'.$fil["diasAdicionales"].'</td><td><a onclik="aceptar()">Aceptar</a></td><td><a onclik=rechazar()>Rechazar</a></td></tr>';
 		      				}
 							
 						}		

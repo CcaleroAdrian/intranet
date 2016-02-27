@@ -469,10 +469,9 @@ class ActionsDB{
 	//funcion para insertar solicitudes
 	public function insertSolicitud($ID_USR,$fechaI,$fechaF,$diasVa,$diasSoli,$diasAdi,$lider,$director){
 
-		$query ="INSERT INTO `solicitudvaciones`(`user_ID`,`fechaI`,`fechaF`,`diasCorrespondientes`,`diasSolicitados`,`diasAdicionales`,`lider_ID`,`aprobacion_L`,`Director_ID`,`aprobacion_D`,`documentoURL`) VALUES('".$ID_USR."' , '".$fechaI."' , '".$fechaF."' , '".$diasVa."' , '".$diasSoli."' , '".$diasAdi."' , '".$lider."' , 0 , '".$director."' , 0 , 'sin archivo')";
-
-		$mysqli = $this->objDb->getConnAdmin();
+		$query ="INSERT INTO `solicitudvaciones`(`user_ID`,`fechaI`,`fechaF`,`diasCorrespondientes`,`diasSolicitados`,`diasAdicionales`,`lider_ID`,`aprobacion_L`,`Director_ID`,`aprobacion_D`,`documentoURL`,`correoEnviado`) VALUES('".$ID_USR."' , '".$fechaI."' , '".$fechaF."' , '".$diasVa."' , '".$diasSoli."' , '".$diasAdi."' , '".$lider."' , '0' , '".$director."' , '0' , 'sin archivo','0')";
 		
+		$mysqli = $this->objDb->getConnAdmin();
 		if ($mysqli->connect_errno) {
 			$resultado = false;
 		}else{
@@ -480,6 +479,7 @@ class ActionsDB{
 				$resultado = true; 
 			} else {
 				$resultado = false; 
+				//header('Location: intranet/submenu_Solicitud_Vacaciones?resultado='.$resultado.'&caso=query_defectuoso'); 
 			}
 			$mysqli->close();
 		} 

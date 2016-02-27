@@ -7,13 +7,27 @@
 	
 	$objsesion = new Sesion();
 	$objsesion->init();
-	
 	$USUARIO = isset($_SESSION['USUARIO']) ? trim( $_SESSION['USUARIO']) : null ;
 	$PERFIL_USR = isset($_SESSION['ID_PERFIL']) ? $_SESSION['ID_PERFIL'] : null ;
 	$DESCPERFIL_USR = isset($_SESSION['DESC_PERFIL']) ? trim($_SESSION['DESC_PERFIL']) : null ;
 	$ID_USR = isset($_SESSION['IDUSUARIO'])? trim($_SESSION['IDUSUARIO']) : null;
+	$HoraIngreso = isset($_SESSION['HoraIngreso']) ? trim($_SESSION['HoraIngreso']) : null;
+	
 	// Evitar los warnings the variables no definidas!!!
 	$error = isset($_GET['err']) ? $_GET['err'] : "" ;
+	//Proceso de caducidad de sesión por inactividad
+	$ahora = date("Y-n-j H:i:s"); 
+
+
+    $tiempo_transcurrido = (strtotime($ahora)-strtotime($HoraIngreso)); 
+     //comparamos el tiempo transcurrido 
+    if($tiempo_transcurrido >= 600) { 
+     //si pasaron 10 minutos o más 
+      header('cerrarSesion.php'); //envío al usuario a la pag. de autenticación 
+      //sino, actualizo la fecha de la sesión 
+    }else { 
+    	$_SESSION["HoraIngreso"] = $ahora; 
+   } 
 	
 	$NumBanner = rand( 1 , 5 )
 ?> 

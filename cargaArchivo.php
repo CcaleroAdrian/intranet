@@ -26,20 +26,20 @@ if (strpos($typeArchivo,"pdf")){
 			$mensaje = "El archivo ha sido cargado correctamente.";
 			$objOperaciones = new ActionsDB();
 			$objOperaciones->updateArchivo($id,$nombreArchivo);
-			header("Location: ../Intranet/submenu_Solicitud_Vacaciones.php?mensaje='".$mensaje."'");
+			header("Location: ../intranet/submenu_Solicitud_Vacaciones.php?mensaje='".$mensaje."'");
 		}else{
 			$mensaje = "Error al cargar el archivo.";
-			header("Location: ../Intranet/submenu_Solicitud_Vacaciones.php?mensaje='".$mensaje."'");
+			header("Location: ../intranet/submenu_Solicitud_Vacaciones.php?mensaje='".$mensaje."'");
 		}
 		 
 	}else{
 		$mensaje = "El tamaño del archivo supera los 10 MB permitidos";
-		header("Location: ../Intranet/submenu_Solicitud_Vacaciones.php?mensaje='".$mensaje."'"); 
+		header("Location: ../intranet/submenu_Solicitud_Vacaciones.php?mensaje='".$mensaje."'"); 
 	}
 
 }else{
 	$mensaje = "La extensión del archivo no es correcta. \nSe permiten únicamente archivos .pdf"; 
-	header("Location: ../Intranet/submenu_Solicitud_Vacaciones.php?mensaje='".$mensaje."'"); 
+	header("Location: ../intranet/submenu_Solicitud_Vacaciones.php?mensaje='".$mensaje."'"); 
 }
 
 ?>

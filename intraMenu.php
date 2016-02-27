@@ -5,15 +5,12 @@
 		<?php  
 			$objOpeDB = new ActionsDB();
 			$opMenu = $objOpeDB->getMenus( $PERFIL_USR );
-			$idSM = 0;
 			If ( !($opMenu <= 0) ) { 
 				foreach ( $opMenu as $reg  )  {
 					$opSubMenu = $objOpeDB->getSubMenus( $PERFIL_USR , $reg["idMenu"] );
 					echo ' <li><a class="'.$reg["icon"].'"> ' .$reg["descripcion"].'</a><ul style="z-index:4;">';
-					foreach ( $opSubMenu as $reg  )  {
-					//If ( !($opSubMenu <= 0) ) {
-					/*echo '<li><a href="'.$reg["href"].'?idMenu='.$reg["idMenu"].' & idSubMenu='.$reg["idSubMenu"].' " >'.$reg["descripcion"].'</a></li>';*/
-					echo '<li><a href="'.$reg["href"].'" >'.$reg["descripcion"].'</a></li>';
+					foreach ( $opSubMenu as $key ) {
+					echo '<li><a href="'.$key["href"].'" >'.$key["descripcion"].'</a></li>';
 					}
 					echo '</ul>';
 					//}

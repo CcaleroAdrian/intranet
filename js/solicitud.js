@@ -88,9 +88,9 @@ function solicitud(ObjetoTR){
 		var documento = ObjetoTR.cells[7].childNodes[0].nodeValue;
 		var opcion="";
 		if (documento != "sin archivo") {
-			opcion = prompt("SELECIONE LA OPCIÓN A REALIZAR\n1) Descargar documento soporte para usuarios asinados a cliente \n2) Cargar archivo soporte de solicitud \n3) Descargar archivo soporte de la solicitud");
+			opcion = prompt("SELECIONE LA OPCIÓN A REALIZAR\n1) Descargar documento soporte para usuarios asignados a cliente \n2) Cargar archivo soporte de solicitud \n3) Descargar archivo soporte de la solicitud");
 		}else{
-			opcion = prompt("SELECIONE LA OPCIÓN A REALIZAR \n1) Descargar documento soporte para usuarios asinados a cliente \n2) Cargar archivo soporte de solicitud");
+			opcion = prompt("SELECIONE LA OPCIÓN A REALIZAR \n1) Descargar documento soporte para usuarios asignados a cliente \n2) Cargar archivo soporte de solicitud");
 		}
 
 		

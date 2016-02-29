@@ -18,7 +18,6 @@ function busqueda(opcion){
 			}else{// code for IE6, IE5
 				xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
 			}
-			
 			xmlhttp.onreadystatechange=function(){
 				if (xmlhttp.readyState==4 && xmlhttp.status==200){
 
@@ -30,12 +29,20 @@ function busqueda(opcion){
 			xmlhttp.send("q="+nombre+"&b="+op+"&id="+id);
 }
 
-function aceptar(id){
-	var url = "procesarSolicitudes.php?id="+id+"&opcion=1";
-	window.open(url,"_parent");
+function rechazar(id){
+	var opcion = confirm('¿Desea rechazar la solicitud de vacaciones?');
+	if (opcion) {
+		var url = "procesarSolicitudes.php?id="+id+"&opcion=2";
+		window.open(url,"_blank");
+	}
 }
 
-function rechazar(id){
-	var url = "procesarSolicitudes.php?id="+id+"&opcion=2";
-	window.open(url,"_parent");
+function aceptar(id){
+	var opcion = confirm('¿Desea aceptar la solicitude de vacaciones?');
+	if (opcion) {
+		var url = "procesarSolicitudes.php?id="+id+"&opcion=1";
+		window.open(url,"_blank");
+	}
 }
+
+

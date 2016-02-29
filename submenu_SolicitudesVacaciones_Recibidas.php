@@ -14,7 +14,7 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 	$objUsuarios = new ActionsDB();
 	// Obtenemos los campos de la tabla usuarios
 	$user = $objUsuarios->verSolicitudesIDB($ID_USR);
-	If ( $user == -1  OR $user == 0 ) {
+	if ( $user == -1  OR $user == 0 ) {
 		$VisualizarR = false;
 		$mensaje = "No se han recibido solicitudes de vaciones recientemente.";
 	}else{
@@ -62,17 +62,17 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
   			<input id="filtroTabla" onkeyup="busqueda({opcion : 2,id : <?php echo $ID_USR;?>})" class="form-control glyphicon glyphicon-search" size="35" align="center" autofocus>
   			</div>
 		</form><br>
-    		<table class="table table-responsive table-bordered" id="myTable">
+    		<table class="table table-responsive table-bordered" id="myTable" >
     			<thead>
 		        <tr>
 		          <th >Nombre</th>
-		          <th style="display: none;">correo</th>
-		          <th data-priority="1">Fecha Inicio</th>
-		          <th data-priority="2">Fecha Fin</th>
-		          <th data-priority="3">Dias Correspondientes</th>
-		          <th data-priority="4">Dias Solicitados</th>
-		          <th onclick="">as Adicionales</th>
-		          <th  colspan="2">Acción</th>
+		          <th >Fecha Inicio</th>
+		          <th >Fecha Fin</th>
+		          <th >Días Correspondientes</th>
+		          <th >Días Solicitados</th>
+		          <th >Días Adicionales</th>
+		          <th>Documento Soporte</th>
+		          <th  colspan="2" style="text-align: center;">Acción</th>
 		        </tr>
 		      	</thead>
 		      	<tbody id="cuerpo">
@@ -84,12 +84,15 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 		      				
 		      				foreach ($us as $key) {
 		      					$nombre = utf8_encode($key['nombre'].' '.$key['paterno'].' '.$key['materno']);
-		      					echo '<tr><td>'.$nombre.'</td><td style="display:none">'.$fil["user_ID"].'</td>
+		      					echo '<tr><td>'.$nombre.'</td>
 									<td>'.$fil["fechaI"].'</td><td>'.$fil["fechaF"].'</td>
 									<td>'.$fil["diasCorrespondientes"].'</td><td>'.$fil["diasSolicitados"].'</td>
-									<td>'.$fil["diasAdicionales"].'</td><td><a onclick="aceptar('.$fil['user_ID'].')"  href="">Aceptar</a></td><td><a onclick="rechazar('.$fil['user_ID'].')"  href="">Rechazar</a></td></tr>';
+									<td>'.$fil["diasAdicionales"].'</td>
+									<td><a href="descargarArchivo.php?id='.$fil["solicitud_ID"].'">'.$fil["documentoURL"].'</a></td>
+									<td><a onclick="aceptar('.$fil['user_ID'].')"  href="">Aceptar</a></td>
+									<td><a onclick="rechazar('.$fil['user_ID'].')"  href="">Rechazar</a></td>
+									</tr>';
 		      				}
-							
 						}		
 		      		?>
 		      	</tbody>

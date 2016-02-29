@@ -469,7 +469,7 @@ class ActionsDB{
 	//funcion para insertar solicitudes
 	public function insertSolicitud($ID_USR,$fechaI,$fechaF,$diasVa,$diasSoli,$diasAdi,$lider,$director){
 
-		$query ="INSERT INTO `solicitudvaciones`(`user_ID`,`fechaI`,`fechaF`,`diasCorrespondientes`,`diasSolicitados`,`diasAdicionales`,`lider_ID`,`aprobacion_L`,`Director_ID`,`aprobacion_D`,`documentoURL`,`correoEnviado`) VALUES('".$ID_USR."' , '".$fechaI."' , '".$fechaF."' , '".$diasVa."' , '".$diasSoli."' , '".$diasAdi."' , '".$lider."' , '0' , '".$director."' , '0' , 'sin archivo','0')";
+		$query ="INSERT INTO `solicitudvaciones`(`user_ID`,`fechaI`,`fechaF`,`diasCorrespondientes`,`diasSolicitados`,`diasAdicionales`,`lider_ID`,`aprobacion_L`,`Director_ID`,`aprobacion_D`,`documentoURL`,`correoEnviado`) VALUES('".$ID_USR."' , '".$fechaI."' , '".$fechaF."' , '".$diasVa."' , '".$diasSoli."' , '".$diasAdi."' , '".$lider."' , '1' , '".$director."' , '1' , 'sin archivo','0')";
 		
 		$mysqli = $this->objDb->getConnAdmin();
 		if ($mysqli->connect_errno) {
@@ -547,16 +547,18 @@ class ActionsDB{
 	public function verSolicitudesID($LiderId,$inicio = "" ,$TAMANO_PAGINA = "", $nombre = ""){
 		$query = "";
 
-		if($LiderId != 16 and $nombre == ""){
+		if($LiderId != 16 and $nombre == ""){//visualizar solicitudes recibidas
 
-			$query = "SELECT user_ID,fechaI,fechaF,diasCorrespondientes,diasSolicitados,diasAdicionales FROM solicitudvaciones  where lider_ID = '".$LiderId."' and aprobacion_L = 0 LIMIT ".$inicio.",".$TAMANO_PAGINA;
-		}else if ($LiderId == 16 and $nombre == "") {
+			$query = "SELECT solicitud_ID,user_ID,fechaI,fechaF,diasCorrespondientes,diasSolicitados,diasAdicionales,documentoURL FROM solicitudvaciones  where lider_ID = '".$LiderId."' and aprobacion_L = 1 and documentoURL != 'sin archivo' LIMIT ".$inicio.",".$TAMANO_PAGINA;
+		}else if ($LiderId == 16 and $nombre == "") {//visualizar solicitudes recibidas
 
-			$query = "SELECT user_ID,fechaI,fechaF,diasCorrespondientes,diasSolicitados,diasAdicionales FROM solicitudvaciones  where Director_ID ='".$LiderId."' and aprobacion_D = 0 order by user_ID limit".$inicio.",".$TAMANO_PAGINA;
-		}else if($LiderId != 16 and $nombre != ""){
+			$query = "SELECT user_ID,fechaI,fechaF,diasCorrespondientes,diasSolicitados,diasAdicionales,documentoURL FROM solicitudvaciones  where Director_ID ='".$LiderId."' and aprobacion_D = 1 and documentoURL != 'sin archivo' order by user_ID limit".$inicio.",".$TAMANO_PAGINA;
+		
+		}else if($LiderId != 16 and $nombre != ""){//busqueda desde la caja de texto
 
 			$query = "SELECT S.user_ID,S.fechaI,S.fechaF,S.diasCorrespondientes,S.diasSolicitados,S.diasAdicionales FROM solicitudvaciones as S left JOIN  usuarios as us on S.user_ID = us.idUsuario WHERE S.lider_ID ='".$LiderId."' AND S.aprobacion_L = 0 and us.nombre LIKE '%".$nombre."%'";
-		}else if($LiderId = 16 and $nombre != ""){
+		
+		}else if($LiderId = 16 and $nombre != ""){//busqueda desde la caja de texto
 
 			$query = "SELECT S.user_ID,S.fechaI,S.fechaF,S.diasCorrespondientes,S.diasSolicitados,S.diasAdicionales FROM solicitudvaciones as S left JOIN  usuarios as us on S.user_ID = us.idUsuario WHERE S.Director_ID ='".$LiderId."' AND S.aprobacion_D = 0 and us.nombre LIKE '%".$nombre."%'";
 		}
@@ -588,10 +590,10 @@ class ActionsDB{
 	public function verSolicitudesIDB($LiderId){
 		$query = "";
 
-		if($LiderId != 2){
-			$query = "SELECT user_ID,fechaI,fechaF,diasCorrespondientes,diasSolicitados,diasAdicionales FROM solicitudvaciones  where lider_ID = '".$LiderId."' and aprobacion_L = 0";
+		if($LiderId != 16){
+			$query = "SELECT solicitud_ID,user_ID,fechaI,fechaF,diasCorrespondientes,diasSolicitados,diasAdicionales FROM solicitudvaciones  where lider_ID = '".$LiderId."' and aprobacion_L = 1 and documentoURL != 'sin archivo'";
 		} else{
-			$query = "SELECT user_ID,fechaI,fechaF,diasCorrespondientes,diasSolicitados,diasAdicionales FROM solicitudvaciones  where Director_ID = 2 and aprobacion_D = 0 ";
+			$query = "SELECT user_ID,fechaI,fechaF,diasCorrespondientes,diasSolicitados,diasAdicionales FROM solicitudvaciones  where Director_ID ='".$Lider_ID."' and aprobacion_D = 1  and documentoURL != 'sin archivo'";
 		}
 
 		$mysqli = $this->objDb->getConnBasic();
@@ -716,12 +718,18 @@ class ActionsDB{
 	public function procesarSolicitudes($id,$opcion = null){
 
 		if ($opcion == 1) {
-			$query = "UPDATE `solicitudvaciones` SET `aprobacion_D`= 1 WHERE `user_ID` ='".$id."'";
-		
+			if ($id == 16) {
+				$query = "UPDATE `solicitudvaciones` SET `aprobacion_D`= 2 WHERE `user_ID` ='".$id."'";
+			}else{
+			$query = "UPDATE `solicitudvaciones` SET `aprobacion_L`= 2 WHERE `user_ID` ='".$id."'";
+			}
 		} else if ($opcion ==2 ) {
-			$query = "UPDATE `solicitudvaciones` SET `documentoURL`='".$nombre."'  WHERE solicitud_ID ='".$Archivo."'";
+			if ($id == 16 ) {
+				$query = "UPDATE `solicitudvaciones` SET `aprobacion_D`= 3 WHERE `user_ID` ='".$id."'";
+			}else{
+			$query = "UPDATE `solicitudvaciones` SET `aprobacion_L`= 3 WHERE `user_ID` ='".$id."'";
+			}
 		}
-
 		$resultado = false;
 		
 		$mysqli = $this->objDb->getConnAdmin();
@@ -737,6 +745,64 @@ class ActionsDB{
 
 	}
 
+	//funcion que devuelve las solicitudes aceptadas para ser notificadas al usuario
+	public function buscarSolicitudesAceptadas(){
+		$query = "SELECT `user_ID` FROM solicitudvaciones WHERE `aprobacion_L` = 2 AND `aprobacion_D` = 2 AND `correoEnviado` = 0";
+		$mysqli = $this-> objDb->getConnBasic();
+		if ($mysqli->connect_errno) {
+			$return -1;
+		}else{
+			if (!$resultado = $mysqli->query($query)) {
+				return -1;
+			}else{
+				$datos = $resultado->num_rows;
+				$users = array();
+				while ($usr = $resultado->fetch_assoc()) {
+					$users[]=$usr;
+				}
+				return $users;
+			}
+			$mysqli->close();
+		}
+	}
+
+	//funcion que devuelve las solicitudes rechazadas para ser notificadas al usuario
+	public function buscarSolicitudesRechazadas(){
+		$query = "SELECT `user_ID` FROM solicitudvaciones WHERE ((`aprobacion_L` = 3 AND `aprobacion_D` = 3)OR(`aprobacion_L` = 1 AND `aprobacion_D` = 3)) AND `correoEnviado` = 0";
+		$mysqli = $this-> objDb->getConnBasic();
+		if ($mysqli->connect_errno) {
+			$return -1;
+		}else{
+			if (!$resultado = $mysqli->query($query)) {
+				return -1;
+			}else{
+				$datos = $resultado->num_rows;
+				$users = array();
+				while ($usr = $resultado->fetch_assoc()) {
+					$users[]=$usr;
+				}
+				return $users;
+			}
+			$mysqli->close();
+		}
+	}
+
+	public function notificarEnvioCorreo($id){
+		$query = "UPDATE solicitudvaciones SET correoEnviado = 1 where user_ID ='".$id."'";
+		
+		$resultado = false;
+		
+		$mysqli = $this->objDb->getConnAdmin();
+		if ($mysqli->connect_errno) {
+			$resultado = false; 
+		}else{
+			if ( $mysqli->query($query) ) {
+				$resultado = true; 
+			}
+			$mysqli->close();
+		} 
+		return $resultado;
+	}
 }
 
 ?>

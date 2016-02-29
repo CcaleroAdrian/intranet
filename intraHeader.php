@@ -48,7 +48,12 @@
   <script type="text/javascript" src="intraCss/bootstrap/js/notify.min.js"></script>
 </head>
 <body>
-	
+	<script type="text/javascript">
+		$(document).ready(function(){
+			var url = "procesarSolicitudes.php?opcion=3";
+			//window.open(url,"_blank");
+		});
+	</script>
 	<table width="800" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#EEEEEE">
 		<!-- Renglón con imágen TOP de Intranet -->
 		<tr bgcolor="#000033">

@@ -146,7 +146,7 @@ if ($btn == "Enviar") {
 					</table>
 				<div class="col-md-12">
 				<p>El usuario: <strong>'.utf8_decode($nombre).'</strong> <br><br>
-				Desea solicitar los <strong>'.$diasSoli.'</strong> d&iacute;as de vacaciones correspondientes al a&ntilde;o en curso, haciendo constar por escrito, su deseo de hacer validos los d&iacute;as de vacaciones que le corresponden.<br><br>No habiendo ning&uacute;n inconveniente de su parte, hace de su conocimiento para disfrutar un plazo vacacional del d&iacute;a <strong>'.$otro.'</strong> al <strong>'.$FechaFinal.'</strong> del presente a&ntilde;o.</p>
+				Desea solicitar <strong>'.$diasSoli.'</strong> d&iacute;as de vacaciones correspondientes al a&ntilde;o en curso, haciendo constar por escrito, su deseo de hacer validos los d&iacute;as de vacaciones que le corresponden.<br><br>No habiendo ning&uacute;n inconveniente de su parte, hace de su conocimiento para disfrutar un plazo vacacional del d&iacute;a <strong>'.$otro.'</strong> al <strong>'.$FechaFinal.'</strong> del presente a&ntilde;o.</p>
 				</div><br><br><hr>
 				<div class="col-md-8"></div><br><br/>
 				<div align="center"><form method="post" action="http://www.intranet.itw.mx/index.php"><table class="table"><tr><br><br>
@@ -291,10 +291,13 @@ $vacaciones = 0;
 					$nume = 0;
 		      		foreach($usuarios as $row) {
 		      		$nume +=1;
-		      		if ($row["aprobacion1"] == 0 OR $row["aprobacion2"] == 0) {
+		      		//Determinar estutus solicitud
+		      		if (($row["aprobacion1"] == 1 AND $row["aprobacion2"] == 1) OR ($row["aprobacion1"] == 2 AND $row["aprobacion2"] == 1) OR ($row["aprobacion1"] == 3 AND $row["aprobacion2"] == 1)) {//pendientes
 		      			$Estatus = "PENDIENTE";
-		      		}else{
+		      		}else if (($row["aprobacion1"] == 2 AND $row["aprobacion2"] == 2) OR ($row["aprobacion1"] == 3 AND $row["aprobacion2"] == 2) OR ($row["aprobacion1"] == 1 AND $row["aprobacion2"] == 2)) {//Aceptadas
 		      			$Estatus = "APROBADA";
+		      		}else if (($row["aprobacion1"] == 3 AND $row["aprobacion2"] == 3) OR ($row["aprobacion1"] == 2 AND $row["aprobacion2"] == 3) OR ($row["aprobacion1"] == 1 AND $row["aprobacion2"] == 3)) {
+		      			$Estatus = "RECHAZADA";
 		      		}
 				echo '<tr id="celda" onclick="solicitud(this)">
 							<td>'.$nume.'</td>

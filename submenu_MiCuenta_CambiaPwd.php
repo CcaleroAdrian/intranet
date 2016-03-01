@@ -92,7 +92,7 @@
 				<tr>
 				<td ><div align="right"> <label>Nueva Contrase&ntilde;a:</label></div></td>
 				<td width="100" ><div class="input-group">
-					<input  class="form-control" name="clave1" type="password" size="20" maxlength="8" autofocus>
+					<input  class="form-control glyphicon glyphicon-question-sign" name="clave1" type="password" size="20" maxlength="8" autofocus>
 				<span id="span" class="input-group-addon glyphicon glyphicon-question-sign" onclick="myfuction()"></span></div></td>
 				</tr>
 				<tr><td width="130">&nbsp;</td></tr>

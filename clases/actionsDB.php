@@ -803,6 +803,89 @@ class ActionsDB{
 		} 
 		return $resultado;
 	}
+
+
+	//funcion para visualizar el detalle de las solicitudes realizadas
+	public function verDetalle($id = "", $INICIO = "", $TAMANO_PAGINA=""){
+		
+		$query="";
+		
+		if( $id==""  AND ($INICIO=="") AND ($TAMANO_PAGINA=="") ) {
+			$query = " SELECT * FROM `solicitudvaciones` ORDER BY fechaSolicitud";
+		}else if ( $id != "" AND $INICIO == "" AND $TAMANO_PAGINA == "" ) {
+			
+			$query = "SELECT * from solicitudvaciones WHERE solicitud_ID='".$id."'";
+
+		}else{
+
+			$query = "SELECT * from solicitudvaciones ORDER BY fechaSolicitud LIMIT ".$INICIO.",".$TAMANO_PAGINA."";
+		}
+
+		$mysqli = $this-> objDb->getConnBasic();
+		if ($mysqli->connect_errno) {
+			$return -1;
+		}else{
+			if (!$resultado = $mysqli->query($query)) {
+				return -1;
+			}else{
+				$datos = $resultado->num_rows;
+				$users = array();
+				while ($usr = $resultado->fetch_assoc()) {
+					$users[]=$usr;
+				}
+				return $users;
+			}
+			$mysqli->close();
+		}
+	}
+
+	//Función que permite obtener los datos del usuario 
+	public function getDatosPerfilID( $id ){
+		// Create connection
+		$query = "SELECT idUsuario,nombre,paterno,materno,fechaIngreso
+				  FROM usuarios  
+				  WHERE   idUsuario =  '".$id."' " ;
+				  
+		$mysqli = $this-> objDb->getConnBasic();
+		if ($mysqli->connect_errno) {
+			$return -1;
+		}else{
+			if (!$resultado = $mysqli->query($query)) {
+				return -1;
+			}else{
+				$datos = $resultado->num_rows;
+				$users = array();
+				while ($usr = $resultado->fetch_assoc()) {
+					$users[]=$usr;
+				}
+				return $users;
+			}
+			$mysqli->close();
+		}
+	}
+
+	//Funcion para devolver el ultimo registro realizado por un usario
+	public function verUltimSolicitudID($id){
+		$query = "SELECT * FROM solicitudvaciones WHERE solicitud_ID =(SELECT MAX(solicitud_ID) FROM solicitudvaciones where user_ID ='".$id."')";
+
+		$mysqli = $this-> objDb->getConnBasic();
+		if ($mysqli->connect_errno) {
+			$return -1;
+		}else{
+			if (!$resultado = $mysqli->query($query)) {
+				return -1;
+			}else{
+				$datos = $resultado->num_rows;
+				$users = array();
+				while ($usr = $resultado->fetch_assoc()) {
+					$users[]=$usr;
+				}
+				return $users;
+			}
+			$mysqli->close();
+		}
+
+	}
 }
 
 ?>

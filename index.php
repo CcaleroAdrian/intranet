@@ -36,7 +36,7 @@
             <label class="col-sm-2 control-label" style="padding-right:18%; color:#4d94ff">Contrase&ntilde;a:</label>
             <div class="col-sm-5 input-group" style="padding-left:0%; " >
             	<span class="input-group-addon glyphicon glyphicon-user"></span>
-   				<input  class="form-control" name="pwditw" type="password" id="pwditw"  maxlength="8" placeholder="Contrase&ntilde;a"  />
+   				<input  class="form-control glyphicon glyphicon-user" name="pwditw" type="password" id="pwditw"  maxlength="8" placeholder="Contrase&ntilde;a"  />
             </div>
           </div>
           <div class='col-sm-8'>&nbsp;</div><div class='col-sm-4'>&nbsp;</div>

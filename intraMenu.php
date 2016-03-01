@@ -8,9 +8,9 @@
 			If ( !($opMenu <= 0) ) { 
 				foreach ( $opMenu as $reg  )  {
 					$opSubMenu = $objOpeDB->getSubMenus( $PERFIL_USR , $reg["idMenu"] );
-					echo ' <li><a class="'.$reg["icon"].'"> ' .$reg["descripcion"].'</a><ul style="z-index:4;">';
+					echo ' <li><a class="'.$reg["icon"].'"> ' .utf8_decode($reg["descripcion"]).'</a><ul style="z-index:4;">';
 					foreach ( $opSubMenu as $key ) {
-					echo '<li><a href="'.$key["href"].'" >'.$key["descripcion"].'</a></li>';
+					echo '<li><a href="'.$key["href"].'" >'.utf8_encode($key["descripcion"]).'</a></li>';
 					}
 					echo '</ul>';
 					//}

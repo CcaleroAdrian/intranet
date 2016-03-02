@@ -84,6 +84,7 @@ foreach ($dat as $key) {
 			<tr>
 				<th>N</th>
 				<th style="display: none">ID</th>
+				<th>Acci&oacute;n</th>
 				<th >Fecha de solicitud</th>
 				<th >Fecha inicio</th>
 				<th >Fecha fin</th>
@@ -109,12 +110,13 @@ foreach ($dat as $key) {
 						echo '<tr id="celda" onclick="solicitud(this)">
 									<td>'.$nume.'</td>
 									<td style="display:none;">'.$row["solicitud_ID"].'</td>
+									<td><a href="" click="">Generar reporte</a></td>
 									<td>'.$row["fecha"].'</td>
 									<td>'.$row["fecha1"].'</td>
 									<td>'.$row["fecha2"].'</td>
 									<td>'.$row["dias"].'</td>
 									<td>'.$row["adicionales"].'</td>
-									<td>'.$row["documento"].'</td>
+									<td><a href="">'.$row["documento"].'</a></td>
 									<td>'.$Estatus.'</td>
 								</tr>';
 					}		

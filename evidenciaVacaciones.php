@@ -1,0 +1,171 @@
+<?php
+require('pdf/fpdf.php');//incluir libreria
+
+//Recuperar ID para consultar informacion del usuario
+//$id = $_GET['id'];
+
+//Realizar consultas para generar documento
+
+
+$pdf=new FPDF('P','cm','A4');//crear objeto PDF (indicando orientacion, unidad de medida, tamaño de hoja)
+//$pdf->SetMargins(2,2,1);
+$pdf->AddPage();//añadir una nueva hoja$pdf->Image('intraImg/Footer.png',1,27,19,2);
+$pdf->SetFont('Arial','I',9);//indicar tipo de letra, negrita y tamaño
+$pdf->Cell(19.3,12.5,"",1);
+$pdf->Image('intraImg/Header.png',1.2,1.3,18.5,1);
+$pdf->Ln(1);
+$pdf->Cell(6);
+$pdf->Cell(9,0.6,"ACUSE DE VACIONES AUTORIZADAS",0,'C');
+$pdf->Ln(1);
+$pdf->Cell(0.3);
+$pdf->SetFont('Arial','I',7);
+$pdf->Cell(3.7,0.6,"Nombre del empleado:",0,'R');
+$pdf->Cell(7.5,0.6,"NOMBRE EJEMPLO APELLIDOS",0,'L');
+$pdf->Cell(4,0.6,utf8_decode("Área o Departamento:"),0,'L');
+$pdf->Cell(6,0.6,"AREA DE EJEMPLO",0,'L');
+$pdf->Ln(0.6);
+$pdf->Cell(0.3);
+$pdf->Cell(3.7,0.6,"Fecha ingreso:",0,'L');
+$pdf->Cell(7.5,0.6,"02/01/2016",0,'L');
+$pdf->Cell(4,0.6,utf8_decode("Años de servicio:"),0,'L');
+$pdf->Cell(0.4,0.6,"20",0,'C');
+$pdf->Cell(1.5,0.6,utf8_decode("Año(s)"),0,'L');
+$pdf->Ln(0.6);
+$pdf->Cell(0.3);
+$pdf->Cell(3.7,0.6,utf8_decode("Días que corresponden:"),0,'L');
+$pdf->Cell(2,0.6,"6",0,'C');
+$pdf->Cell(3,0.6,utf8_decode("Días a disfrutar:"),0,'L');
+$pdf->Cell(2.5,0.6,"6",0,'C');
+$pdf->Cell(3,0.6,utf8_decode("Días pendientes:"),0,'L');
+$pdf->Cell(1.5,0.6,"6",0,'L');
+$pdf->Ln(0.8);
+$pdf->Cell(0.3);
+$pdf->Cell(6,1,"PERIODO VACACIONAL",0,'L');
+$pdf->Ln(0.8);
+$pdf->Cell(0.3);
+$pdf->Cell(1,0.6,"Del:",0,'L');
+$pdf->Cell(4,0.6,"02/DICIEMBRE/2016",0,'C');
+$pdf->Cell(0.6,0.6,"AL:",0,'L');
+$pdf->Cell(6,0.6,"02/DICIEMBRE/2016",0,'C');
+$pdf->Ln();
+$pdf->Cell(0.3);
+$pdf->Cell(3,0.6,"Inicio de labores:",0,'L');
+$pdf->Cell(6,0.6,"JUEVES 02/DICIEMBRE/2016",0,'L');
+$pdf->Ln();
+$pdf->Cell(0.3);
+$pdf->Cell(6,1,"OBSERVACIONES:",0,'L');
+$pdf->Line(4.5,7.6,19,7.6);
+$pdf->Line(2,8.1,19,8.1);
+$pdf->Line(2,8.6,19,8.6);
+$pdf->Cell(0.3);
+$pdf->Ln(2);
+$pdf->Cell(0.3);
+$pdf->SetFont('Arial','I',6);
+$pdf->Cell(6,0.3,"POR EL PRESENTE EXPRESO MI CONFORMIDAD DE SOLICITAR Y GOZAR MIS VACACIONES DE ACUERDO A LO QUE ESTABLECE EL ARTICULO 76 DE LA LEY FEDERAL DEL",0,'C');
+$pdf->Ln();
+$pdf->Cell(0.3);
+$pdf->SetFont('Arial','I',7);
+$pdf->Cell(6,0.3," TRABAJO, CONSIDERANDO LOS SIGUIENTES DATOS:",0,'C');
+$pdf->Ln();
+$pdf->Cell(12);
+$pdf->Cell(2.5,0.6,utf8_decode("México, DF a:"),0,'L');
+$pdf->Cell(6,0.6,"02/DICIEMBRE/2016",0,'R');//Fecha actual
+$pdf->Ln(1.5);
+$pdf->Cell(2);
+$pdf->SetFont('Arial','I',6);
+$pdf->Line(1.5,11.2,7	,11.2);
+$pdf->Cell(2,0.6,"Firma de Conformidad",0,'C');
+$pdf->Cell(4);
+$pdf->Line(8,11.2,13.5,11.2);
+$pdf->Cell(2,0.6,utf8_decode("Firma de Autorización del"),0,'L');
+$pdf->Cell(4);
+$pdf->Line(14.3,11.2,19.5,11.2);
+$pdf->Cell(4,0.6,"Vo. Bo. Recursos Humanos",0,'C');
+$pdf->Ln(0.3);
+$pdf->Cell(2);
+$pdf->Cell(2,0.6,"del empleado",0,'C');
+$pdf->Cell(4);
+$pdf->Cell(2,0.6,utf8_decode("Líder de proyecto y/o Director"),0,'L');
+$pdf->Image('intraImg/Footer.png',1.2,12.3,18.5,1);
+$pdf->Ln(2.5);
+
+//GENERACION DEL SEGUNDO DOCUMENTO
+$pdf->Cell(19.3,12.5,"",1);
+$pdf->Image('intraImg/Header.png',1.2,14.3,18.5,1);
+$pdf->Ln(1);
+$pdf->Cell(6);
+$pdf->SetFont('Arial','I',9);
+$pdf->Cell(9,0.6,"ACUSE DE VACIONES AUTORIZADAS",0,'C');
+$pdf->Ln(1);
+$pdf->Cell(0.3);
+$pdf->SetFont('Arial','I',7);
+$pdf->Cell(3.7,0.6,"Nombre del empleado:",0,'R');
+$pdf->Cell(7.5,0.6,"NOMBRE EJEMPLO APELLIDOS",0,'L');
+$pdf->Cell(4,0.6,utf8_decode("Área o Departamento:"),0,'L');
+$pdf->Cell(6,0.6,"AREA DE EJEMPLO",0,'L');
+$pdf->Ln(0.6);
+$pdf->Cell(0.3);
+$pdf->Cell(3.7,0.6,"Fecha ingreso:",0,'L');
+$pdf->Cell(7.5,0.6,"02/01/2016",0,'L');
+$pdf->Cell(4,0.6,utf8_decode("Años de servicio:"),0,'L');
+$pdf->Cell(0.4,0.6,"20",0,'C');
+$pdf->Cell(1.5,0.6,utf8_decode("Año(s)"),0,'L');
+$pdf->Ln(0.6);
+$pdf->Cell(0.3);
+$pdf->Cell(3.7,0.6,utf8_decode("Días que corresponden:"),0,'L');
+$pdf->Cell(2,0.6,"6",0,'C');
+$pdf->Cell(3,0.6,utf8_decode("Días a disfrutar:"),0,'L');
+$pdf->Cell(2.5,0.6,"6",0,'C');
+$pdf->Cell(3,0.6,utf8_decode("Días pendientes:"),0,'L');
+$pdf->Cell(1.5,0.6,"6",0,'L');
+$pdf->Ln(0.8);
+$pdf->Cell(0.3);
+$pdf->Cell(6,1,"PERIODO VACACIONAL",0,'L');
+$pdf->Ln(0.8);
+$pdf->Cell(0.3);
+$pdf->Cell(1,0.6,"Del:",0,'L');
+$pdf->Cell(4,0.6,"02/DICIEMBRE/2016",0,'C');
+$pdf->Cell(0.6,0.6,"AL:",0,'L');
+$pdf->Cell(6,0.6,"02/DICIEMBRE/2016",0,'C');
+$pdf->Ln();
+$pdf->Cell(0.3);
+$pdf->Cell(3,0.6,"Inicio de labores:",0,'L');
+$pdf->Cell(6,0.6,"JUEVES 02/DICIEMBRE/2016",0,'L');
+$pdf->Ln();
+$pdf->Cell(0.3);
+$pdf->Cell(6,1,"OBSERVACIONES:",0,'L');
+$pdf->Line(4.5,20.5,19,20.5);
+$pdf->Line(2,21,19,21);
+$pdf->Line(2,21.5,19,21.5);
+$pdf->Cell(0.3);
+$pdf->Ln(2);
+$pdf->Cell(0.3);
+$pdf->SetFont('Arial','I',6);
+$pdf->Cell(6,0.3,"POR EL PRESENTE EXPRESO MI CONFORMIDAD DE SOLICITAR Y GOZAR MIS VACACIONES DE ACUERDO A LO QUE ESTABLECE EL ARTICULO 76 DE LA LEY FEDERAL DEL",0,'C');
+$pdf->Ln();
+$pdf->Cell(0.3);
+$pdf->SetFont('Arial','I',7);
+$pdf->Cell(6,0.3," TRABAJO, CONSIDERANDO LOS SIGUIENTES DATOS:",0,'C');
+$pdf->Ln();
+$pdf->Cell(12);
+$pdf->Cell(2.5,0.6,utf8_decode("México, DF a:"),0,'L');
+$pdf->Cell(6,0.6,"02/DICIEMBRE/2016",0,'R');//Fecha actual
+$pdf->Ln(1.5);
+$pdf->Cell(2);
+$pdf->SetFont('Arial','I',6);
+$pdf->Line(1.5,24.1,7	,24.1);
+$pdf->Cell(2,0.6,"Firma de Conformidad",0,'C');
+$pdf->Cell(4);
+$pdf->Line(8,24.1,13.5,24.1);
+$pdf->Cell(2,0.6,utf8_decode("Firma de Autorización del"),0,'L');
+$pdf->Cell(4);
+$pdf->Line(14.3,24.1,19.5,24.1);
+$pdf->Cell(4,0.6,"Vo. Bo. Recursos Humanos",0,'C');
+$pdf->Ln(0.3);
+$pdf->Cell(2);
+$pdf->Cell(2,0.6,"del empleado",0,'C');
+$pdf->Cell(4);
+$pdf->Cell(2,0.6,utf8_decode("Líder de proyecto y/o Director"),0,'L');
+$pdf->Image('intraImg/Footer.png',1.2,25.2,18.5,1);
+$pdf->Output('Documento soporte','I');//cerramos el documento
+?>

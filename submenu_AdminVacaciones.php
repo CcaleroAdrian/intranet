@@ -19,13 +19,19 @@ include("intraHeader.php");
 <script type="text/javascript">
 	function verDetalle(id){
 		var url = "detalle.php?id="+id+"";
-		window.open(url,"_blank", 'width=650px,height=550px,resizable=yes,toolbar=no');
+		window.open(url,"_blank", 'width=680px,height=550px,resizable=yes,toolbar=no');
 	}
 </script>
 	<h3 align="left">ADMINISTRACIÓN DE VACACIONES</h3>
 	<div class="panel panel-primary">
     <div class="panel-heading">CONCENTRADO DE SOLICITUDES</div>
     <div class="panel-body">
+    <form>
+    		<div class="input-group col-sm-12">
+    		<span class="glyphicon glyphicon-search input-group-addon"></span>
+  			<input id="filtroTabla" onkeyup="busqueda({opcion:1,id:0})" class="form-control glyphicon glyphicon-search" size="35" align="center" autofocus>
+  			</div>
+	</form><br>
 		<table id="form1" class="table-responsive table-bordered">
 			<thead >
 				<th width="30pt" style="text-align: center;">N</th>

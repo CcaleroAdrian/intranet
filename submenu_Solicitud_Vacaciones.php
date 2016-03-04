@@ -7,6 +7,8 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 		header('Location: index.php');
 	}
 
+date_default_timezone_set('AMERICA/Mexico_City');
+setlocale (LC_TIME, 'spanish-mexican');
 //Variables
 $success = "";
 $error1 = "";
@@ -104,6 +106,7 @@ $antiguedad =floor($fecha1 / 31536000);
 //echo $antiguedad;
 
 if($antiguedad > 0){
+
   if ($antiguedad >= 4 OR $antiguedad <= 8) {
      $dias = $objOperaciones->verAntiguedad(4);
   }else if($antiguedad >=9 OR $antiguedad <= 13){
@@ -122,8 +125,11 @@ if($antiguedad > 0){
   foreach ($dias as $key ) {
     $vacaciones = $key['Dias'];
   }
+
 }else{
+
   $vacaciones = 0;
+
 }
 
 ?>

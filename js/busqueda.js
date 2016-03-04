@@ -8,7 +8,6 @@ function busqueda(opcion){
 			var id = opcion.id;
 
 			if(nombre == ''){
-			//document.getElementById("cuerpo").innerHTML="";
 			return;
 			}
 
@@ -26,7 +25,7 @@ function busqueda(opcion){
 			}
 			xmlhttp.open("POST","procesarBusqueda.php",true);
 			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-			xmlhttp.send("q="+nombre+"&b="+op+"&id="+id);
+			xmlhttp.send("q="+nombre+"&b="+op+"&id="+id); 
 }
 
 function rechazar(id){
@@ -45,4 +44,8 @@ function aceptar(id){
 	}
 }
 
+function solicitud(id){
+	var url = "evidenciaVacaciones.php?id="+id+"";
+	window.open(url,"_blank");
+}
 

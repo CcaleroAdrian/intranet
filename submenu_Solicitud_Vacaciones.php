@@ -20,14 +20,14 @@ $VisualizarR = false;
 //CARGA DE INFORMACION DE USUARIO
 $objOperaciones = new ActionsDB();
 // Obtenemos los campos de la tabla usuarios para presentarla en la solicitud
-$usr = $objOperaciones->getDatosPerfil($USUARIO); 
-	If ( $usr == -1  OR  $usr == 0 ) {
+	$usr = $objOperaciones->getDatosPerfil($USUARIO); 
+	if ( $usr == -1  OR  $usr == 0 ) {
 		$error1 = "No fué posible recuperar la informaci&oacute;n del usuario: ";
 	} 
 
 	$dat = $objOperaciones->verSolicitudes($ID_USR);
 	//print_r($dat);
-	If ($dat == 0 OR $dat == -1) {
+	if ($dat == 0 OR $dat == -1) {
 		$VisualizarR = false;
 		$error2 = "No fué posible recuperar las solicitudes realizadas anteriormente";
 	}else{
@@ -45,17 +45,17 @@ $usr = $objOperaciones->getDatosPerfil($USUARIO);
 	    if (isset($_GET["pagina"]))
 	        $pagina = $_GET["pagina"];
 
-		if (!$pagina) { 
-		   	$inicio = 0; 
-		   	$pagina = 1; 
-		} 
-		else { 
-		   	$inicio = ($pagina - 1) * $TAMANO_PAGINA; 
-		}
-		//calculo el total de páginas 
-		$total_paginas = ceil($numRegi / $TAMANO_PAGINA); 
+			if (!$pagina) { 
+			   	$inicio = 0; 
+			   	$pagina = 1; 
+			} 
+			else { 
+			   	$inicio = ($pagina - 1) * $TAMANO_PAGINA; 
+			}
+			//calculo el total de páginas 
+			$total_paginas = ceil($numRegi / $TAMANO_PAGINA); 
 
-		$usuarios = $objOperaciones->verSolicitudes($ID_USR,$inicio,$TAMANO_PAGINA);
+			$usuarios = $objOperaciones->verSolicitudes($ID_USR,$inicio,$TAMANO_PAGINA);
 	}
 
 //********Enviar el correo de notificacion*********
@@ -80,138 +80,51 @@ if ($btn == "Enviar") {
 	$director = 16;
 
 	if ($diasSoli > $diasVa) {
-		
 		$diasAdi = $diasSoli - $diasVa;
-
 	}else{ $diasAdi = 0;}
-		
 		$diasRestantes = $diasVa - $diasSoli;//Dias restantes al periodo vacacional acumulado
-
 	if ($diasRestantes < 1) {
-		
 		$diasRestantes = 0;
 	}
-
 	$objectAlta = new ActionsDB();
-	/*$lider = $objectAlta->verLider($usr["Proyecto_id"]);
-	
-	foreach ($lider as $key) {
-		$lide= $key['usuario_ID'];
-	}*/
-
-	if ($diasSoli == 0) {
-		echo "no hay dias solicitados";
-	}else{
-
-		//envio de correo
-		//Consultar usuarios a quien enviar correos
-
-		//SELECT usrIntranet, nombre, paterno, materno from usuarios where idUsuario ='".$usuario.
-		$DIRECTOR = $objectAlta->notificarUsuario($director);
-		foreach ($DIRECTOR as $key) {
-			$correo = $key['usrIntranet'];
-			$nombre = utf8_encode($key["nombre"].' '.$key["paterno"].' '.$key["materno"]);	
-		}
-
-		
-		//$LIDER = $$objectAlta-> notificarUsuario($lide);
-		//print_r($LIDER);
-		/*foreach ($LIDER as $k) {
-			$correo2 = $k['usrIntranet'];
-			$nombre2 = utf8_encode($k['nombre'].' '.$k['paterno'].' '.$k['materno']);
-		}*/
-		
-		$mail = new PHPMailer();
-		$mail->IsSMTP();//indicamos el uso de SMTP
-		$mail->SMTPAuth = true;//Especificamos la seguridad de la conexion
-		$mail->SMTPSecure = "ssl";
-		$mail->Host = "server70.neubox.net"; // host del servidor SMTP
-		$mail->Username = "intranet@itw.mx";  //usuario de la cuenta SMTP 
-		$mail->Password = "XlKp}MuyDh]c";  //PASWORD del user SMTP
-		$mail->Port = 465;  //puerto de salida
-		$mail->From = "webmaster@itw.mx";  	
-		$mail->FromName = "ITWORKERS";
-		$mail->AddAddress($correo , $nombre);
-		//$mail->AddAddress($correo2 ,$nombre2);
-		$mail->IsHTML(true); // El correo se envía como HTML
-		$mail->Subject = "Solicitud de vacaciones" ; // Este es el titulo del email.
-		$body ='<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-				<!-- Latest compiled and minified CSS -->
-				<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-				<!-- Latest compiled and minified JavaScript -->
-				<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-				<div style="width: 50%; height: 150px;">
-					<table>
-						<td><img  width="100%" src="http://www.intranet.itw.mx/intraImg/Header.png"></td>
-					</table>
-				<div class="col-md-12">
-				<p>El usuario: <strong>'.utf8_decode($nombre).'</strong> <br><br>
-				Desea solicitar <strong>'.$diasSoli.'</strong> d&iacute;as de vacaciones correspondientes al a&ntilde;o en curso, haciendo constar por escrito, su deseo de hacer validos los d&iacute;as de vacaciones que le corresponden.<br><br>No habiendo ning&uacute;n inconveniente de su parte, hace de su conocimiento para disfrutar un plazo vacacional del d&iacute;a <strong>'.$otro.'</strong> al <strong>'.$FechaFinal.'</strong> del presente a&ntilde;o.</p>
-				</div><br><br><hr>
-				<div class="col-md-8"></div><br><br/>
-				<div align="center"><form method="post" action="http://www.intranet.itw.mx/index.php"><table class="table"><tr><br><br>
-				<td><label style="font-size:11px;">&Aacute;rea:</label></td>
-				<td><input style="background: #ffffff; border: 1px solid #ffffff;" size="15" type="text" value="'.$a.'" disabled/></td>
-				<td><label style="font-size:11px;">Fecha de ingreso:</label></td>
-				<td><input style="background: #ffffff; border: 1px solid #ffffff;" size="15" type="text" value="'.$fechaIngreso.'" disabled/></td></tr><tr>
-				<td><label style="font-size:11px;">Del:</label></td>
-				<td><input style="background: #ffffff; border: 1px solid #ffffff;" size="15" type="text" value="'.$otro.'" disabled></td>
-				<td><label style="font-size:11px;">Al:</label></td>
-				<td><input style="background: #ffffff; border: 1px solid #ffffff;" size="15" type="text" value="'.$FechaFinal.'" disabled></td></tr><tr>
-			<td><label style="font-size:11px;">D&iacute;as a disfrutar:</label></td>
-			<td><input style="background: #ffffff; border: 1px solid #ffffff;" type="text" size="5" value="'.$diasVa.'" disabled></td>
-			<td><label style="font-size:11px;">D&iacute;as Solicitados</label></td>
-			<td><input style="background: #ffffff; border: 1px solid #ffffff;" size="5" type="text" value="'.$diasSoli.'" disabled></td></tr><tr>
-			<td><label style="font-size:11px;">D&iacute;as pendientes:</label></td>
-			<td><input style="background: #ffffff; border: 1px solid #ffffff;" type="text" size="5" value="'.$diasRestantes.'" disabled></td>
-			<td><label style="font-size:11px;" >D&iacute;as adicionales</label></td>
-			<td><input style="background: #ffffff; border: 1px solid #ffffff;" size="5" type="text" value="'.$diasAdi.'" disabled></td></tr><tr></tr></table><div align="center"><input type="submit" class="btn btn-primary" name="btnAprobar" value="Aprobar">
-			</div></form></div><br><hr>
-			<div align="justifi"><p style="font-size:11px">&#8220;Este mensaje y cualquier archivo que se adjunte al mismo es propiedad de <strong>ITWorkers</strong> y podr&iacute;a contener informaci&oacute;n privada y privilegiada para uso exclusivo del destinatario. Si usted ha recibido esta comunicaci&oacute;n por error, no est&aacute; autorizado para copiar, retransmitir, utilizar o divulgar este mensaje ni los archivos adjuntos. Gracias.&#8221;</p>
-			</div><br><br><table><td><img  width="100%" src="http://www.intranet.itw.mx/intraImg/Footer.png"></td></table> </div></body>';
-		
-		$mail->Body = $body; // Mensaje a enviar
-		$exito = $mail->Send();
-		//echo $exito;
-		if ($exito) {
-		
-			$resultado = $objectAlta->insertSolicitud($ID_USR,$fechaI,$fechaF,$diasVa,$diasSoli,$diasAdi,14,$director);
-			
+		$resultado = $objectAlta->insertSolicitud($ID_USR,$fechaI,$fechaF,$diasVa,$diasSoli,$diasAdi,14,$director);
 			if( $resultado ) {
 				$success = "Se realiz&oacute; el registro de su solicitud " ;
-				echo"<script language='javascript'>window.location='/intranet/index.php'</script>";
+				echo"<script language='javascript'>window.location='/intranet/index.php?success=".$success."'</script>";
 			} else { 
 				$error1 = "Hubo un error al registrar su solicitud. Favor de intentarlo más tarde";
 				echo $error1;
 			}
-
-		}else {
-			$error = "Fall&oacute; el env&iacute;o del correo con la solicitud de vacaciones, vuelva a intentarlo m&aacute;s tarde."; 
-			echo $error;
-			echo "ERRO: ".$mail->ErrorInfo;
-		}
-	}
 }
 
-$fech = $usr['fechaIngreso'];//Parametro fecha de ingreso enviado por urldecode(str)
 //Calculo de vacaciones
-$fecha=$usr['fechaIngreso'];;
-$segundos=strtotime('now') - strtotime($fecha);
-$antiguedad=intval($segundos/60/60/24);
-$vacaciones = 0;
-  if ($antiguedad == 365) { //1 años
-    $vacaciones = 6;
-  }elseif ($antiguedad == 730) {//2 años
-    $vacaciones = 8;
-  }elseif ($antiguedad == 1095) {//3 años
-    $vacaciones = 10;
-  }elseif ($antiguedad >= 1460 && $antiguedad <= 2920) {//4 años a 8 años
-    $vacaciones = 12;
-  }elseif ($antiguedad >= 3285 && $antiguedad <= 4745) {//9 años A 13 años
-    $vacaciones = 14;
-  }elseif ($antiguedad >= 5110) {//14 años o más
-    $vacaciones = 16;
+//echo "fecha:".$usr['fechaIngreso'];
+$fecha1 = time()-strtotime($usr['fechaIngreso']);
+$antiguedad =floor($fecha1 / 31536000);
+//echo $antiguedad;
+
+if($antiguedad > 0){
+  if ($antiguedad >= 4 OR $antiguedad <= 8) {
+     $dias = $objOperaciones->verAntiguedad(4);
+  }else if($antiguedad >=9 OR $antiguedad <= 13){
+     $dias = $objOperaciones->verAntiguedad(9);
+  }else if($antiguedad >=14 OR $antiguedad <= 18){
+     $dias = $objOperaciones->verAntiguedad(14);
+  }else if ($antiguedad >= 19 OR $antiguedad <= 23) {
+    $dias = $objOperaciones->verAntiguedad(19);
+  }else if ($antiguedad >= 24 OR $antiguedad <= 28){
+    $dias = $objOperaciones->verAntiguedad(24);
+  }else if ($antiguedad >= 29 OR $antiguedad <= 34) {
+    $dias = $objOperaciones->verAntiguedad(29);
+  }else{
+    $dias = $objOperaciones->verAntiguedad($antiguedad);
   }
+  foreach ($dias as $key ) {
+    $vacaciones = $key['Dias'];
+  }
+}else{
+  $vacaciones = 0;
+}
 
 ?>
 <script type="text/javascript" src="intraCss/bootstrap/js/notify.min.js"></script>

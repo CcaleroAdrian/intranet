@@ -271,7 +271,7 @@ class ActionsDB{
 		$query = "SELECT DISTINCT lower(usrIntranet) as usrIntranet , upper( nombre ) as nombre , upper( paterno ) as paterno , 
 						upper( materno ) as materno, fechaNacimiento, idSexo , idCivil, direccion , 
 						fechaIngreso, telPersonal, celPersonal, lower( emailPersonal ) as emailPersonal, telOfna, 
-						celOfna, lower( emailOfna ) as emailOfna , direccionOfna,Proyecto_id  
+						celOfna, lower( emailOfna ) as emailOfna , direccionOfna,Proyecto_id,area_ID  
 				  FROM usuarios  
 				  WHERE  lower( usrIntranet ) =  '".strtolower( $usrIntranet )."' " ;
 				  
@@ -296,13 +296,13 @@ class ActionsDB{
 	}
 	
 	//Función que permite actualizar lo datos del usuario que está en sesión.
-	public function setActualizaPerfil ( $usrIntranet , $idCivil , $direccion , $telPersonal , $celPersonal , $emailPersonal , $telOfna , $celOfna , $emailOfna , $direccionOfna ){
+	public function setActualizaPerfil ( $usrIntranet , $idCivil , $direccion , $telPersonal , $celPersonal , $emailPersonal , $telOfna , $celOfna , $emailOfna , $direccionOfna, $proyectoID , $areaID){
 		// Create connection
 		$resultado = false; 
 		$query = "UPDATE usuarios 
 				  SET  	idCivil = '".$idCivil."' , direccion = '".$direccion."' , telPersonal = '".$telPersonal."'  , 
 				  		celPersonal = '".$celPersonal."'  , emailPersonal= '". strtolower($emailPersonal )."'  , telOfna = '".$telOfna."' , 
-						celOfna = '".$celOfna."' , emailOfna='". strtolower( $emailOfna )."'  , direccionOfna= '".$direccionOfna."'    
+						celOfna = '".$celOfna."' , emailOfna='". strtolower( $emailOfna )."'  , direccionOfna= '".$direccionOfna."' ,Proyecto_ID='".$proyectoID."', area_ID='".$areaID."'    
 				  WHERE  usrIntranet =  '".$usrIntranet."' " ;
 				  
 		$mysqli = $this->objDb->getConnAdmin();
@@ -593,7 +593,7 @@ class ActionsDB{
 		if($LiderId != 16){
 			$query = "SELECT solicitud_ID,user_ID,fechaI,fechaF,diasCorrespondientes,diasSolicitados,diasAdicionales FROM solicitudvaciones  where lider_ID = '".$LiderId."' and aprobacion_L = 1 and documentoURL != 'sin archivo'";
 		} else{
-			$query = "SELECT user_ID,fechaI,fechaF,diasCorrespondientes,diasSolicitados,diasAdicionales FROM solicitudvaciones  where Director_ID ='".$Lider_ID."' and aprobacion_D = 1  and documentoURL != 'sin archivo'";
+			$query = "SELECT user_ID,fechaI,fechaF,diasCorrespondientes,diasSolicitados,diasAdicionales FROM solicitudvaciones  where Director_ID ='".$liderId."' and aprobacion_D = 1  and documentoURL != 'sin archivo'";
 		}
 
 		$mysqli = $this->objDb->getConnBasic();
@@ -747,7 +747,7 @@ class ActionsDB{
 
 	//funcion que devuelve las solicitudes aceptadas para ser notificadas al usuario
 	public function buscarSolicitudesAceptadas(){
-		$query = "SELECT `user_ID` FROM solicitudvaciones WHERE `aprobacion_L` = 2 AND `aprobacion_D` = 2 AND `correoEnviado` = 0";
+		$query = "SELECT `user_ID` FROM solicitudvaciones WHERE `aprobacion_L` = 2 AND `aprobacion_D` = 2 AND `correoDEA` = 0";
 		$mysqli = $this-> objDb->getConnBasic();
 		if ($mysqli->connect_errno) {
 			$return -1;
@@ -787,9 +787,22 @@ class ActionsDB{
 		}
 	}
 
-	public function notificarEnvioCorreo($id){
-		$query = "UPDATE solicitudvaciones SET correoEnviado = 1 where user_ID ='".$id."'";
+	public function notificarEnvioCorreo( $id , $opcion){
+		$query="";
+
+		if($opcion == 1){//correo enviado a lider
+			$query = "UPDATE solicitudvaciones SET correoEnviado = 1 where user_ID ='".$id."'";
 		
+		}else if ($opcion == 2 ) {//correo enviado de aceptado
+			$query = "UPDATE solicitudvaciones SET correoDEA = 1 where user_ID ='".$id."'";
+		
+		}else if($opcion == 3){//correo enviado de rechazo
+			$query = "UPDATE solicitudvaciones SET correoDeR = 1 where user_ID ='".$id."'";
+		
+		}else{//correo envia a Director
+			$query = "UPDATE solicitudvaciones SET correoEnviadoD = 1 where user_ID ='".$id."'";
+		}
+
 		$resultado = false;
 		
 		$mysqli = $this->objDb->getConnAdmin();
@@ -797,7 +810,7 @@ class ActionsDB{
 			$resultado = false; 
 		}else{
 			if ( $mysqli->query($query) ) {
-				$resultado = true; 
+			 $resultado = true; 
 			}
 			$mysqli->close();
 		} 
@@ -806,19 +819,21 @@ class ActionsDB{
 
 
 	//funcion para visualizar el detalle de las solicitudes realizadas
-	public function verDetalle($id = "", $INICIO = "", $TAMANO_PAGINA=""){
+	public function verDetalle($id = "", $INICIO = "", $TAMANO_PAGINA="", $objectBusqueda = ""){
 		
 		$query="";
 		
-		if( $id==""  AND ($INICIO=="") AND ($TAMANO_PAGINA=="") ) {
+		if( $id==""  AND ($INICIO=="") AND ($TAMANO_PAGINA =="") AND ($objectBusqueda == "") ) {
 			$query = " SELECT * FROM `solicitudvaciones` ORDER BY fechaSolicitud";
-		}else if ( $id != "" AND $INICIO == "" AND $TAMANO_PAGINA == "" ) {
+		}else if ( $id != "" AND $INICIO == "" AND $TAMANO_PAGINA == "" AND $objectBusqueda == "" ) {
 			
 			$query = "SELECT * from solicitudvaciones WHERE solicitud_ID='".$id."'";
 
-		}else{
+		}else if ($id == "" AND $INICIO != "" AND $TAMANO_PAGINA !="" AND $objectBusqueda == "") {
 
 			$query = "SELECT * from solicitudvaciones ORDER BY fechaSolicitud LIMIT ".$INICIO.",".$TAMANO_PAGINA."";
+		}else{
+			$query = "SELECT U.nombre, U.paterno, U.materno, S.solicitud_ID, S.user_ID, S.diasCorrespondientes, S.diasSolicitados, S.diasAdicionales, S.fechaSolicitud, S.aprobacion_L, S.aprobacion_D FROM solicitudvaciones AS S INNER JOIN  usuarios AS U ON S.user_ID = U.idUsuario WHERE U.idUsuario = S.user_ID and U.nombre LIKE '%".$objectBusqueda."%'";
 		}
 
 		$mysqli = $this-> objDb->getConnBasic();
@@ -842,7 +857,7 @@ class ActionsDB{
 	//Función que permite obtener los datos del usuario 
 	public function getDatosPerfilID( $id ){
 		// Create connection
-		$query = "SELECT idUsuario,nombre,paterno,materno,fechaIngreso
+		$query = "SELECT idUsuario,nombre,paterno,materno,fechaIngreso,Proyecto_ID,area_ID
 				  FROM usuarios  
 				  WHERE   idUsuario =  '".$id."' " ;
 				  
@@ -886,6 +901,85 @@ class ActionsDB{
 		}
 
 	}
-}
 
+	//Función para devolver los responzables de asignación
+	public function mostrarResponzablesAsignacion($id = ""){
+		$query = "";
+		if ($id == "") {
+		 	$query = "SELECT ' ' as nombre ,'Seleccionar' as paterno,' ' as materno ,'0' as proyecto_ID UNION SELECT U.nombre, U.paterno, U.materno, P.proyecto_ID FROM proyectos AS P INNER JOIN usuarios AS U ON P.usuario_ID = U.idUsuario WHERE usuario_ID = U.idUsuario";
+		 }else{
+		 	$query = "SELECT U.nombre, U.paterno, U.materno, P.proyecto_ID FROM proyectos AS P INNER JOIN usuarios AS U ON P.usuario_ID = U.idUsuario WHERE P.proyecto_ID ='".$id."'";
+		 } 
+		
+		$mysqli = $this-> objDb->getConnBasic();
+		if ($mysqli->connect_errno) {
+			$return -1;
+		}else{
+			if (!$resultado = $mysqli->query($query)) {
+				return -1;
+			}else{
+				$datos = $resultado->num_rows;
+				$users = array();
+				while ($usr = $resultado->fetch_assoc()) {
+					$users[]=$usr;
+				}
+				return $users;
+			}
+			$mysqli->close();
+		}
+	}
+
+	//Funcion para consultar cuantos días de cacaciones corresponden en relación ha antiguedad
+	public function verAntiguedad($anios){
+		$query = "SELECT Dias from diasvacaciones where Anios ='".$anios."' ";
+		$mysqli = $this-> objDb->getConnBasic();
+		if ($mysqli->connect_errno) {
+			$return -1;
+		}else{
+			if (!$resultado = $mysqli->query($query)) {
+				return -1;
+			}else{
+				$datos = $resultado->num_rows;
+				$users = array();
+				while ($usr = $resultado->fetch_assoc()) {
+					$users[]=$usr;
+				}
+				return $users;
+			}
+			$mysqli->close();
+		}
+	}
+
+	public function verAreas($id = ""){
+		if ($id == "") {
+			$query = "SELECT '0' as area_ID,'Seleccionar' as Descripcion UNION SELECT area_ID, Descripcion from areasitw";
+		}else{
+			$query = " SELECT area_ID, Descripcion from areasitw where area_ID ='".$id."'";
+		}
+		
+
+		$mysqli = $this-> objDb->getConnBasic();
+		if ($mysqli->connect_errno) {
+			$return -1;
+		}else{
+			if (!$resultado = $mysqli->query($query)) {
+				return -1;
+			}else{
+				$datos = $resultado->num_rows;
+				$users = array();
+				while ($usr = $resultado->fetch_assoc()) {
+					$users[]=$usr;
+				}
+				return $users;
+			}
+			$mysqli->close();
+		}
+	}
+
+
+
+
+
+
+}
 ?>

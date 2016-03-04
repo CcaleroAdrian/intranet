@@ -1,7 +1,7 @@
 //$(document).ready(function(){
 	$(window).load(function(){
  		var error = "No hay solicitudes registradas anteriormente";
- 		var success = "<?php echo $success; ?>";
+ 		//var success = "<?php echo $success; ?>";
 
  		
 		function getGET(){ 
@@ -28,15 +28,15 @@
 		   return get;
 		}*/
 
-		var mensaje = getGET();
+		/*var mensaje = getGET();
  		if (mensaje != "") {
  			$("#form").notify(mensaje,'success',{position:"right top"});
- 		}
+ 		}*/
  		
 
- 		if (error != "") {
+ 		/*if (error != "") {
  		$("#mensaje").notify(error,"info",{position:"right middle"});
-		};
+		};*/
 
 		//Ajustar el tamaño de la caja de texto a la longitud del nombre
 		var texto=document.getElementById("nombreUser");

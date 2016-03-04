@@ -33,6 +33,7 @@ foreach ($dat as $key) {
 	<link href="intraCss/intraItw.min.css" rel="stylesheet" type="text/css">
 	<script type="text/javascript" src="intraCss/bootstrap/js/jquery.js"></script>
   	<script type="text/javascript" src="intraCss/bootstrap/js/bootstrap.min.js"></script>
+  	<script type="text/javascript" src="js/busqueda.js"></script>
 </head>
 <body style="padding-left: 20px">
 
@@ -83,7 +84,6 @@ foreach ($dat as $key) {
 			<thead>
 			<tr>
 				<th>N</th>
-				<th style="display: none">ID</th>
 				<th>Acci&oacute;n</th>
 				<th >Fecha de solicitud</th>
 				<th >Fecha inicio</th>
@@ -107,10 +107,9 @@ foreach ($dat as $key) {
 			      		}else if (($row["aprobacion1"] == 3 AND $row["aprobacion1"] == 3) OR ($row["aprobacion1"] == 2 AND $row["aprobacion1"] == 3) OR ($row["aprobacion1"] == 1 AND $row["aprobacion1"] == 3)) {
 			      			$Estatus = "RECHAZADA";
 			      		}
-						echo '<tr id="celda" onclick="solicitud(this)">
+						echo '<tr id="celda">
 									<td>'.$nume.'</td>
-									<td style="display:none;">'.$row["solicitud_ID"].'</td>
-									<td><a href="" click="">Generar reporte</a></td>
+									<td><a href="" onclick="solicitud('.$row["solicitud_ID"].')">Generar reporte</a></td>
 									<td>'.$row["fecha"].'</td>
 									<td>'.$row["fecha1"].'</td>
 									<td>'.$row["fecha2"].'</td>

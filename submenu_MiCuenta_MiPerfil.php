@@ -22,11 +22,13 @@
 		$celOfna =isset($_POST['celOfna']) ? $_POST['celOfna'] : "" ;
 		$emailOfna =isset($_POST['emailOfna']) ? $_POST['emailOfna'] : "" ;
 		$direccionOfna =isset($_POST['direccionOfna']) ? $_POST['direccionOfna'] : "" ;
+    $responzable = isset($_POST['LiderID']) ? $_POST['LiderID'] : "";
+    $area = isset($_POST['area']) ? $_POST['area'] : "";
 		
 		//Instanciamos la clase que tiene las operaciones a la base de datos
 		$objPerfil = new ActionsDB();
 		// Obtenemos los campos de la tabla usuarios para presentarla en el perfil
-		$respuesta = $objPerfil->setActualizaPerfil( $USUARIO , $idCivil , $direccion , $telPersonal , $celPersonal , $emailPersonal , $telOfna , $celOfna , $emailOfna , $direccionOfna );
+		$respuesta = $objPerfil->setActualizaPerfil( $USUARIO , $idCivil , $direccion , $telPersonal , $celPersonal , $emailPersonal , $telOfna , $celOfna , $emailOfna , $direccionOfna,$responzable, $area );
 		If(  $respuesta  ) {
 			$blnOk = true;
 			$success = "La información de su perfil fué actualizada satisfactoriamente.";
@@ -40,29 +42,47 @@
 	$objOperaciones = new ActionsDB();
 	// Obtenemos los campos de la tabla usuarios para presentarla en el perfil
 	$usr = $objOperaciones->getDatosPerfil( $USUARIO );
+
 	If ( $usr == -1  OR  $usr == 0 ) {
 		$blnOk = false;
 		$error = "No fu&eacute; posible realizar la actualizaci&oacute;n de la informaci&oacute;n de su usuario: " . $USUARIO . ".";
 	} 
-		//Calculo de vacaciones
-$fecha=$usr['fechaIngreso'];;
-$segundos=strtotime('now') - strtotime($fecha);
-$antiguedad=intval($segundos/60/60/24);
-$vacaciones = 0;
-  if ($antiguedad == 365) { //1 años
-    $vacaciones = 6;
-  }elseif ($antiguedad == 730) {//2 años
-    $vacaciones = 8;
-  }elseif ($antiguedad == 1095) {//3 años
-    $vacaciones = 10;
-  }elseif ($antiguedad >= 1460 && $antiguedad <= 2920) {//4 años a 8 años
-    $vacaciones = 12;
-  }elseif ($antiguedad >= 3285 && $antiguedad <= 4745) {//9 años A 13 años
-    $vacaciones = 14;
-  }elseif ($antiguedad >= 5110) {//14 años o más
-    $vacaciones = 16;
+
+  //Consultamos lideres de asignación
+  $lider = $objOperaciones->mostrarResponzablesAsignacion();
+
+  //consultamos areas ITW
+  $areaITW = $objOperaciones->verAreas();
+
+//Calculo de vacaciones
+$fecha1 = time()-strtotime($usr['fechaIngreso']);
+$antiguedad =floor($fecha1 / 31536000);
+
+if($antiguedad > 0){
+  if ($antiguedad >= 4 OR $antiguedad <= 8) {
+     $dias = $objOperaciones->verAntiguedad(4);
+  }else if($antiguedad >=9 OR $antiguedad <= 13){
+     $dias = $objOperaciones->verAntiguedad(9);
+  }else if($antiguedad >=14 OR $antiguedad <= 18){
+     $dias = $objOperaciones->verAntiguedad(14);
+  }else if ($antiguedad >= 19 OR $antiguedad <= 23) {
+    $dias = $objOperaciones->verAntiguedad(19);
+  }else if ($antiguedad >= 24 OR $antiguedad <= 28){
+    $dias = $objOperaciones->verAntiguedad(24);
+  }else if ($antiguedad >= 29 OR $antiguedad <= 34) {
+    $dias = $objOperaciones->verAntiguedad(29);
+  }else{
+    $dias = $objOperaciones->verAntiguedad($antiguedad);
   }
-		
+
+  foreach ($dias as $key ) {
+    $vacaciones = $key['Dias'];
+  }
+}else{
+  $vacaciones = 0;
+}
+
+
  ?> 
 
 	 <script type="text/javascript">
@@ -174,6 +194,32 @@ $vacaciones = 0;
       <td><label>Ubicaci&oacute;n de Oficina</label></td>
       <td><textarea name="direccionOfna" cols="33" class="textboxBlanco" id="direccionOfna3" align="left"> <?php echo trim($usr['direccionOfna'])  ?></textarea></td>
       <td><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
+      </tr>
+      <tr>
+          <td><label>Responzable de asignación:</label></td>
+          <td><Select  id="LiderID" name = "LiderID" class="form-control" style="wight:160px" >
+          <?php 
+            foreach ($lider as $key) {
+
+              if ($key["proyecto_ID"] == $usr['Proyecto_id']) {
+                echo '<option value='.$key["proyecto_ID"].' selected>'.utf8_decode($key["nombre"].' '.$key["paterno"].' '.$key["materno"]).'</option>';
+              }
+              echo '<option value='.$key["proyecto_ID"].'>'.utf8_decode($key["nombre"].' '.$key["paterno"].' '.$key["materno"]).'</option>';
+            }
+          ?> 
+          </select></td>
+          <td><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
+          <td><label>Área o Departamento:</label></td>
+          <td><Select  id="area" name = "area" class="form-control" style="wight:100px" >
+          <?php 
+            foreach ($areaITW as $key) {
+              if ($key["area_ID"] == $usr['area_ID'] ) {
+                echo '<option value='.$key["area_ID"].' selected>'.utf8_encode($key["Descripcion"]).'</option>';
+              }
+                echo '<option value='.$key["area_ID"].'>'.utf8_encode($key["Descripcion"]).'</option>';
+            }
+          ?> 
+          </select></td>
       </tr>
       <tr>
         <td colspan="4"><span class="glyphicon glyphicon-asterisk" style="color:red"><label style="color:red;">Datos modificables.</label></span></td>

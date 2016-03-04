@@ -48,12 +48,24 @@
   <script type="text/javascript" src="intraCss/bootstrap/js/notify.min.js"></script>
 </head>
 <body>
-	<script type="text/javascript">
-		$(document).ready(function(){
-			var url = "procesarSolicitudes.php?opcion=3";
-			//window.open(url,"_blank");
-		});
-	</script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		var xmlhttp;
+		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+			xmlhttp = new XMLHttpRequest();
+		}else{// code for IE6, IE5
+			xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		xmlhttp.onreadystatechange=function(){
+			if (xmlhttp.readyState==4 && xmlhttp.status==200){
+				console.log("Respuesta:"+xmlhttp.responseText);
+			}
+		}
+		xmlhttp.open("POST","notificarCorreo.php");
+		xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		xmlhttp.send(); 
+	});
+</script>
 	<table width="800" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#EEEEEE">
 		<!-- Renglón con imágen TOP de Intranet -->
 		<tr bgcolor="#000033">

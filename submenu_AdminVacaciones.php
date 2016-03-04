@@ -14,12 +14,13 @@ include("intraHeader.php");
 <html>
 <head>
 	<title></title>
+	<script type="text/javascript" src="js/busqueda.js"></script>
 </head>
 <body>
 <script type="text/javascript">
 	function verDetalle(id){
 		var url = "detalle.php?id="+id+"";
-		window.open(url,"_blank", 'width=680px,height=550px,resizable=yes,toolbar=no');
+		window.open(url,"_blank", 'width=700px,height=550px,resizable=yes,toolbar=no');
 	}
 </script>
 	<h3 align="left">ADMINISTRACIÓN DE VACACIONES</h3>
@@ -29,7 +30,7 @@ include("intraHeader.php");
     <form>
     		<div class="input-group col-sm-12">
     		<span class="glyphicon glyphicon-search input-group-addon"></span>
-  			<input id="filtroTabla" onkeyup="busqueda({opcion:1,id:0})" class="form-control glyphicon glyphicon-search" size="35" align="center" autofocus>
+  			<input id="filtroTabla" onkeyup="busqueda({opcion:3,id:0})" class="form-control glyphicon glyphicon-search" size="35" align="center" autofocus>
   			</div>
 	</form><br>
 		<table id="form1" class="table-responsive table-bordered">
@@ -42,7 +43,7 @@ include("intraHeader.php");
 				<th style="text-align: center;">Fecha de Solicitud</th>
 				<th style="text-align: center;">Estatus</th>
 			</thead>
-			<tbody>
+			<tbody id="cuerpo">
 			<?php
 				$n = 0;
 				foreach ($datos as $key ) {
@@ -50,7 +51,7 @@ include("intraHeader.php");
 					$us = $objeRestultado->notificarUsuario($key["user_ID"]);
 					//print_r($us);
 					foreach ($us as $value) {
-						utf8_encode(($Nombre= $value['nombre'].' '.$value['paterno'].' '.$value['materno']));
+						$Nombre= utf8_encode($value['nombre'].' '.$value['paterno'].' '.$value['materno']);
 					}
 
 					//Determinar estutus solicitud

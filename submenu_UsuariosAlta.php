@@ -26,14 +26,22 @@
 	$celOfna =isset($_POST['celOfna']) ? trim( $_POST['celOfna'] ) : "" ;
 	$emailOfna =isset($_POST['emailOfna']) ? trim( $_POST['emailOfna'] ) : "" ;
 	$dirOfna =isset($_POST['dirOfna']) ? trim( $_POST['dirOfna'] ) : "" ;
+	$areaUsuario = isset($_POST['area']) ? $_POST['area'] : "" ;
 		
 	$blnOk = true; 
 	$blnAltaOk = false;
 	$usuario = "";
 	$nombre = ""; 
 	$apellido = "";
+	$area = "";
+	$tipoUser = "";
 	$error = "";
 	$success = "";
+
+	$objAlta = new ActionsDB();
+	//consultamos areas ITW
+  	$areaITW = $objAlta->verAreas();
+  	$perfiles = $objAlta->verPerfiles();
 	
 	If ( $strBtnAceptar == "Guardar" ) {
 		
@@ -43,7 +51,7 @@
 		} else {
 			if ( !filter_var( $usrIntranet , FILTER_VALIDATE_EMAIL)   ) { 
 				$blnOk = false;
-				$error = "El Usuario ". $usrIntranet . " no tiene formato de email v&aacute;lido.";
+				$error = "El Usuario ". $usrIntranet . " no tiene formato de email v&acute;lido.";
 			}
 		}
 		
@@ -61,13 +69,22 @@
 			$blnOk = false;
 			$apellido = "El campo Apellido Paterno es obligatorio."; 
 		}
+
+		If ( $blnOk  AND ($areaUsuario == "" ) ) { 
+			$blnOk = false;
+			$area = "El campo Área o Departamento es obligatorio."; 
+		}
+
+		If ( $blnOk  AND ($idTipoUsuario == "" ) ) { 
+			$blnOk = false;
+			$tipoUser = "El campo Tipo de usuario es obligatorio."; 
+		}
 		
 		// Dar de alta el usuario
 		If ( $blnOk ) {
 			//Instanciamos la clase que tiene las operaciones a la base de datos
-	  		$objAlta = new ActionsDB();
 			// Obtenemos los campos de la tabla usuarios para presentarla en el perfil
-			$respuesta = $objAlta->setAltaUsuario( $usrIntranet , $idTipoUsuario , $usrnombre , $usrpaterno , $usrmaterno , $fechaNacimiento , $idSexo , $idCivil , $direccion  , $fechaIngreso , $telPersonal, $celPersonal , $emailPersonal , $telOfna , $celOfna , $emailOfna , $dirOfna  );
+			$respuesta = $objAlta->setAltaUsuario( $usrIntranet , $idTipoUsuario , $usrnombre , $usrpaterno , $usrmaterno , $fechaNacimiento , $idSexo , $idCivil , $direccion  , $fechaIngreso , $telPersonal, $celPersonal , $emailPersonal , $telOfna , $celOfna , $emailOfna , $dirOfna ,$areaUsuario );
 			
 			If( $respuesta ) {
 				$blnAltaOk = true;
@@ -89,16 +106,27 @@
  		var nombre = "<?php echo $nombre; ?>";
  		var apellido = "<?php echo $apellido; ?>";
  		var error = "<?php echo $error; ?>";
+ 		var success = "<?php echo $success; ?>";
+ 		var a = "<?php echo $area; ?>";
+ 		var tipoUser = "<?php echo $tipoUser; ?>";
 
  		if (error != "") {
- 		$("#mensajes").notify(error,"error",{position:"botton center"});
+ 			swal({title: "Confirmacion",text: error,type: "error",timer:3000,showConfirmButton:false});
 		}else if(usuario != ""){
-		$("#user").notify(usuario,"warn",{position:"botton center"});
+			swal({title: "Confirmacion",text: usuario,type: "error",timer:3000,showConfirmButton:false});
 		}else if (nombre != "") {
-		$("#nombre").notify(nombre,"warn",{position:"botton center"});
+			swal({title: "Confirmacion",text: nombre,type: "error",timer:3000,showConfirmButton:false});
 		}else if (apellido != "") {
-		$("#apellido").notify(apellido,"warn",{position:"botton center"});
-		};
+			swal({title: "Confirmacion",text: apellido,type: "error",timer:3000,showConfirmButton:false});
+		}else if (a != "") {
+			swal({title: "Confirmacion",text: a,type: "error",timer:3000,showConfirmButton:false});
+		}else if (tipoUser != "") {
+			swal({title: "Confirmacion",text: tipoUser,type: "error",timer:3000,showConfirmButton:false});
+		}
+
+		if (success != "") {
+			swal({title: "Confirmacion",text: success, type:"success", timer:3000, showConfirmButton:false});
+		}
  	});
 
  	function myfuction(){
@@ -110,7 +138,7 @@
 		<form name="frmAlta" method="post" action="<?php echo $_SERVER['PHP_SELF'] . "?idMenu=". $idMenu ."&idSubMenu=". $idSubMenu . "";  ?>" enctype="multipart/form-data" >
 		<h3>ALTA DE USUARIO</h3>
 		<div class="panel panel-primary">
-    	<div class="panel-heading">INFORMACI&Oacute;N B&Aacute;SICA</div>
+    	<div class="panel-heading">INFORMACI&Oacute;N B&Aacute;SICA <a href="" onclick=""><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
    		<div class="panel-body">
 		
 		  <table width="90%" border="0" cellspacing="1" align="center" class="table-responsive" >
@@ -190,11 +218,14 @@
             		<td></td>
             		<td width="150"><label>Tipo de Usuario:</label></td>
               		<td><select name="idTipoUsuario" size="" id="select" class="form-control" >
-                  		<option value="1" <?php echo ( $idTipoUsuario == "1") ?  "selected" : "";  ?> >ADMINISTRADOR</option>
-                  		<option value="2" <?php echo ( $idTipoUsuario == "2") ?  "selected" : "";  ?>  >NORMAL</option>
+              			<?php
+              				foreach ($perfiles as $key) {
+              					echo "<option value=".$key['idPerfil'].">".$key['desc']."</option>";
+              				}
+              			 ?>
               			</select>
               		</td>
-              		<td></td>
+              		<td><span class="glyphicon glyphicon-asterisk" style="color:red"></td>
    				</tr>
    				<tr><td width="130">&nbsp;</td></tr>
    				<tr>
@@ -214,7 +245,14 @@
               		<td><textarea name="dirOfna" cols="40" class="textboxBlanco" id="dirOfna" align="left"><?php echo $dirOfna ; ?></textarea></td>
               		<td></td>
    				</tr>
-   				<tr><td width="130">&nbsp;</td></tr>
+   				<tr><td><label>&Aacute;rea o Departamento:</label></td>
+          		<td><Select  id="area" name = "area" class="form-control" style="wight:100px" >
+          		<?php 
+	            foreach ($areaITW as $key) {
+	                echo '<option value='.$key["area_ID"].'>'.utf8_encode($key["Descripcion"]).'</option>';
+	            }
+          		?> 
+          		</select></td><td width="130"><span class="glyphicon glyphicon-asterisk" style="color:red"></td></tr>
    				<tr>
    					<td colspan="4"><span class="glyphicon glyphicon-asterisk" style="color:red"><label style="color:red;">Campos obligatorios </label></div></td>
    				</tr>

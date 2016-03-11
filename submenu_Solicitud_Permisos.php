@@ -30,7 +30,7 @@ $objOperaciones = new ActionsDB();
 
 	<!--correo_notificacion.php?fecha=<?php echo $usr['fechaIngreso']; ?>-->
 	<div class="panel panel-primary">
-    <div class="panel-heading">CAPTURA</div>
+    <div class="panel-heading">CAPTURA <a href="" onclick=""><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
     <div class="panel-body">
 		<table id="form1" class="table-responsive">
 			<tr >

@@ -41,7 +41,7 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 	$total_paginas = ceil($numRegi / $TAMANO_PAGINA); 
 
 	$usuarios = $objUsuarios->verSolicitudesID($ID_USR,$inicio,$TAMANO_PAGINA);
-	//print_r($usuarios)
+	print_r($usuarios);
 ?>
 <html>
 <head>
@@ -51,7 +51,7 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 <body>
 	<h3>SOLICITUDES DE VACACIONES</h3>
 	<div class="panel panel-primary">
-    <div class="panel-heading">SOLICITUDES RECIBIDAS</div>
+    <div class="panel-heading">SOLICITUDES RECIBIDAS <a href="" onclick=""><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
     	<div class="panel-body">
     	<?php
     	if ($VisualizarR == true) {
@@ -77,20 +77,19 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 		      	</thead>
 		      	<tbody id="cuerpo">
 		      		<?php 
-		      		//print_r($usuarios);
-		      			foreach($usuarios as $fil) {
-		      				
-		      				$us = $objUsuarios-> notificarUsuario($fil["user_ID"]);
-		      				
-		      				foreach ($us as $key) {
+		      		print_r($usuarios);
+		      			foreach($usuarios as $value){
+		      				$us = $objUsuarios->notificarUsuario($value["user_ID"]);
+		      				//print_r($us);
+		      				foreach ($us as $key){
 		      					$nombre = utf8_encode($key['nombre'].' '.$key['paterno'].' '.$key['materno']);
 		      					echo '<tr><td>'.$nombre.'</td>
-									<td>'.$fil["fechaI"].'</td><td>'.$fil["fechaF"].'</td>
-									<td>'.$fil["diasCorrespondientes"].'</td><td>'.$fil["diasSolicitados"].'</td>
-									<td>'.$fil["diasAdicionales"].'</td>
-									<td><a href="descargarArchivo.php?id='.$fil["solicitud_ID"].'">'.$fil["documentoURL"].'</a></td>
-									<td><a onclick="aceptar('.$fil['user_ID'].')"  href="">Aceptar</a></td>
-									<td><a onclick="rechazar('.$fil['user_ID'].')"  href="">Rechazar</a></td>
+									<td>'.$value["fechaI"].'</td><td>'.$value["fechaF"].'</td>
+									<td>'.$value["diasCorrespondientes"].'</td><td>'.$value["diasSolicitados"].'</td>
+									<td>'.$value["diasAdicionales"].'</td>
+									<td><a href="descargarArchivo.php?id='.$value["solicitud_ID"].'">'.$value["documentoURL"].'</a></td>
+									<td><a onclick="aceptar('.$value['user_ID'].')"  href="">Aceptar</a></td>
+									<td><a onclick="rechazar('.$value['user_ID'].')"  href="">Rechazar</a></td>
 									</tr>';
 		      				}
 						}		

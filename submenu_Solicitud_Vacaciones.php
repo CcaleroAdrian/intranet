@@ -9,18 +9,30 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 
 date_default_timezone_set('AMERICA/Mexico_City');
 setlocale (LC_TIME, 'spanish-mexican');
+$objOperaciones = new ActionsDB();
 //Variables
 $success = "";
 $error1 = "";
 $error2 = "";
 $ID_USR;
 $VisualizarR = false;
+//OBTENER INFO LIDER DE PROYECTO
+$lider = $objOperaciones->verLider($usr['Proyecto_ID']);
+if ($lider != 0 OR $lider != -1) {
+	foreach ($lider as $key) {
+		$LiderID = $key[''];
+	}
+}
 
-
-
-
+//OBTENER INFO DIRECTOR
+$director = $objOperaciones->DatosDirector();
+if ($director) {
+	foreach ($director as $value) {
+		$directorID = $value['idUsuario'];
+	}
+}
 //CARGA DE INFORMACION DE USUARIO
-$objOperaciones = new ActionsDB();
+
 // Obtenemos los campos de la tabla usuarios para presentarla en la solicitud
 	$usr = $objOperaciones->getDatosPerfil($USUARIO); 
 	if ( $usr == -1  OR  $usr == 0 ) {
@@ -79,7 +91,6 @@ if ($btn == "Enviar") {
 	$otro = date("d-F-Y", $date);//fecha inicial de vacaciones
 	$FechaFinal =date("d-F-Y", $dates);//fecha final de vacaciones
 	$fechaIngreso = date("d-F-Y", $fechaIn);//fecha de ingreso
-	$director = 16;
 
 	if ($diasSoli > $diasVa) {
 		$diasAdi = $diasSoli - $diasVa;
@@ -88,8 +99,10 @@ if ($btn == "Enviar") {
 	if ($diasRestantes < 1) {
 		$diasRestantes = 0;
 	}
+
+	
 	$objectAlta = new ActionsDB();
-		$resultado = $objectAlta->insertSolicitud($ID_USR,$fechaI,$fechaF,$diasVa,$diasSoli,$diasAdi,14,$director);
+		$resultado ="";// $objectAlta->insertSolicitud($ID_USR,$fechaI,$fechaF,$diasVa,$diasSoli,$diasAdi,$LiderID,$directorID);
 			if( $resultado ) {
 				$success = "Se realiz&oacute; el registro de su solicitud " ;
 				echo"<script language='javascript'>window.location='/intranet/index.php?success=".$success."'</script>";
@@ -100,13 +113,14 @@ if ($btn == "Enviar") {
 }
 
 //Calculo de vacaciones
-//echo "fecha:".$usr['fechaIngreso'];
-$fecha1 = time()-strtotime($usr['fechaIngreso']);
-$antiguedad =floor($fecha1 / 31536000);
-//echo $antiguedad;
+$antiguedad = 0;
+$fecha= $usr['fechaIngreso'];
+if ($fecha != 0 OR $fecha !="" OR $fecha != null) {
+	$fecha1 = time()-strtotime($fecha);
+	$antiguedad =floor($fecha1 / 31536000);
+}
 
 if($antiguedad > 0){
-
   if ($antiguedad >= 4 OR $antiguedad <= 8) {
      $dias = $objOperaciones->verAntiguedad(4);
   }else if($antiguedad >=9 OR $antiguedad <= 13){
@@ -125,12 +139,40 @@ if($antiguedad > 0){
   foreach ($dias as $key ) {
     $vacaciones = $key['Dias'];
   }
-
 }else{
-
   $vacaciones = 0;
-
 }
+
+$diasDescontar = 0;
+
+//Consultamos la ultima solicitud exitosa
+$ultimaSolicitud = $objOperaciones->verUltimSolicitudID($ID_USR);
+	
+	if ($ultimaSolicitud) {
+		foreach ($ultimaSolicitud as $key) {
+			$diasDescontar = $key['diasAdicionales'];
+		}
+		//Si hay dias a descontar
+		if ($diasDescontar > 0) {
+			//Consultar año de antiguedad cuando fué solicitado dias adicionales
+			$año = $objOperaciones->verUltimSolicitudID($ID_USR);
+			if ($antiguedad < ($antiguedad + 2)) {
+				$vacaciones = $vacaciones - $diasDescontar;
+			}else{
+
+			}
+
+		}else{
+			$diasDescontar = 0;
+		}
+	}else{
+		$diasDescontar = 0;
+	}
+
+	$vacaciones = $vacaciones - $diasDescontar;
+
+
+
 
 ?>
 <script type="text/javascript" src="intraCss/bootstrap/js/notify.min.js"></script>
@@ -139,7 +181,7 @@ if($antiguedad > 0){
 
 	<form  id="form" name="frmSolicitud" method="post" action="<?php echo $_SERVER['PHP_SELF'];  ?>" enctype="multipart/form-data">
 	<div class="panel panel-primary">
-    <div class="panel-heading">CAPTURA</div>
+    <div class="panel-heading">CAPTURA <a href="" onclick=""><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
     <div class="panel-body">
 		<table id="form1" class="table-responsive">
 			<tr >
@@ -154,15 +196,15 @@ if($antiguedad > 0){
 			</tr>
 			<tr>
 				<td><label>D&iacuteas ley:</label></td>
-				<td><input id="Vacaciones" name="Vaca" value="<?php echo $vacaciones?>" class="bloqueado"></input></td>
+				<td><input id="Vacaciones" name="Vaca" value="<?php echo $vacaciones?>" class="bloqueado" disabled></input></td>
 				<td><label>D&iacuteas solicitados: </label></td>
-				<td><input id="diasSolicitados" name="diasSolicitados" value="" class="bloqueado"></input></td>
+				<td><input id="diasSolicitados" name="diasSolicitados" value="" class="bloqueado" disabled></input></td>
 			</tr>
 			<tr>
 				<td><label>D&iacuteas restantes:</label></td>
-				<td><input id="diasRestantes" name="" value="" class="bloqueado"></input></td>
+				<td><input id="diasRestantes" name="" value="" class="bloqueado" disabled></input></td>
 				<td><label>D&iacuteas adicionales: </label></td>
-				<td><input id="diasAdicionales" name="" value="" class="bloqueado"></input></td>
+				<td><input id="diasAdicionales" name="" value="" class="bloqueado" disabled></input></td>
 			</tr>
 			<tr>
 			<td ><label>Fecha inicio:</label></td>

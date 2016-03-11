@@ -15,21 +15,10 @@ class ActionsDB{
 	public function getMenus( $idPerfil ) {
 		// Create connection
 		$resultado = array();
-		If ( $idPerfil == "1" ) { //ADMINISTRADOR
-			$query =  " SELECT M.idMenu as idMenu , M.descripcion as descripcion , M.alias as alias, M.href as href, M.icono as icon
-						FROM menu as M   
-						WHERE  M.visible = true  ORDER BY posicion ASC " ;
-		}else { //USUARIO ESTANDAR
-			$query =  " SELECT M.idMenu as idMenu, M.descripcion as descripcion , M.alias as alias , M.href as href, M.icono as icon
-						FROM menu as M   
-						WHERE  M.visible = true AND  trim( M.idPerfilExclusivo) NOT IN ( 1 )   ORDER BY posicion ASC " ;
-		}
-		//echo $query;
-		If ( $idPerfil == "1" ) {
-			$mysqli = $this->objDb->getConnAdmin();
-		}else{
-			$mysqli = $this->objDb->getConnBasic();
-		}
+		$query="SELECT RL.`menuID`,M.icono,M.descripcion from relacionmenuperfil as RL INNER JOIN menu as M on RL.menuID = M.idMenu where RL.`perfilID` ='".$idPerfil."' and M.visible = true";
+
+		$mysqli = $this->objDb->getConnBasic();
+		
 		if ($mysqli->connect_errno) {
 			return -1;  
 		}else{
@@ -50,26 +39,14 @@ class ActionsDB{
 			$mysqli->close();
 		} 
 	}
-	
+
 	//Función que permite obtener todos los usuarios de la base de datos.
-	public function getSubMenus( $idPerfil , $idMenu  ) {
+	public function getSubMenus( $idPerfil , $idMenu) {
 		// Create connection
 		$resultado = array();
-		If ( $idPerfil == "1" ) { //ADMINISTRADOR
-			$query =  " SELECT SM.idSubMenu AS idSubMenu , SM.idMenu AS idMenu ,   SM.descripcion AS descripcion , SM.alias AS alias, SM.href AS href
-						FROM submenu as SM   
-						WHERE  SM.visible = true AND SM.idMenu = '".$idMenu."' ORDER BY posicion ASC " ;
-		}else { //USUARIO ESTANDAR
-			$query =  " SELECT SM.idSubMenu AS idSubMenu , SM.idMenu AS idMenu ,   SM.descripcion AS descripcion , SM.alias AS alias, SM.href AS href
-						FROM submenu as SM   
-						WHERE  (SM.visible = true ) AND  ( SM.idPerfilExclusivo NOT IN ( 1 ) )   AND ( SM.idMenu = '".$idMenu."' )  ORDER BY posicion ASC " ;
-		}
-		//echo $query;
-		If ( $idPerfil == "1" ) {
-			$mysqli = $this->objDb->getConnAdmin();
-		}else{
-			$mysqli = $this->objDb->getConnBasic();
-		}
+		$query =  "SELECT SM.href,SM.descripcion from relacionperfilsubmenu as RSM INNER JOIN submenu as SM on RSM.submenuID = SM.idSubMenu WHERE RSM.perfilID='".$idPerfil."' AND SM.idMenu ='".$idMenu."' AND SM.visible = true ORDER by SM.posicion ASC" ;
+		
+		$mysqli = $this->objDb->getConnBasic();
 		if ($mysqli->connect_errno) {
 			return -1;  
 		}else{
@@ -93,11 +70,6 @@ class ActionsDB{
 	
 	// Función obtiene el usuario , idPerfil y descripción del perfil  de la tabla usuarios si es que existe en BD.
 	public function getUsuarioSesion( $usuario , $pwd ){
-	
-		/*$query = "SELECT  lower( trim( usuarios.usrIntranet ) ) as usrIntranet, usuarios.idPerfil as idPerfil, usuarios.idUsuario, trim( perfil.desc ) as descPerfil FROM usuarios, perfil 
-				  WHERE lower( trim( usuarios.usrIntranet ) ) = '". strtolower( trim( $usuario ) ) ."' 
-				  AND trim(usuarios.pwdIntranet) ='". trim( $pwd ) ."'
-				  AND usuarios.idPerfil = perfil.idPerfil  limit 1 ";*/ 
 		$query = "SELECT  lower( trim( usuarios.usrIntranet ) ) as usrIntranet, usuarios.idPerfil as idPerfil , usuarios.idUsuario, trim( perfil.desc ) as descPerfil FROM usuarios, perfil 
 				  WHERE lower( trim( usuarios.usrIntranet ) ) = '". strtolower( trim( $usuario ) ) ."' 
 				  AND trim(usuarios.pwdIntranet) = trim( MD5('". trim( $pwd ) ."' ) )
@@ -182,10 +154,12 @@ class ActionsDB{
 	}
 
 	//Función que permite obtener todos los usuarios de la base de datos
-	public function getAllUsuarios( ) {
+	public function getAllUsuarios($nombre ="", $INICIO, $TAMANO_PAGINA = 0 ) {
 		// Create connection
 		$users = array();
-		$query =  "SELECT DISTINCT
+		$query = "";
+		if ($nombre == "" AND $TAMANO_PAGINA == 0 ) {
+			$query =  "SELECT DISTINCT idUsuario,
 					lower( usuarios.usrIntranet ) as usrIntranet, upper( usuarios.nombre )  as nombre , upper( usuarios.paterno ) as paterno, 
 					upper( usuarios.materno ) as materno, usuarios.fechaNacimiento as fechaNacimiento, usuarios.idPerfil as idPerfil, 
 					perfil.desc AS facultad , usuarios.idEstatus as idEstatus, estatus.desc AS estado ,  usuarios.idSexo as idSexo , 
@@ -198,6 +172,39 @@ class ActionsDB{
 					LEFT JOIN estatus ON estatus.idEstatus = usuarios.idEstatus
 					LEFT JOIN sexo ON sexo.idSexo = usuarios.idSexo 
 					LEFT JOIN estado_civil ON estado_civil.idCivil = usuarios.idCivil " ;
+		
+		}else if($nombre == "" AND $TAMANO_PAGINA != 0) {
+			$query =  "SELECT DISTINCT idUsuario,
+					lower( usuarios.usrIntranet ) as usrIntranet, upper( usuarios.nombre )  as nombre , upper( usuarios.paterno ) as paterno, 
+					upper( usuarios.materno ) as materno, usuarios.fechaNacimiento as fechaNacimiento, usuarios.idPerfil as idPerfil, 
+					perfil.desc AS facultad , usuarios.idEstatus as idEstatus, estatus.desc AS estado ,  usuarios.idSexo as idSexo , 
+					sexo.desc AS genero , usuarios.idCivil as idCivil, estado_civil.desc AS civil , usuarios.direccion as direccion, 
+					usuarios.fechaIngreso as fechaIngreso, usuarios.fechaSalida as fechaSalida ,usuarios.telPersonal as telPersonal, 
+					usuarios.celPersonal as celPersonal, lower( usuarios.emailPersonal ) as emailPersonal, usuarios.telOfna as telOfna, 
+					usuarios.celOfna as celOfna, lower( usuarios.emailOfna ) as emailOfna, usuarios.direccionOfna as direccionOfna  
+					FROM   usuarios 
+					LEFT JOIN perfil ON perfil.idPerfil = usuarios.idPerfil
+					LEFT JOIN estatus ON estatus.idEstatus = usuarios.idEstatus
+					LEFT JOIN sexo ON sexo.idSexo = usuarios.idSexo 
+					LEFT JOIN estado_civil ON estado_civil.idCivil = usuarios.idCivil LIMIT ".$INICIO.",".$TAMANO_PAGINA."" ;
+		
+		}else if ($nombre != "" AND $TAMANO_PAGINA == 0) {
+			$query =  "SELECT idUsuario,
+					lower( usuarios.usrIntranet ) as usrIntranet, upper( usuarios.nombre )  as nombre , upper( usuarios.paterno ) as paterno, 
+					upper( usuarios.materno ) as materno, usuarios.fechaNacimiento as fechaNacimiento, usuarios.idPerfil as idPerfil, 
+					perfil.desc AS facultad , usuarios.idEstatus as idEstatus, estatus.desc AS estado ,  usuarios.idSexo as idSexo , 
+					sexo.desc AS genero , usuarios.idCivil as idCivil, estado_civil.desc AS civil , usuarios.direccion as direccion, 
+					usuarios.fechaIngreso as fechaIngreso, usuarios.fechaSalida as fechaSalida ,usuarios.telPersonal as telPersonal, 
+					usuarios.celPersonal as celPersonal, lower( usuarios.emailPersonal ) as emailPersonal, usuarios.telOfna as telOfna, 
+					usuarios.celOfna as celOfna, lower( usuarios.emailOfna ) as emailOfna, usuarios.direccionOfna as direccionOfna  
+					FROM   usuarios 
+					LEFT JOIN perfil ON perfil.idPerfil = usuarios.idPerfil
+					LEFT JOIN estatus ON estatus.idEstatus = usuarios.idEstatus
+					LEFT JOIN sexo ON sexo.idSexo = usuarios.idSexo 
+					LEFT JOIN estado_civil ON estado_civil.idCivil = usuarios.idCivil  
+					WHERE usuario.nombre LIKE '%".$nombre."%'";
+		}
+		
 
 		$mysqli = $this->objDb->getConnBasic();
 		if ($mysqli->connect_errno) {
@@ -271,7 +278,7 @@ class ActionsDB{
 		$query = "SELECT DISTINCT lower(usrIntranet) as usrIntranet , upper( nombre ) as nombre , upper( paterno ) as paterno , 
 						upper( materno ) as materno, fechaNacimiento, idSexo , idCivil, direccion , 
 						fechaIngreso, telPersonal, celPersonal, lower( emailPersonal ) as emailPersonal, telOfna, 
-						celOfna, lower( emailOfna ) as emailOfna , direccionOfna,Proyecto_id,area_ID  
+						celOfna, lower( emailOfna ) as emailOfna , direccionOfna,Proyecto_id,area_ID,DiasLey  
 				  FROM usuarios  
 				  WHERE  lower( usrIntranet ) =  '".strtolower( $usrIntranet )."' " ;
 				  
@@ -327,7 +334,7 @@ class ActionsDB{
 						sexo.desc AS genero , usuarios.idCivil as idCivil, estado_civil.desc AS civil , usuarios.direccion as direccion, 
 						usuarios.fechaIngreso as fechaIngreso, usuarios.fechaSalida as fechaSalida ,usuarios.telPersonal as telPersonal, 
 						usuarios.celPersonal as celPersonal, lower( usuarios.emailPersonal ) as emailPersonal, usuarios.telOfna as telOfna, 
-						usuarios.celOfna as celOfna, lower( usuarios.emailOfna ) as emailOfna, usuarios.direccionOfna as direccionOfna
+						usuarios.celOfna as celOfna, lower( usuarios.emailOfna ) as emailOfna, usuarios.direccionOfna as direccionOfna, usuarios.area_ID
 					FROM   usuarios 
 						LEFT JOIN perfil ON perfil.idPerfil = usuarios.idPerfil
 						LEFT JOIN estatus ON estatus.idEstatus = usuarios.idEstatus
@@ -356,7 +363,7 @@ class ActionsDB{
 	}
 	
 	//Función que permite actualizar lo datos del usuario que está en sesión.
-	public function setActualizaUsuario( $usrIntranet , $usrnombre , $usrpaterno , $usrmaterno , $fechaNacimiento , $idPerfil , $idEstatus , $idSexo , $idCivil , $direccion , $fechaIngreso , $fechaSalida , $telPersonal , $celPersonal , $emailPersonal , $telOfna , $celOfna , $emailOfna , $direccionOfna ){
+	public function setActualizaUsuario( $usrIntranet , $usrnombre , $usrpaterno , $usrmaterno , $fechaNacimiento , $idPerfil , $idEstatus , $idSexo , $idCivil , $direccion , $fechaIngreso , $fechaSalida , $telPersonal , $celPersonal , $emailPersonal , $telOfna , $celOfna , $emailOfna , $direccionOfna ,$areaID){
 		// Create connection
 		$resultado = false; 
 		$query = "UPDATE usuarios 
@@ -365,7 +372,7 @@ class ActionsDB{
 						idCivil = '".$idCivil."' , direccion = '".$direccion."'  ,  fechaIngreso = '".$fechaIngreso."' , 
 						fechaSalida = '".$fechaSalida."' , telPersonal = '".$telPersonal."'  , celPersonal = '".$celPersonal."'  , 
 						emailPersonal= '".strtolower( $emailPersonal )."'  , telOfna = '".$telOfna."' , celOfna = '".$celOfna."' , 
-						emailOfna='".strtolower( $emailOfna )."'  , direccionOfna= '".$direccionOfna."'    
+						emailOfna='".strtolower( $emailOfna )."'  , direccionOfna= '".$direccionOfna."', area_ID='".$areaID."'    
 				  WHERE  usrIntranet =  '".$usrIntranet."' " ;
 
 		$mysqli = $this->objDb->getConnAdmin();
@@ -382,15 +389,15 @@ class ActionsDB{
 	
 	
 	//Función que permite dar del Alta un Usuario. 
-	public function setAltaUsuario( $usrIntranet , $idTipoUsuario , $usrnombre , $usrpaterno , $usrmaterno , $fechaNacimiento , $idSexo , $idCivil , $direccion , $fechaIngreso ,  $telPersonal, $celPersonal , $emailPersonal , $telOfna , $celOfna , $emailOfna , $dirOfna ){
+	public function setAltaUsuario( $usrIntranet , $idTipoUsuario , $usrnombre , $usrpaterno , $usrmaterno , $fechaNacimiento , $idSexo , $idCivil , $direccion , $fechaIngreso ,  $telPersonal, $celPersonal , $emailPersonal , $telOfna , $celOfna , $emailOfna , $dirOfna, $areaUsuario ){
 		// Create connection
 		$resultado = false;
 		$numAleatorio = rand(1, 90000); 
 		$pwdIntranet = "itw".$numAleatorio ; // se genera un pwd temp
 		$idUsuario = NULL;  // id del usuario es autoincremental
 		$idEstatus = 1 ;  // Usuario ACTIVO
-		$query = "INSERT INTO  `usuarios` ( `idUsuario` , `usrIntranet` , `pwdIntranet` , `idPerfil` , `nombre` , `paterno` , `materno` , `fechaNacimiento` , `Idsexo` , `IdCivil` , `direccion` , `fechaIngreso` , `idEstatus` , `telPersonal` , `celPersonal` , `emailPersonal` , `telOfna` , `celOfna` , `emailOfna` , `direccionOfna`  )  
-				  VALUES ( '".$idUsuario."' , '".$usrIntranet."' , MD5('".$pwdIntranet."') , ".$idTipoUsuario." , '".$usrnombre."' , '".$usrpaterno."' , '".$usrmaterno."'  , '".$fechaNacimiento."' , ".$idSexo." , ".$idCivil." , '".$direccion."' , '".$fechaIngreso."' , '".$idEstatus."' , '".$telPersonal."' , '".$celPersonal."' , '".$emailPersonal."' , '".$telOfna."' , '".$celOfna."' , '".$emailOfna."' , '".$dirOfna."' )  ";
+		$query = "INSERT INTO  `usuarios` ( `idUsuario` , `usrIntranet` , `pwdIntranet` , `idPerfil` , `nombre` , `paterno` , `materno` , `fechaNacimiento` , `Idsexo` , `IdCivil` , `direccion` , `fechaIngreso` , `idEstatus` , `telPersonal` , `celPersonal` , `emailPersonal` , `telOfna` , `celOfna` , `emailOfna` , `direccionOfna`, area_ID )  
+				  VALUES ( '".$idUsuario."' , '".$usrIntranet."' , MD5('".$pwdIntranet."') , ".$idTipoUsuario." , '".$usrnombre."' , '".$usrpaterno."' , '".$usrmaterno."'  , '".$fechaNacimiento."' , ".$idSexo." , ".$idCivil." , '".$direccion."' , '".$fechaIngreso."' , '".$idEstatus."' , '".$telPersonal."' , '".$celPersonal."' , '".$emailPersonal."' , '".$telOfna."' , '".$celOfna."' , '".$emailOfna."' , '".$dirOfna."' , '".$areaUsuario."')  ";
 		//echo $query; 
 		$mysqli = $this->objDb->getConnAdmin();
 		if ($mysqli->connect_errno) {
@@ -411,7 +418,7 @@ class ActionsDB{
 	public function setEliminaUsuario( $usrIntranet ){
 		// Create connection
 		$resultado = false; 
-		$query = "DELETE FROM `usuarios` WHERE usrIntranet= '".$usrIntranet."'";
+		$query = "DELETE FROM `usuarios` WHERE idUsuario= '".$usrIntranet."'";
 		$mysqli = $this->objDb->getConnAdmin();
 		if ($mysqli->connect_errno) {
 			//header ( 'Location: pageError.php?error=1'); 
@@ -521,10 +528,9 @@ class ActionsDB{
 
 	//funcion para visualizar lider de proyecto
 	public function verLider($ID_proyecto){
-		$query = "Select usuario_ID from proyectos where proyecto_ID ='".$ID_proyecto."'";
-
-		$mysqli = $this->objDb->getConnBasic();
+		$query = " SELECT P.`usuario_ID`,u.usrIntranet,u.nombre,u.paterno,u.materno FROM `proyectos` as P INNER JOIN usuarios as u on P.`usuario_ID` = u.idUsuario WHERE P.`proyecto_ID` ='".$ID_proyecto."'";
 		
+		$mysqli = $this->objDb->getConnBasic();
 		if ($mysqli->connect_errno) {
 			return -1; 
 		}else{
@@ -558,7 +564,7 @@ class ActionsDB{
 
 			$query = "SELECT S.user_ID,S.fechaI,S.fechaF,S.diasCorrespondientes,S.diasSolicitados,S.diasAdicionales FROM solicitudvaciones as S left JOIN  usuarios as us on S.user_ID = us.idUsuario WHERE S.lider_ID ='".$LiderId."' AND S.aprobacion_L = 0 and us.nombre LIKE '%".$nombre."%'";
 		
-		}else if($LiderId = 16 and $nombre != ""){//busqueda desde la caja de texto
+		}else if($LiderId == 16 and $nombre != ""){//busqueda desde la caja de texto
 
 			$query = "SELECT S.user_ID,S.fechaI,S.fechaF,S.diasCorrespondientes,S.diasSolicitados,S.diasAdicionales FROM solicitudvaciones as S left JOIN  usuarios as us on S.user_ID = us.idUsuario WHERE S.Director_ID ='".$LiderId."' AND S.aprobacion_D = 0 and us.nombre LIKE '%".$nombre."%'";
 		}
@@ -593,7 +599,7 @@ class ActionsDB{
 		if($LiderId != 16){
 			$query = "SELECT solicitud_ID,user_ID,fechaI,fechaF,diasCorrespondientes,diasSolicitados,diasAdicionales FROM solicitudvaciones  where lider_ID = '".$LiderId."' and aprobacion_L = 1 and documentoURL != 'sin archivo'";
 		} else{
-			$query = "SELECT user_ID,fechaI,fechaF,diasCorrespondientes,diasSolicitados,diasAdicionales FROM solicitudvaciones  where Director_ID ='".$liderId."' and aprobacion_D = 1  and documentoURL != 'sin archivo'";
+			$query = "SELECT user_ID,fechaI,fechaF,diasCorrespondientes,diasSolicitados,diasAdicionales FROM solicitudvaciones  where Director_ID ='".$LiderId."' and aprobacion_D = 1  and documentoURL != 'sin archivo'";
 		}
 
 		$mysqli = $this->objDb->getConnBasic();
@@ -742,7 +748,6 @@ class ActionsDB{
 			$mysqli->close();
 		} 
 		return $resultado;
-
 	}
 
 	//funcion que devuelve las solicitudes aceptadas para ser notificadas al usuario
@@ -881,7 +886,7 @@ class ActionsDB{
 
 	//Funcion para devolver el ultimo registro realizado por un usario
 	public function verUltimSolicitudID($id){
-		$query = "SELECT * FROM solicitudvaciones WHERE solicitud_ID =(SELECT MAX(solicitud_ID) FROM solicitudvaciones where user_ID ='".$id."')";
+		$query = "SELECT * FROM solicitudvaciones WHERE solicitud_ID =(SELECT MAX(solicitud_ID) FROM solicitudvaciones where user_ID ='".$id."' AND aprobacion_D = '2' AND  aprobacion_L = '2') ";
 
 		$mysqli = $this-> objDb->getConnBasic();
 		if ($mysqli->connect_errno) {
@@ -899,7 +904,6 @@ class ActionsDB{
 			}
 			$mysqli->close();
 		}
-
 	}
 
 	//Función para devolver los responzables de asignación
@@ -908,7 +912,7 @@ class ActionsDB{
 		if ($id == "") {
 		 	$query = "SELECT ' ' as nombre ,'Seleccionar' as paterno,' ' as materno ,'0' as proyecto_ID UNION SELECT U.nombre, U.paterno, U.materno, P.proyecto_ID FROM proyectos AS P INNER JOIN usuarios AS U ON P.usuario_ID = U.idUsuario WHERE usuario_ID = U.idUsuario";
 		 }else{
-		 	$query = "SELECT U.nombre, U.paterno, U.materno, P.proyecto_ID FROM proyectos AS P INNER JOIN usuarios AS U ON P.usuario_ID = U.idUsuario WHERE P.proyecto_ID ='".$id."'";
+		 	$query = "SELECT U.nombre, U.paterno, U.materno, P.proyecto_ID, U.usrIntranet FROM proyectos AS P INNER JOIN usuarios AS U ON P.usuario_ID = U.idUsuario WHERE P.proyecto_ID ='".$id."'";
 		 } 
 		
 		$mysqli = $this-> objDb->getConnBasic();
@@ -976,10 +980,115 @@ class ActionsDB{
 		}
 	}
 
+	//Funcion para consultar solicitudes completas
+	public function verSolicitudesCompletas(){
+		$query="SELECT user_ID,fechaI,fechaF,diasCorrespondientes,diasSolicitados,diasAdicionales FROM solicitudvaciones  where aprobacion_L = 1 and aprobacion_D = 1 and documentoURL != 'sin archivo' and (correoEnviado = 0 AND correoEnviadoD = 0)";
 
+		$mysqli = $this-> objDb->getConnBasic();
+		if ($mysqli->connect_errno) {
+			$return -1;
+		}else{
+			if (!$resultado = $mysqli->query($query)) {
+				return -1;
+			}else{
+				$datos = $resultado->num_rows;
+				$users = array();
+				while ($usr = $resultado->fetch_assoc()) {
+					$users[]=$usr;
+				}
+				return $users;
+			}
+			$mysqli->close();
+		}
+	}
 
+	//Funcion para consultar el año de antiguedad basado en los dias correspondientes
+	public function verAñoDias($diasCorrespondientes){
+		$query ="SELECT Anios FROM diasvacaciones where Dias ='".$diasCorrespondientes."'";
 
+		$mysqli = $this-> objDb->getConnBasic();
+		if ($mysqli->connect_errno) {
+			$return -1;
+		}else{
+			if (!$resultado = $mysqli->query($query)) {
+				return -1;
+			}else{
+				$datos = $resultado->num_rows;
+				$users = array();
+				while ($usr = $resultado->fetch_assoc()) {
+					$users[]=$usr;
+				}
+				return $users;
+			}
+			$mysqli->close();
+		}
+	}
 
+	public function actualizarDiasDisponibles($dias,$id){
+		$query = "UPDATE usuarios  set DiasLey = '".$dias."' WHERE idUsuario ='".$id."'";
 
+		$resultado = false;
+		
+		$mysqli = $this->objDb->getConnAdmin();
+		if ($mysqli->connect_errno) {
+			$resultado = false; 
+		}else{
+			if ( $mysqli->query($query) ) {
+				$resultado = true; 
+			}
+			$mysqli->close();
+		} 
+		return $resultado;
+	}
+
+	public function verPerfiles($id = ""){
+		$query = "";
+		if ($id != "") {
+			$query = "SELECT * FROM perfil WHERE idPerfil ='".$id."'";
+		}else{
+			//SELECT '0' as area_ID,'Seleccionar' as Descripcion UNION SELECT area_ID, Descripcion from areasitw"
+			$query = "SELECT '0' as `idPerfil`,'SELECIONAR' as `desc` UNION SELECT * FROM perfil";
+		}
+
+		$mysqli = $this-> objDb->getConnBasic();
+			if ($mysqli->connect_errno) {
+				$return -1;
+			}else{
+				if (!$resultado = $mysqli->query($query)) {
+					return -1;
+				}else{
+					$datos = $resultado->num_rows;
+					$users = array();
+					while ($usr = $resultado->fetch_assoc()) {
+						$users[]=$usr;
+					}
+					return $users;
+				}
+				$mysqli->close();
+			}
+	}
+
+	public function DatosDirector(){
+		$query="SELECT U.`idUsuario`, U.`usrIntranet`,U.`nombre`, U.`paterno`, U.`materno` FROM `usuarios`as U INNER JOIN perfil as P on U.`idPerfil` = P.idPerfil WHERE U.`idPerfil` = 1;";
+
+		$mysqli = $this-> objDb->getConnBasic();
+			if ($mysqli->connect_errno) {
+				$return -1;
+			}else{
+				if (!$resultado = $mysqli->query($query)) {
+					return -1;
+				}else{
+					$datos = $resultado->num_rows;
+					$users = array();
+					while ($usr = $resultado->fetch_assoc()) {
+						$users[]=$usr;
+					}
+					return $users;
+				}
+				$mysqli->close();
+			}
+	}
 }
+
+
 ?>

@@ -21,7 +21,7 @@
 
     $tiempo_transcurrido = (strtotime($ahora)-strtotime($HoraIngreso)); 
      //comparamos el tiempo transcurrido 
-    if($tiempo_transcurrido >= 600) { 
+    if($tiempo_transcurrido >= 6000) { 
      //si pasaron 10 minutos o más 
       header('cerrarSesion.php'); //envío al usuario a la pag. de autenticación 
       //sino, actualizo la fecha de la sesión 
@@ -38,6 +38,8 @@
    <link rel="shortcut icon" type="image/gif" href="intraImg/animated_favicon1.gif" >
    <link href="intraCss/intraItw.min.css" rel="stylesheet" type="text/css">
    <link href="intraCss/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+   <link rel="stylesheet" type="text/css" href="intraCss/sweetalert.css">
    
    <title>ITWorkers</title> 
    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -45,7 +47,8 @@
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js" async></script>
   <script type="text/javascript" src="intraCss/bootstrap/js/jquery.js"></script>
   <script type="text/javascript" src="intraCss/bootstrap/js/bootstrap.min.js"></script>
-  <script type="text/javascript" src="intraCss/bootstrap/js/notify.min.js"></script>
+  <script type="text/javascript" src="js/sweetalert.min.js"></script>
+
 </head>
 <body>
 <script type="text/javascript">
@@ -126,7 +129,7 @@
 		<!-- Renglón  para mostrar la imágen del Header  y hora. -->
 		<tr>
           <td> 
-            <table width="100%" height="131px"  border="0" cellspacing="0" cellpadding="0" background="intraImg/itw2_03.png" >
+            <table width="100%" height="131px"  border="0" cellspacing="0" cellpadding="0" background="intraImg/itw2_03.png" style="position: relative;" >
               <tr><td>&nbsp;</td></tr>
               <tr><td>&nbsp;</td></tr>
               <tr><td>&nbsp;</td></tr>
@@ -134,7 +137,7 @@
                 <td width="50%" > 
 				 
 				</td>
-				<td width="50%" valign="center" > 
+				<td width="100%" valign="center" > 
 				
 				<div align="right">
 				<p align="right"  class="dateHeader" style="color:black;" >
@@ -160,6 +163,3 @@
   <!-- A partir de aqui se agrega el rengl�n  y columna que  contendr�  el Cuerpo de cada p�gina -->
 <tr bgcolor="#ffffff" >
   			<td id="bodyShow" > 
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
- <script src="intraCss/bootstrap-3.3.6-dist/js/bootstrap.min.js"></script>-->
-

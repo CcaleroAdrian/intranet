@@ -1,8 +1,8 @@
 <?php 
 	require 'clases/actionsDB.php'; 
 
-	$nombre = $_POST['q'];
-	$opcion = $_POST['b'];
+	$nombre = $_POST['nombre'];
+	$opcion = $_POST['opcion'];
 	$id = $_POST['id'];
 	
 	if ($opcion == 1) { 
@@ -70,5 +70,16 @@
 						</tr>';
 				}
 			}
+	}else if ($opcion == 4) {
+		$objOperaciones = new ActionsDB();
+		$user = $objOperaciones->getAllUsuarios($nombre,0,0);
+		print_r($user);
+		if ($user == 0 OR $user == -1) {
+			echo "<tr><td colspan='7'><p>No se encontraron resultados que coincidan</p></td><tr>";
+		}else{
+			foreach ( $user as $reg  )  {
+        		echo "<tr><td style='display:none;''>".$reg["usrIntranet"]."</td> <td>".utf8_encode($reg["nombre"])."</td> <td>".utf8_encode($reg["paterno"])."</td> <td>".utf8_encode($reg["materno"])."</td><td>".$reg["facultad"]."</td> <td>".$reg["estado"]."</td> <td> <a href='page_ModificaUsuario.php?Usuario=".$reg["usrIntranet"]."'> <div align='center'><span class='glyphicon glyphicon-pencil' style='color:black;'></span></div><a/></td><td> <a href='page_EliminaUsuario.php?Usuario=".$reg["idUsuario"]."&nombre=".utf8_encode($reg['nombre'].' '.$reg['paterno'].' '.$reg['materno'])."'> <div align='center'><span class='glyphicon glyphicon-remove' style='color:red;'></span></div> <a/>  </td> </tr>";
+		  	}
+		}
 	}
 ?>

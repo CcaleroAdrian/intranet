@@ -7,10 +7,6 @@ function busqueda(opcion){
 			var op = opcion.opcion;
 			var id = opcion.id;
 
-			if(nombre == ''){
-			return;
-			}
-
 			if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
 				xmlhttp=new XMLHttpRequest();
 			
@@ -25,7 +21,7 @@ function busqueda(opcion){
 			}
 			xmlhttp.open("POST","procesarBusqueda.php",true);
 			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-			xmlhttp.send("q="+nombre+"&b="+op+"&id="+id); 
+			xmlhttp.send("nombre="+nombre+"&opcion="+op+"&id="+id); 
 }
 
 function rechazar(id){

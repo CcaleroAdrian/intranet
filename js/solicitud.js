@@ -14,19 +14,6 @@
 	    	}
 	    return urlObj;
     	}
-    	//var mensaje = urlObj.toString();
-		/*function getGET(){
-		   var loc = document.location.href;
-		   var getString = loc.split('?')[1];
-		   var GET = getString.split('&');
-		   var get = {};//this object will be filled with the key-value pairs and returned.
-
-		   for(var i = 0, l = GET.length; i < l; i++){
-		      var tmp = GET[i].split('=');
-		      get[tmp[0]] = unescape(decodeURI(tmp[1]));
-		   }
-		   return get;
-		}*/
 
 		/*var mensaje = getGET();
  		if (mensaje != "") {
@@ -99,11 +86,11 @@ function solicitud(ObjetoTR){
 			//recabamos la info de la tabla de solicitudes realizadas
 			var fecha = ObjetoTR.cells[3].childNodes[0].nodeValue;
 			var fecha2 = ObjetoTR.cells[4].childNodes[0].nodeValue;
-			var dia = ObjetoTR.cells[5].childNodes[0].nodeValue;
+			var dia = ObjetoTR.cells[5].childNodes[0].nodeValue; 
 			var nombre = $('#nombreUser').val();
 			var url = "generarReportePDF.php?nombre="+nombre+"&dias="+dia+"&fecha1="+fecha+"&fecha2="+fecha2+"&cliente="+cliente+"";
 			window.open(url,"_blank");
-		}else if (opcion == 2) {
+		}else if (opcion == 2) { 
 			
 			document.getElementById('cargaArchivo').style.visibility= "initial";
 			var ID = ObjetoTR.cells[1].childNodes[0].nodeValue;

@@ -15,7 +15,7 @@
 		
 		$idCivil =isset($_POST['idCivil']) ? $_POST['idCivil'] : "" ;
 		$direccion =isset($_POST['direccion']) ? $_POST['direccion'] : "" ;
-		$telPersonal =isset($_POST['telPersonal']) ? $_POST['telPersonal'] : "" ;
+		$telPersonal =isset($_POST['telPersonal']) ? $_POST['telPersonal'] : "" ; 
 		$celPersonal =isset($_POST['celPersonal']) ? $_POST['celPersonal'] : "" ;
 		$emailPersonal =isset($_POST['emailPersonal']) ? $_POST['emailPersonal'] : "" ;
 		$telOfna =isset($_POST['telOfna']) ? $_POST['telOfna'] : "" ;
@@ -45,7 +45,7 @@
 
 	If ( $usr == -1  OR  $usr == 0 ) {
 		$blnOk = false;
-		$error = "No fu&eacute; posible realizar la actualizaci&oacute;n de la informaci&oacute;n de su usuario: " . $USUARIO . ".";
+		$error = "No fu&eacute; posible recuperar la informaci&oacute;n del usuario: " . $USUARIO . ".";
 	} 
 
   //Consultamos lideres de asignación
@@ -54,54 +54,46 @@
   //consultamos areas ITW
   $areaITW = $objOperaciones->verAreas();
 
-//Calculo de vacaciones
-$fecha1 = time()-strtotime($usr['fechaIngreso']);
-$antiguedad =floor($fecha1 / 31536000);
-
-if($antiguedad > 0){
-  if ($antiguedad >= 4 OR $antiguedad <= 8) {
-     $dias = $objOperaciones->verAntiguedad(4);
-  }else if($antiguedad >=9 OR $antiguedad <= 13){
-     $dias = $objOperaciones->verAntiguedad(9);
-  }else if($antiguedad >=14 OR $antiguedad <= 18){
-     $dias = $objOperaciones->verAntiguedad(14);
-  }else if ($antiguedad >= 19 OR $antiguedad <= 23) {
-    $dias = $objOperaciones->verAntiguedad(19);
-  }else if ($antiguedad >= 24 OR $antiguedad <= 28){
-    $dias = $objOperaciones->verAntiguedad(24);
-  }else if ($antiguedad >= 29 OR $antiguedad <= 34) {
-    $dias = $objOperaciones->verAntiguedad(29);
-  }else{
-    $dias = $objOperaciones->verAntiguedad($antiguedad);
-  }
-
-  foreach ($dias as $key ) {
-    $vacaciones = $key['Dias'];
-  }
-}else{
+$vacaciones = 0;
+if ($usr['DiasLey'] <= 0) {
   $vacaciones = 0;
+}else{
+  $vacaciones =$usr['DiasLey'];
 }
 
 
  ?> 
 
-	 <script type="text/javascript">
-  $(window).load(function(){
-    var error = "<?php echo $error; ?>";
-    var mensaje = "<?php echo $success; ?>";
+<script type="text/javascript">
+  function guia(){
+   document.getElementById('tutotial').style.visibility= "initial";
+  }
 
-    /*if (error != "") {
-    $("#mensaje").notify(error,"error",{position:"botton center"});
-    }else{
-    $("#mensaje").notify(mensaje,"success",{position:"botton center"});
-    };*/
-  });
- </script>
+  function cerrar(){
+   document.getElementById('tutorial').style.visibility= "hidden";
+  }
+</script>
+<script type="text/javascript">
+  function alertas(){
+    var confirmacion = "<?php echo $success;?>";
+    if (confirmacion != "") {
+      swal({
+        title: "Confirmacion",
+        text: confirmacion,
+        type: "success",
+        showConfirmButton:false
+        });
+    }
+  }
+</script>
       <!--<h4> Mi Perfil &nbsp; </h4>-->
-<form name="frmPerfil" method="post" ction="<?php echo $_SERVER['PHP_SELF'] . "?idMenu=". $idMenu ."&idSubMenu=". $idSubMenu . "";  ?>" enctype="multipart/form-data" >
+<!--<div id="tutorial" style="position: fixed; width:60%; background: white; border: 1px solid black; height:400px; margin-bottom: 30px;">
+<a href=""><i class="fa fa-times" onclick="cerrar()"></i></a> 
+</div>-->
+<form id="form" name="frmPerfil" method="post" action="<?php echo $_SERVER['PHP_SELF'];  ?>" enctype="multipart/form-data" onsubmit="alertas()">
   <h3>Mi perfil</h3>
   <div class="panel panel-primary">
-    <div id="mensaje" class="panel-heading">INFORMACIÓN BÁSICA</div>
+    <div id="mensaje" class="panel-heading">INFORMACIÓN BÁSICA <a href="" onclick="guia()"><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
     <div class="panel-body">
       <table class="table-responsive">
         <tr>
@@ -156,7 +148,7 @@ if($antiguedad > 0){
         <tr><td width="130">&nbsp;</td></tr>
         <tr>
           <td><label>Email personal:</label></td>
-          <td style="width:10px"><input align="left"  class="textboxBlanco" name="emailPersonal" type="email" id="emailPersonal" size="20" maxlength="50" value=" <?php echo trim($usr['emailPersonal'])  ?>" ></td>
+          <td style="width:10px"><input align="left"  class="textboxBlanco" name="emailPersonal" type="email" id="emailPersonal" size="20" maxlength="50" value="<?php echo trim($usr['emailPersonal']);?>" ></td>
           <td><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
           <td><label>Direcci&oacute;n</label>
           <td><textarea name="direccion" cols="33" class="textboxBlanco" id="direccion2" align="left" style="height:60px"> <?php echo trim($usr['direccion']) ?></textarea></td>
@@ -181,7 +173,7 @@ if($antiguedad > 0){
       <tr>
         <td><label>Tel&eacute;fono de Oficina</label></td>
         <td><input align="left"  class="textboxBlanco" name="telOfna" type="tel" id="telOfna" size="10" maxlength="12" value=" <?php echo trim($usr['telOfna'])  ?>" ></td>
-        <td><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
+        <td><span class="glyphicon glyphicon-asterisk" style="color:red;" z-index="1"></span></td>
         <td><label>Celular de trabajo</label></td>
         <td><input align="left"  class="textboxBlanco" name="celOfna" type="tel" id="celOfna" size="10" maxlength="12" value=" <?php echo trim($usr['celOfna'])  ?>" ></td>
         <td><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
@@ -231,7 +223,7 @@ if($antiguedad > 0){
     </table>
     </div>
  </div>
-  <div align="center"><input type="submit" align="center" class="btn btn-primary" name="btnActualizar" value="Actualizar"></div>
+  <div align="center"><input onclick="alertas()" type="submit" align="center" class="btn btn-primary" name="btnActualizar" value="Actualizar"></div>
   <div>&nbsp;</div>
 </form>
 <?php

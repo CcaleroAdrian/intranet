@@ -35,7 +35,7 @@
 				//Guardamos en sesión el usuario, el idPerfil, la desc. del perfil y su ID
 				$objSesion->set('USUARIO', $objRegistro["usrIntranet"] );
 				$objSesion->set('ID_PERFIL', $objRegistro["idPerfil"]);
-				$objSesion->set('DESC_PERFIL', $objRegistro["descPerfil"]);
+				$objSesion->set('DESC_PERFIL', $objRegistro["descPerfil"]);//descripcion del perfil
 				$objSesion->set('IDUSUARIO',$objRegistro["idUsuario"]);
 				//Guardar hora de inicio de sesion
 				$objSesion->set('HoraIngreso', date("Y-n-j H:i:s"));

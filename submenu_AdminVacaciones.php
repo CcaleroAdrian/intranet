@@ -25,7 +25,7 @@ include("intraHeader.php");
 </script>
 	<h3 align="left">ADMINISTRACIÓN DE VACACIONES</h3>
 	<div class="panel panel-primary">
-    <div class="panel-heading">CONCENTRADO DE SOLICITUDES</div>
+    <div class="panel-heading">CONCENTRADO DE SOLICITUDES <a href="" onclick=""><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
     <div class="panel-body">
     <form>
     		<div class="input-group col-sm-12">

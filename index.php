@@ -9,9 +9,9 @@
  
  <script type="text/javascript">
  	$(window).load(function(){
- 		var error = "<?php echo $error; ?>";
+ 		var error = "<?php echo $_GET['err']; ?>";
  		if (error != "") {
- 		$("#pwditw").notify(error,"error",{position:"botton center"});
+ 		 swal({title: "Confirmacion", text: error, type: "error",timer:3000,showConfirmButton:false});
 		};
  	});
  </script>

@@ -60,8 +60,14 @@
  	$(window).load(function(){
  		var error = "<?php echo $mensaje; ?>";
  		if (error != "") {
- 		$("#imputpwd").notify(error,"error",{position:"botton center"});
-		};
+ 			swal({
+	        title: "Alerta",
+	        text: error,
+	        type: "error",
+	        timer: 3000,
+	        showConfirmButton:false
+	        });
+ 		}
  	});
 
  	function myfuction(){

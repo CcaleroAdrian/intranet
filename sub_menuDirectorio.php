@@ -47,7 +47,7 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 <body>
 	<h3>DIRECTORIO DE CONTACTOS ITW</h3>
 	<div class="panel panel-primary">
-    <div class="panel-heading">CONTACTOS ITW</div>
+    <div class="panel-heading">CONTACTOS ITW <a href="" onclick=""><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
     	<div class="panel-body">
     	<form>
     		<div class="input-group col-sm-12">

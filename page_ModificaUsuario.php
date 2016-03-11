@@ -5,12 +5,17 @@
 		header('Location: index.php');
 	}
 	$mensaje = "";
+  $error = "";
 	$blnModOk = false;
 	$idMenu =isset($_GET['idMenu']) ? trim($_GET['idMenu']) : "" ;
 	$idSubMenu =isset($_GET['idSubMenu']) ? trim($_GET['idSubMenu']) : "" ;
 	$usrIntranet =isset($_GET['Usuario']) ? trim($_GET['Usuario']) : "" ;//usuario a modificar
 	$btnActualizar =isset($_POST['btnActualizar']) ? trim($_POST['btnActualizar']) : "" ;//evento sobre boton
 	
+  $objPerfil = new ActionsDB();
+  $areaITW = $objPerfil->verAreas();
+  $perfiles = $objPerfil->verPerfiles();
+  
 	If ( $btnActualizar == "Guardar") { 
 		$usrnombre = isset($_POST['nombre']) ? trim( $_POST['nombre'] ) : "" ;
 		$usrpaterno = isset($_POST['paterno']) ? trim( $_POST['paterno'] ) : "" ;
@@ -30,16 +35,17 @@
 		$celOfna =isset($_POST['celOfna']) ? $_POST['celOfna'] : "" ;
 		$emailOfna =isset($_POST['emailOfna']) ? $_POST['emailOfna'] : "" ;
 		$direccionOfna =isset($_POST['direccionOfna']) ? $_POST['direccionOfna'] : "" ;
+    $areaID = isset($_POST['area']) ? $_POST['area'] : "";
 		
 		//Instanciamos la clase que tiene las operaciones a la base de datos
-		$objPerfil = new ActionsDB();
+		
 		// Obtenemos los campos de la tabla usuarios para presentarla en el perfil
-		$respuesta = $objPerfil->setActualizaUsuario( $usrIntranet , $usrnombre , $usrpaterno , $usrmaterno , $fechaNacimiento , $idPerfil , $idEstatus , $idSexo , $idCivil , $direccion , $fechaIngreso , $fechaSalida , $telPersonal , $celPersonal , $emailPersonal , $telOfna , $celOfna , $emailOfna , $direccionOfna );
+		$respuesta = $objPerfil->setActualizaUsuario( $usrIntranet , $usrnombre , $usrpaterno , $usrmaterno , $fechaNacimiento , $idPerfil , $idEstatus , $idSexo , $idCivil , $direccion , $fechaIngreso , $fechaSalida , $telPersonal , $celPersonal , $emailPersonal , $telOfna , $celOfna , $emailOfna , $direccionOfna,$areaID );
 		If(  $respuesta  ) {
 			$blnModOk = true;
 			$mensaje = "Se actualizó satisfactoriamente la información del perfil.";
 		} else { 
-			$mensaje = "No fué posible actualizar la información del perfil del usuario " . $usrIntranet . ".";
+			$error = "No fué posible actualizar la información del perfil del usuario " . $usrIntranet . ".";
 		} 
 	}
 	
@@ -49,16 +55,24 @@
 	// Obtenemos los campos de la tabla usuarios para presentarla en el perfil
 	$usr = $objOperaciones->getDatosUsuario( $usrIntranet );
 	If ( $usr == -1  OR  $usr == 0 ) { 
-		$mensaje = "No fué posible obtener la información del usuario " . $usrIntranet . ".";
+		$error = "No fué posible obtener la información del usuario " . $usrIntranet . ".";
 	} 
 	
 	//Si no se ha realizado la modificacion se vuelve a mostrar el detalle del usuario
 	If (!$blnModOk ) {
  ?> 
+  <script type="text/javascript">
+    $(window).load(function(){
+      var error = "<?php echo $error;?>";
+      if (error != "") {
+        swal({title: "Confirmacion",text: error,type: "error",timer:3000,showConfirmButton:false});
+      }
+    });
+  </script>
   	<h3> Modifica Usuario&nbsp; </h3>
-		<form name="frmModifUsr" method="post" action="<?php echo $_SERVER['PHP_SELF'] . "?idMenu=". $idMenu ."&idSubMenu=". $idSubMenu ."&Usuario=". $usrIntranet ."";  ?>" enctype="multipart/form-data" >
+		<form name="frmModifUsr" method="post" action="<?php echo $_SERVER['PHP_SELF'];  ?>" enctype="multipart/form-data" >
 		<div class="panel panel-primary">
-      <div class="panel-heading">INFORMACI&Oacute;N B&Aacute;SICA</div>
+      <div class="panel-heading">INFORMACI&Oacute;N B&Aacute;SICA <a href="" onclick=""><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
       <div class="panel-body">
 		<table class="table-responsive" >
           <tr>
@@ -137,15 +151,22 @@
         <tr>
             <td width="130"><label>Perfil del Usuario:</label> </td>
             <td width="200"><select name="idPerfil" id="idPerfil"    class="form-control" >
-              <option value="1" <?php echo ($usr['idPerfil'] == "1") ?  "selected" : "";  ?> >ADMINISTRADOR</option>
-              <option value="2" <?php echo ($usr['idPerfil'] == "2") ?  "selected" : "" ; ?> >NORMAL</option>
+              <?php
+                      foreach ($perfiles as $key) {
+                        if ($usr['idPerfil'] == $key['idPerfil']) {
+                          echo "<option value=".$key['idPerfil']." SELECTED>".$key['desc']."</option>";
+                        }
+                        echo "<option value=".$key['idPerfil'].">".$key['desc']."</option>";
+                      }
+              ?>
             </select></td>
-            <td></td>
+            <td><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
             <td><label>Estatus:</label></td>
             <td><select name="idEstatus" id="idEstatus"   class="form-control" >
               <option value="1" <?php echo ($usr['idEstatus'] == "1") ?  "selected" : "";  ?> >ACTIVO</option>
               <option value="2" <?php echo ($usr['idEstatus'] == "2") ?  "selected" : "" ; ?> >INACTIVO</option>
             </select></td>
+            <td><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
         </tr>
         <tr><td width="130">&nbsp;</td></tr>
         <tr>
@@ -165,7 +186,20 @@
             <td width="200"><textarea name="direccionOfna" cols="33" class="textboxBlanco" id="direccionOfna3" align="left"> <?php echo trim($usr['direccionOfna'])  ?></textarea></td>
             <td><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
         </tr>
-        <tr><td width="130">&nbsp;</td></tr>
+        <tr><td><label>&Aacute;rea o Departamento:</label></td>
+              <td><Select  id="area" name = "area" class="form-control" style="wight:100px" >
+              <?php 
+              foreach ($areaITW as $key) {
+                if ($usr['area_ID'] == $key["area_ID"]) {
+                  echo '<option value='.$key["area_ID"].' SELECTED>'.utf8_encode($key["Descripcion"]).'</option>';
+                }
+                  echo '<option value='.$key["area_ID"].'>'.utf8_encode($key["Descripcion"]).'</option>';
+              }
+              ?> 
+              </select></td>
+              <td><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
+              <td width="130">&nbsp;</td>
+              <td width="130">&nbsp;</td></tr>
         <tr>
           <td colspan="4"><span class="glyphicon glyphicon-asterisk" style="color:red"><label style="color:red;">Datos modificables.</label></span></td>
         </tr>
@@ -181,52 +215,10 @@
 	
 	} else {
 		// Cuando la modificación es exitosa  se muestra el botón de continuar para regresar a la pantalla principal de modificación.
-?>
-		
-		<table width="90%"  border="0" cellspacing="2" cellpadding="0" class="table-responsive">
-		  <tr>
-			<td>&nbsp;</td>
-		  </tr>
-		  <tr>
-			<td height="300">&nbsp;
-				<form name="frmContinua" method="post" action="<?php echo "submenu_UsuariosModifica.php?idMenu=". $idMenu ."&idSubMenu=". $idSubMenu ."&Usuario=". $usrIntranet ."";  ?>"  >
-              <table   border="0" align="center" cellpadding="0" cellspacing="2" class="table-responsive">
-                <tr>
-                  <td>&nbsp;
-				  	 <?php 
-							echo "<div aling='center'  ><label>La actualizaci&oacute;n del usuario ". $usrIntranet ." fu&eacute; exitosa.</label></div>";
-					?> 
-				  </td>
-                </tr>
-                <tr>
-                  <td><div align="center">
-                    
-                      <p>&nbsp;
-                    </p>
-                      <p>
-                        <input type="submit" name="btnContinuar" value="Continuar" class="btn btn-primary" >
-                       
-                    </p>
-                  </div>
-				  </td>
-                </tr>
-                <tr>
-                  <td>&nbsp;</td>
-                </tr>
-              </table>			
-			  </form>  
-              <div align="center">
-			  
-			  </div></td>
-		  </tr>
-		  <tr>
-			<td>&nbsp;</td>
-		  </tr>
-		</table> 	
-			 
-<?php
-	
-	}
-	
+    echo "<script type='text/javascript'>
+    var url= 'submenu_UsuariosModifica.php?mensaje=".utf8_decode($mensaje)."';
+    window.open(url,'_parent');
+    </script>";
+}
 	include("intraFooter.php"); 
 ?> 

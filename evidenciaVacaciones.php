@@ -9,8 +9,9 @@ setlocale (LC_TIME, 'spanish-mexican');
 $id = $_GET['id'];//ID de la solicitud
 $fechaDescarga=date('d/m/Y');
 $RH = "Viviana Garcia Ramos";
-$area = "DESARROLLO";
+$area = "";
 $inicioLabores = "";
+$nombreLider ="";
 
 //Realizar consultas para generar documento
 $objeResultado = new ActionsDB();

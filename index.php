@@ -9,7 +9,7 @@
  
  <script type="text/javascript">
  	$(window).load(function(){
- 		var error = "<?php echo $_GET['err']; ?>";
+ 		var error = "<?php echo isset($_GET['error']) ? trim($_GET['error']) : ''; ?>";
  		if (error != "") {
  		 swal({title: "Confirmacion", text: error, type: "error",timer:3000,showConfirmButton:false});
 		};
@@ -29,7 +29,7 @@
             <label  class="col-sm-2 control-label "style="padding-right:17%; color:#4d94ff" align="center">Usuario:</label>
             <div class="col-sm-5 input-group">
             	<span class="input-group-addon">@</span>
-            	<input type="email" name="usuarioitw" id="usuarioitw" maxlength="80" placeholder="usuario@itw.mx" class="form-control" value="<?php echo trim($usr) ?>" autofocus/>
+            	<input type="email" name="usuarioitw" id="usuarioitw" maxlength="80" placeholder="usuario@itw.mx" class="form-control" value="<?php echo trim($usr) ?>" autofocus autocomplete="off"/>
             </div>
           </div>
           <div class="form-group" align="justify" style="padding-left:14%;">

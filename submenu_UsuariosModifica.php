@@ -82,7 +82,7 @@
  <script type="text/javascript" src="js/busqueda.js"></script>
   		<h3>ADMINISTRACI&Oacute;N DE USUARIOS &nbsp; </h3>
   		<div class="panel panel-primary">
-    	<div class="panel-heading">USUARIOS <a href="" onclick=""><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
+    	<div class="panel-heading">USUARIOS<a id="tutorial" href="" onclick="mostrarTuto()"><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
     	<div class="panel-body">
     	<form>
     		<div class="input-group col-sm-12">

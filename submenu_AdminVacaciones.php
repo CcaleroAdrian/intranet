@@ -22,12 +22,13 @@ include("intraHeader.php");
 		var url = "detalle.php?id="+id+"";
 		window.open(url,"_blank", 'width=700px,height=550px,resizable=yes,toolbar=no');
 	}
+	
 </script>
 	<h3 align="left">ADMINISTRACIÓN DE VACACIONES</h3>
 	<div class="panel panel-primary">
-    <div class="panel-heading">CONCENTRADO DE SOLICITUDES <a href="" onclick=""><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
+    <div class="panel-heading">CONCENTRADO DE SOLICITUDES <a id="tutorial" href="" onclick="mostrarTuto()"><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
     <div class="panel-body">
-    <form>
+    <form style="z-index: 1;">
     		<div class="input-group col-sm-12">
     		<span class="glyphicon glyphicon-search input-group-addon"></span>
   			<input id="filtroTabla" onkeyup="busqueda({opcion:3,id:0})" class="form-control glyphicon glyphicon-search" size="35" align="center" autofocus>
@@ -36,7 +37,6 @@ include("intraHeader.php");
 		<table id="form1" class="table-responsive table-bordered">
 			<thead >
 				<th width="30pt" style="text-align: center;">N</th>
-				<th width="13%" style="text-align: center;">Ver detalle</th>
 				<th width="20%" style="text-align: center;">Nombre</th>
 				<th width="10%"style="text-align: center;">Días Ley</th>
 				<th width="10%" style="text-align: center;">Días Solicitados</th>
@@ -66,8 +66,7 @@ include("intraHeader.php");
 		      		//imprimimos resultados
 					echo '<tr style="text-align:center">
 							<td>'.$n.'</td>
-							<td><a href="" onclick="verDetalle('.$key["user_ID"].')"> VER </a></td>
-							<td>'.$Nombre.'</td>
+							<td style="text-align:left;"><a href="" onclick="verDetalle('.$key["user_ID"].')">'.$Nombre.'</a></td>
 							<td>'.$key['diasCorrespondientes'].'</td>
 							<td>'.$key['diasSolicitados'].'</td>
 							<td>'.$key['fechaSolicitud'].'</td>
@@ -78,6 +77,7 @@ include("intraHeader.php");
 			</tbody>
 		</table>
 	</div>
+	<!--style="border: solid; z-index:4; position: fixed; display: block; border-collapse: collapse;"-->
 </body>
 </html>
 

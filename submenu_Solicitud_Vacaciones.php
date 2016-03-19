@@ -16,13 +16,7 @@ $error1 = "";
 $error2 = "";
 $ID_USR;
 $VisualizarR = false;
-//OBTENER INFO LIDER DE PROYECTO
-$lider = $objOperaciones->verLider($usr['Proyecto_ID']);
-if ($lider != 0 OR $lider != -1) {
-	foreach ($lider as $key) {
-		$LiderID = $key[''];
-	}
-}
+$TAMANO_PAGINA = 5;
 
 //OBTENER INFO DIRECTOR
 $director = $objOperaciones->DatosDirector();
@@ -35,9 +29,32 @@ if ($director) {
 
 // Obtenemos los campos de la tabla usuarios para presentarla en la solicitud
 	$usr = $objOperaciones->getDatosPerfil($USUARIO); 
+	$diasLey = $usr['DiasLey'];
+
 	if ( $usr == -1  OR  $usr == 0 ) {
 		$error1 = "No fué posible recuperar la informaci&oacute;n del usuario: ";
+	}else{
+		if ($usr['Proyecto_id'] == 0 OR $usr['Proyecto_id'] == "") {
+			$error = "Debes seleccionar un Gerente de proyectos de tu Área o Departamento antes de realizar la captura de tu solicitud de lo contrario esta no será enviada.";
+		}
 	} 
+
+	//Consultar Area o Departamento del usuario
+	$a = $objOperaciones->verAreas($usr['area_ID']);
+	if ($a) {
+		foreach ($a as $value) {
+			$area = utf8_encode($value['Descripcion']);
+		}
+	}
+
+	//OBTENER INFO LIDER DE PROYECTO
+	$lider = $objOperaciones->verLider($usr['Proyecto_id']);
+	$LiderID = 0;
+	if ($lider != 0 AND $lider != -1) {
+		foreach ($lider as $key) {
+			$LiderID = $key['usuario_ID'];
+		}
+	}
 
 	$dat = $objOperaciones->verSolicitudes($ID_USR);
 	//print_r($dat);
@@ -46,14 +63,14 @@ if ($director) {
 		$error2 = "No fué posible recuperar las solicitudes realizadas anteriormente";
 	}else{
 		$VisualizarR = true;
+
 		//REALIZAMOS PAGINACION
 		//*******PAGINACION DE RESULTADO********
-		//$url = "/intranet/sub_menuDirectorio.php";
 		$url = "/intranet/sub_menu_Solicitud_Vacaciones.php";
 		//Instanciamos la clase que tiene las operaciones a la base de datos
 		$numRegi = count($dat);
 		//Limito los resultados por pagina
-		$TAMANO_PAGINA = 5; 
+		 
 		$pagina = false;
 		//examino la pagina a mostrar y el inicio del registro a mostrar
 	    if (isset($_GET["pagina"]))
@@ -87,101 +104,101 @@ if ($btn == "Enviar") {
 	$date = strtotime($_POST['fecha1']);//fecha Inicial
 	$dates = strtotime($_POST['fecha2']);//fecha Final
 	$fechaIn = strtotime($usr['fechaIngreso']);
+	$diasAdi= isset($_POST['DiasAdicionales']) ? trim($_POST['DiasAdicionales']) : "";
+	$diasRestantes =  isset($_POST['DiasRestantes']) ? trim($_POST['DiasRestantes']) : "";
 
 	$otro = date("d-F-Y", $date);//fecha inicial de vacaciones
 	$FechaFinal =date("d-F-Y", $dates);//fecha final de vacaciones
 	$fechaIngreso = date("d-F-Y", $fechaIn);//fecha de ingreso
 
-	if ($diasSoli > $diasVa) {
-		$diasAdi = $diasSoli - $diasVa;
-	}else{ $diasAdi = 0;}
-		$diasRestantes = $diasVa - $diasSoli;//Dias restantes al periodo vacacional acumulado
-	if ($diasRestantes < 1) {
-		$diasRestantes = 0;
-	}
-
 	
 	$objectAlta = new ActionsDB();
-		$resultado ="";// $objectAlta->insertSolicitud($ID_USR,$fechaI,$fechaF,$diasVa,$diasSoli,$diasAdi,$LiderID,$directorID);
-			if( $resultado ) {
-				$success = "Se realiz&oacute; el registro de su solicitud " ;
-				echo"<script language='javascript'>window.location='/intranet/index.php?success=".$success."'</script>";
-			} else { 
-				$error1 = "Hubo un error al registrar su solicitud. Favor de intentarlo más tarde";
-				echo $error1;
+	if ($usr['Proyecto_id'] != 0 OR $usr['Proyecto_id'] != "") {
+		$resultado =$objectAlta->insertSolicitud($ID_USR,$fechaI,$fechaF,$diasVa,$diasSoli,$diasAdi,$diasRestantes,$LiderID,$directorID);
+		if( $resultado ) {
+
+			//Actualizamos los dás ley del usuario;
+			if ($diasVa < $diasSoli) {
+				$dias = "-".$diasAdi;
+				$objectAlta->editarDiasLey($dias,$ID_USR,1);
+			}elseif ($diasVa > $diasSoli) {
+				$objectAlta->editarDiasLey($diasRestantes,$ID_USR,1);
 			}
+			$success = "Se realiz&oacute; el registro de su solicitud " ;
+			$usuarios = $objOperaciones->verSolicitudes($ID_USR,0,$TAMANO_PAGINA);
+			header("Refresh:0");
+		} else { 
+			$error1 = "Hubo un error al registrar su solicitud. Favor de intentarlo más tarde";
+		}
+	}else{$error = "Debes seleccionar un Gerente de proyectos de tu Área o Departamento antes de realizar la captura de tu solicitud de lo contrario esta no será enviada.";}
 }
 
-//Calculo de vacaciones
-$antiguedad = 0;
-$fecha= $usr['fechaIngreso'];
-if ($fecha != 0 OR $fecha !="" OR $fecha != null) {
-	$fecha1 = time()-strtotime($fecha);
-	$antiguedad =floor($fecha1 / 31536000);
-}
-
-if($antiguedad > 0){
-  if ($antiguedad >= 4 OR $antiguedad <= 8) {
-     $dias = $objOperaciones->verAntiguedad(4);
-  }else if($antiguedad >=9 OR $antiguedad <= 13){
-     $dias = $objOperaciones->verAntiguedad(9);
-  }else if($antiguedad >=14 OR $antiguedad <= 18){
-     $dias = $objOperaciones->verAntiguedad(14);
-  }else if ($antiguedad >= 19 OR $antiguedad <= 23) {
-    $dias = $objOperaciones->verAntiguedad(19);
-  }else if ($antiguedad >= 24 OR $antiguedad <= 28){
-    $dias = $objOperaciones->verAntiguedad(24);
-  }else if ($antiguedad >= 29 OR $antiguedad <= 34) {
-    $dias = $objOperaciones->verAntiguedad(29);
-  }else{
-    $dias = $objOperaciones->verAntiguedad($antiguedad);
-  }
-  foreach ($dias as $key ) {
-    $vacaciones = $key['Dias'];
-  }
+//Comparamos que el valor retorno no sea menor a 0
+if ($usr['DiasLey'] < 0) {
+	$vacaciones = 0;
+	$error2 = "Debido a que has solicitado días por adelantado, no podras realizar nuevas solicitudes.";
 }else{
-  $vacaciones = 0;
+	$vacaciones = $usr['DiasLey'];
 }
 
-$diasDescontar = 0;
-
-//Consultamos la ultima solicitud exitosa
-$ultimaSolicitud = $objOperaciones->verUltimSolicitudID($ID_USR);
-	
-	if ($ultimaSolicitud) {
-		foreach ($ultimaSolicitud as $key) {
-			$diasDescontar = $key['diasAdicionales'];
-		}
-		//Si hay dias a descontar
-		if ($diasDescontar > 0) {
-			//Consultar año de antiguedad cuando fué solicitado dias adicionales
-			$año = $objOperaciones->verUltimSolicitudID($ID_USR);
-			if ($antiguedad < ($antiguedad + 2)) {
-				$vacaciones = $vacaciones - $diasDescontar;
-			}else{
-
-			}
-
-		}else{
-			$diasDescontar = 0;
-		}
-	}else{
-		$diasDescontar = 0;
-	}
-
-	$vacaciones = $vacaciones - $diasDescontar;
-
-
-
+$mensaje = isset($_GET['mensaje']) ? trim($_GET['mensaje']) : "";
 
 ?>
-<script type="text/javascript" src="intraCss/bootstrap/js/notify.min.js"></script>
-<script type="text/javascript" src="js/solicitud.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		var success = "<?php echo utf8_encode($success); ?>";
+		var error =  "<?php echo $error1; ?>";
+		var err = "<?php echo $error2; ?>";
+		var otro = "<?php echo $error; ?>";
+		var mensaje = "<?php echo $mensaje; ?>";
+		
+		if (error != "") {
+			swal({title: "CONFIRMACIÓN",text: error,type: "error",timer:3000,showConfirmButton:false});
+		}else if (success != "") {
+			swal({title: "CONFIRMACIÓN",text: success, type:"success", timer:3000, showConfirmButton:false});
+		}else if (err != "") {
+			swal({title: "CONFIRMACIÓN",text: err,type: "info",showConfirmButton:true});
+		}else if(otro != ""){
+			swal({title: "CONFIRMACIÓN",text: otro,type: "info",timer:8000,showConfirmButton:false});
+		}else if(mensaje != ""){
+			swal({title: "CONFIRMACIÓN",text: err,type: "info",timer:3000,showConfirmButton:false});
+		}
+
+
+		//Desactivar boton de enviar en caso de no seleccionar Gerente o No disponer de días
+		var Gerente = "<?php echo $LiderID; ?>";
+		var vacaciones = "<?php echo $diasLey; ?>";
+		if (Gerente == 0) {
+			$("#btnSubmit").attr("disabled","disabled");
+		}else if(vacaciones == -1){
+			$("#btnSubmit").attr("disabled","disabled");
+		}
+	});
+
+	//Funcion para hacer visible la caja de texto de carga de archivo;
+	function cargarDocumento(Objecto){
+			var datos = Array();
+			datos[0] = Objecto.id;
+			datos[1] = Objecto.documento;
+			if (datos[1] == "cargar documento") {
+				document.getElementById('cargaArchivo').style.visibility= 'initial';
+				$('#idRegistro').val(datos[0]);
+			}
+	}
+
+</script>
+<style type="text/css">
+	a{
+		text-decoration: none;
+	}
+</style>
+<!--<script type="text/javascript" src="js/solicitud.js"></script>-->
+<script type="text/javascript" src="js/busqueda.js"></script>
 	<h3 align="left">SOLICITUD DE VACACIONES</h3>
 
-	<form  id="form" name="frmSolicitud" method="post" action="<?php echo $_SERVER['PHP_SELF'];  ?>" enctype="multipart/form-data">
+	<form  id="formulario" name="frmSolicitud" method="post" action="<?php echo $_SERVER['PHP_SELF'];  ?>" enctype="multipart/form-data">
 	<div class="panel panel-primary">
-    <div class="panel-heading">CAPTURA <a href="" onclick=""><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
+    <div class="panel-heading">CAPTURA<a id="tutorial" href="" onclick="mostrarTuto()"><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
     <div class="panel-body">
 		<table id="form1" class="table-responsive">
 			<tr >
@@ -191,31 +208,31 @@ $ultimaSolicitud = $objOperaciones->verUltimSolicitudID($ID_USR);
 			</tr>
 			<tr>
 				<td><label >&#193rea o departamento:</label></td>
-				<td><input id="area1" name="area" class="bloqueado" value="Desarrollo "></input></td>
+				<td><input id="area1" name="area" class="bloqueado" value="<?php echo $area; ?>" readonly="readonly"></input></td>
 				<td>&#160;</td>
 			</tr>
 			<tr>
 				<td><label>D&iacuteas ley:</label></td>
-				<td><input id="Vacaciones" name="Vaca" value="<?php echo $vacaciones?>" class="bloqueado" disabled></input></td>
+				<td><input id="Vacaciones" name="Vaca" value="<?php echo $vacaciones;?>" class="bloqueado" readonly></input></td>
 				<td><label>D&iacuteas solicitados: </label></td>
-				<td><input id="diasSolicitados" name="diasSolicitados" value="" class="bloqueado" disabled></input></td>
+				<td><input id="diasSolicitados" name="diasSolicitados" value="" class="bloqueado" readonly></input></td>
 			</tr>
 			<tr>
 				<td><label>D&iacuteas restantes:</label></td>
-				<td><input id="diasRestantes" name="" value="" class="bloqueado" disabled></input></td>
+				<td><input id="diasRestantes" name="DiasRestantes" value="" class="bloqueado" readonly></input></td>
 				<td><label>D&iacuteas adicionales: </label></td>
-				<td><input id="diasAdicionales" name="" value="" class="bloqueado" disabled></input></td>
+				<td><input id="diasAdicionales" name="DiasAdicionales" value="" class="bloqueado" readonly></input></td>
 			</tr>
 			<tr>
 			<td ><label>Fecha inicio:</label></td>
-				<td ><input id="fecha" size="10" type="date" name="fecha1" onchange="fechas()" value="" class="form-control"/></td>
+				<td ><input id="fecha" size="10" type="date" name="fecha1" onchange="fechas()" value="" class="form-control" required=”required”/></td>
 				<td ><label>Fecha fin:</label></td>
-				<td colspan="2"><input type="date" name="fecha2" id="fecha2" onchange="fechas()" class="form-control"/></td>
+				<td colspan="2"><input type="date" name="fecha2" id="fecha2" onchange="fechas()" class="form-control" required=”required”/></td>
 			</tr>
 			<tr><td>&#160;</td></tr>
 			<tr>
 				<td>&#160;</td>
-				<td style="padding-left:25%"><button type ="submit" class ="btn btn-primary " name="btnSolicitar" value="Enviar">&#160;Enviar&#160;</button></td>
+				<td style="padding-left:25%"><button id="btnSubmit" type ="submit" class ="btn btn-primary " name="btnSolicitar" value="Enviar">&#160;Enviar&#160;</button></td>
 				<td align="left"><!--<button class="btn btn-danger">Cancelar</button>--></td>
 			</tr>
 		</table>
@@ -237,14 +254,13 @@ $ultimaSolicitud = $objOperaciones->verUltimSolicitudID($ID_USR);
 			<thead>
 			<tr>
 				<th>N</th>
-				<th style="display: none">ID</th>
 				<th >Fecha de solicitud</th>
 				<th >Fecha inicio</th>
 				<th >Fecha fin</th>
 				<th >D&iacuteas Solicitados</th>
 				<th >D&iacuteas adicionales</th>
 				<th>Documento soporte</th>
-				<th >Estatus</th>
+				<th>Estatus</th>
 			</tr>
 			</thead>
 			<tbody id="jod">
@@ -253,24 +269,36 @@ $ultimaSolicitud = $objOperaciones->verUltimSolicitudID($ID_USR);
 		      		foreach($usuarios as $row) {
 		      		$nume +=1;
 		      		//Determinar estutus solicitud
-		      		if (($row["aprobacion1"] == 1 AND $row["aprobacion2"] == 1) OR ($row["aprobacion1"] == 2 AND $row["aprobacion2"] == 1) OR ($row["aprobacion1"] == 3 AND $row["aprobacion2"] == 1)) {//pendientes
-		      			$Estatus = "PENDIENTE";
-		      		}else if (($row["aprobacion1"] == 2 AND $row["aprobacion2"] == 2) OR ($row["aprobacion1"] == 3 AND $row["aprobacion2"] == 2) OR ($row["aprobacion1"] == 1 AND $row["aprobacion2"] == 2)) {//Aceptadas
-		      			$Estatus = "APROBADA";
-		      		}else if (($row["aprobacion1"] == 3 AND $row["aprobacion2"] == 3) OR ($row["aprobacion1"] == 2 AND $row["aprobacion2"] == 3) OR ($row["aprobacion1"] == 1 AND $row["aprobacion2"] == 3)) {
-		      			$Estatus = "RECHAZADA";
-		      		}
-				echo '<tr id="celda" onclick="solicitud(this)">
-							<td>'.$nume.'</td>
-							<td style="display:none;">'.$row["solicitud_ID"].'</td>
-							<td>'.$row["fecha"].'</td>
-							<td>'.$row["fecha1"].'</td>
-							<td>'.$row["fecha2"].'</td>
-							<td>'.$row["dias"].'</td>
-							<td>'.$row["adicionales"].'</td>
-							<td>'.$row["documento"].'</td>
-							<td>'.$Estatus.'</td>
-						</tr>';
+		      		if ($row["adicionales"] != 0) {
+		      			if (($row["aprobacion1"] == 1 AND $row["aprobacion2"] == 1) OR ($row["aprobacion1"] == 2 AND $row["aprobacion2"] == 1)) {//Estatus pendiente
+		      				$Estatus = "PENDIENTE";
+		      			}else if ($row["aprobacion1"] == 2 AND $row["aprobacion2"] == 2) {
+		      				$Estatus = "APROBADA";
+		      			}else{
+		      				$Estatus = "RECHAZADA";
+		      			}
+
+		      		}else{
+		      			if ($row["aprobacion1"] == 1) {
+		      				$Estatus = "PENDIENTE";
+		      			}elseif ($row["aprobacion1"] == 2) {
+		      				$Estatus = "APROBADA";
+		      			}else{
+		      				$Estatus = "RECHAZADA";
+		      			}
+		      		} ?>
+		      	
+						<tr id="celda">
+							<td><?php echo $nume; ?></td>
+							<td><?php echo$row["fecha"]; ?></td>
+							<td><?php echo$row["fecha1"]; ?></td>
+							<td><?php echo$row["fecha2"]; ?></td>
+							<td style="text-align: center;"><?php echo$row["dias"]; ?></td>
+							<td style="text-align: center;"><?php echo$row["adicionales"]; ?></td>
+							<td><a <?php echo($row["documento"] == "cargar documento") ? "" : "href='descargarArchivo.php?id=".$row["solicitud_ID"]."'"; ?> onclick="cargarDocumento({id:<?php echo $row['solicitud_ID']?>,documento:'<?php echo $row['documento'] ?>'})" ><?php echo $row["documento"]; ?></a></td>
+							<td><?php echo$Estatus; ?></td>
+						</tr>
+				<?php
 					}		
 		      	?>
 			</tbody>
@@ -299,7 +327,7 @@ $ultimaSolicitud = $objOperaciones->verUltimSolicitudID($ID_USR);
 			<div class="form-group">
 			<input type="text" value="" style="display: none" id="idRegistro" name="idArchivo"></input>
 			<label>Documento soporte:</label>
-			<input id="document" class="form-control" name="documentos" type="file" accept=".pdf"></input>
+			<input id="document" class="form-control" name="documentos" type="file" accept="*"></input>
 			<button type="sumit" class="btn btn-primary">CARGAR</button>
 			</div>
 			</form>

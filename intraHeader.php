@@ -52,6 +52,8 @@
 </head>
 <body>
 <script type="text/javascript">
+	
+
 	$(document).ready(function(){
 		var xmlhttp;
 		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
@@ -66,8 +68,27 @@
 		}
 		xmlhttp.open("POST","notificarCorreo.php");
 		xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-		xmlhttp.send(); 
+		//xmlhttp.send(); 
+
+
+		$('#icono').on('click',function(e){
+			e.preventDefault();
+
+		});
+
+		$('#tutorial').on('click',function(e){
+			e.preventDefault();
+		});
 	});
+
+	function mostrarTuto(){
+		document.getElementById("ventana").style.display = "block";
+	}
+
+	function esconderTuto(){
+		document.getElementById("ventana").style.display = "none";
+	}
+
 </script>
 	<table width="800" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#EEEEEE">
 		<!-- Renglón con imágen TOP de Intranet -->
@@ -152,7 +173,12 @@
           	</table> 
 		  </td>
         </tr>
-		
+
+        <!-- ***********DIV para visualizar tutoriales******************-->
+		<div id="ventana">
+			<a id="icono" href="" onclick="esconderTuto()"><i class="fa fa-times fa-2x"></i></a>
+		<iframe id="popup" src="https://www.youtube.com/embed/y6s0r71PImo?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen align="center"></iframe>
+		</div>
         <?php  
 		
 		if($USUARIO <> ''){

@@ -70,12 +70,12 @@
 			$apellido = "El campo Apellido Paterno es obligatorio."; 
 		}
 
-		If ( $blnOk  AND ($areaUsuario == "" ) ) { 
+		If ( $blnOk  AND ($areaUsuario == 0 ) ) { 
 			$blnOk = false;
 			$area = "El campo Área o Departamento es obligatorio."; 
 		}
 
-		If ( $blnOk  AND ($idTipoUsuario == "" ) ) { 
+		If ( $blnOk  AND ($idTipoUsuario == 0 ) ) { 
 			$blnOk = false;
 			$tipoUser = "El campo Tipo de usuario es obligatorio."; 
 		}
@@ -107,7 +107,7 @@
  		var apellido = "<?php echo $apellido; ?>";
  		var error = "<?php echo $error; ?>";
  		var success = "<?php echo $success; ?>";
- 		var a = "<?php echo $area; ?>";
+ 		var a = "<?php echo utf8_encode($area); ?>";
  		var tipoUser = "<?php echo $tipoUser; ?>";
 
  		if (error != "") {
@@ -138,7 +138,7 @@
 		<form name="frmAlta" method="post" action="<?php echo $_SERVER['PHP_SELF'] . "?idMenu=". $idMenu ."&idSubMenu=". $idSubMenu . "";  ?>" enctype="multipart/form-data" >
 		<h3>ALTA DE USUARIO</h3>
 		<div class="panel panel-primary">
-    	<div class="panel-heading">INFORMACI&Oacute;N B&Aacute;SICA <a href="" onclick=""><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
+    	<div class="panel-heading">INFORMACI&Oacute;N B&Aacute;SICA <a id="tutorial" href="" onclick="mostrarTuto()"><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
    		<div class="panel-body">
 		
 		  <table width="90%" border="0" cellspacing="1" align="center" class="table-responsive" >

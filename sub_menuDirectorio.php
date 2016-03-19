@@ -47,12 +47,12 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 <body>
 	<h3>DIRECTORIO DE CONTACTOS ITW</h3>
 	<div class="panel panel-primary">
-    <div class="panel-heading">CONTACTOS ITW <a href="" onclick=""><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
+    <div class="panel-heading">CONTACTOS ITW <a id="tutorial" href="" onclick="mostrarTuto()"><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
     	<div class="panel-body">
     	<form>
     		<div class="input-group col-sm-12">
     		<span class="glyphicon glyphicon-search input-group-addon"></span>
-  			<input id="filtroTabla" onkeyup="busqueda({opcion:1,id:0})" class="form-control glyphicon glyphicon-search" size="35" align="center" autofocus>
+  			<input id="filtroTabla" onkeyup="busqueda({opcion:1,id:0})" class="form-control glyphicon glyphicon-search" size="35" align="center" autofocus> 
   			</div>
 		</form><br>
     		<table class="table table-bordered" id="myTable">

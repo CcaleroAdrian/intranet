@@ -6,7 +6,7 @@ $id = $_POST['idArchivo'];
 //El nombre original del fichero en la máquina cliente. 
 $fechaCarga=date('d/m/Y');
 $nombreArchivo = $_FILES['documentos']['name'];
-
+$nombreArchivo= $nombreArchivo.$fechaCarga;
 //$nombreArchivo ="DocumentoSoporte(".$fechaCarga.").pdf";
 
 //El tipo mime del fichero (si el navegador lo proporciona). Un ejemplo podría ser "image/gif". 
@@ -19,7 +19,6 @@ $sizeArchivo = $_FILES['documentos']['size'];
 $carpeta = "../intranet/DocumentosSoporte/".$nombreArchivo;
 
 //**** 	VALIDACIONES DE CARGA Y TAMAÑO DE ARCHIVO 	**********
-if (strpos($typeArchivo,"pdf")){
 	if ($sizeArchivo < 10485760) {
 		
 		if (copy($_FILES['documentos']['tmp_name'], $carpeta)){
@@ -37,9 +36,5 @@ if (strpos($typeArchivo,"pdf")){
 		header("Location: ../intranet/submenu_Solicitud_Vacaciones.php?mensaje='".$mensaje."'"); 
 	}
 
-}else{
-	$mensaje = "La extensión del archivo no es correcta. \nSe permiten únicamente archivos .pdf"; 
-	header("Location: ../intranet/submenu_Solicitud_Vacaciones.php?mensaje='".$mensaje."'"); 
-}
 
 ?>

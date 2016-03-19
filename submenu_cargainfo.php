@@ -18,7 +18,7 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 	<br/>
 	<h3>CARGA DE ARCHIVOS</h3>
 	<div class="panel panel-primary">
-    <div class="panel-heading">CARGAR INFORMACIÓN DE USUARIOS <a href="" onclick=""><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
+    <div class="panel-heading">CARGAR INFORMACIÓN DE USUARIOS <a id="tutorial" href="" onclick="mostrarTuto()"><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
     <div class="panel-body">
     	<table align="center">
     		<tr >

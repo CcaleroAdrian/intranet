@@ -36,11 +36,11 @@
 		$emailOfna =isset($_POST['emailOfna']) ? $_POST['emailOfna'] : "" ;
 		$direccionOfna =isset($_POST['direccionOfna']) ? $_POST['direccionOfna'] : "" ;
     $areaID = isset($_POST['area']) ? $_POST['area'] : "";
-		
+
 		//Instanciamos la clase que tiene las operaciones a la base de datos
 		
 		// Obtenemos los campos de la tabla usuarios para presentarla en el perfil
-		$respuesta = $objPerfil->setActualizaUsuario( $usrIntranet , $usrnombre , $usrpaterno , $usrmaterno , $fechaNacimiento , $idPerfil , $idEstatus , $idSexo , $idCivil , $direccion , $fechaIngreso , $fechaSalida , $telPersonal , $celPersonal , $emailPersonal , $telOfna , $celOfna , $emailOfna , $direccionOfna,$areaID );
+		$respuesta = $objPerfil->setActualizaUsuario( $usrIntranet , $usrnombre , $usrpaterno , $usrmaterno , $fechaNacimiento , $idPerfil , $idEstatus , $idSexo , $idCivil , $direccion , $fechaIngreso , $fechaSalida , $telPersonal , $celPersonal , $emailPersonal , $telOfna , $celOfna , $emailOfna , $direccionOfna , $areaID);
 		If(  $respuesta  ) {
 			$blnModOk = true;
 			$mensaje = "Se actualizó satisfactoriamente la información del perfil.";
@@ -54,6 +54,7 @@
 	$objOperaciones = new ActionsDB();
 	// Obtenemos los campos de la tabla usuarios para presentarla en el perfil
 	$usr = $objOperaciones->getDatosUsuario( $usrIntranet );
+  //print_r($usr);
 	If ( $usr == -1  OR  $usr == 0 ) { 
 		$error = "No fué posible obtener la información del usuario " . $usrIntranet . ".";
 	} 
@@ -72,7 +73,7 @@
   	<h3> Modifica Usuario&nbsp; </h3>
 		<form name="frmModifUsr" method="post" action="<?php echo $_SERVER['PHP_SELF'];  ?>" enctype="multipart/form-data" >
 		<div class="panel panel-primary">
-      <div class="panel-heading">INFORMACI&Oacute;N B&Aacute;SICA <a href="" onclick=""><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
+      <div class="panel-heading">INFORMACI&Oacute;N B&Aacute;SICA <a id="tutorial" href="" onclick="mostrarTuto()"><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
       <div class="panel-body">
 		<table class="table-responsive" >
           <tr>
@@ -151,7 +152,7 @@
         <tr>
             <td width="130"><label>Perfil del Usuario:</label> </td>
             <td width="200"><select name="idPerfil" id="idPerfil"    class="form-control" >
-              <?php
+              <?php 
                       foreach ($perfiles as $key) {
                         if ($usr['idPerfil'] == $key['idPerfil']) {
                           echo "<option value=".$key['idPerfil']." SELECTED>".$key['desc']."</option>";
@@ -187,13 +188,12 @@
             <td><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
         </tr>
         <tr><td><label>&Aacute;rea o Departamento:</label></td>
-              <td><Select  id="area" name = "area" class="form-control" style="wight:100px" >
+              <td><Select  id="area" name = "area" class="form-control" style="wight:100px" tabindex="<?php echo $usr["area_ID"];?>">
               <?php 
               foreach ($areaITW as $key) {
-                if ($usr['area_ID'] == $key["area_ID"]) {
-                  echo '<option value='.$key["area_ID"].' SELECTED>'.utf8_encode($key["Descripcion"]).'</option>';
-                }
-                  echo '<option value='.$key["area_ID"].'>'.utf8_encode($key["Descripcion"]).'</option>';
+              ?>
+                  <option value='<?php echo $key["area_ID"]; ?>' <?php echo($usr["area_ID"] == $key["area_ID"]) ? "selected" : ""; ?> ><?php echo utf8_encode($key["Descripcion"]); ?></option>
+              <?php 
               }
               ?> 
               </select></td>

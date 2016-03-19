@@ -20,11 +20,12 @@ foreach ($dat as $key) {
 	$fechaSoli = $key['fecha'];
 	$dias = $key['dias'];
 	$adicionales = $key['adicionales'];
+	$diasRestantes = $key['diasRestantes'];
 }
 ?>
-
+ 
 <!DOCTYPE html>
-<html style="height: 95%; width: 98%;">
+<html style="height: 100%; width: 100%;">
 <head>
 	<title>Detalle</title>
 	<link rel="shortcut icon" type="image/gif" href="intraImg/animated_favicon1.gif" >
@@ -35,6 +36,11 @@ foreach ($dat as $key) {
   	<script type="text/javascript" src="intraCss/bootstrap/js/bootstrap.min.js"></script>
   	<script type="text/javascript" src="js/busqueda.js"></script>
 </head>
+<style type="text/css">
+	.disabled:hover{ 
+		color:grey;
+	}
+</style>
 <body style="padding-left: 20px">
 
 	<div class="panel panel-primary">
@@ -70,7 +76,7 @@ foreach ($dat as $key) {
     		<tr>
     			<td><input type="text" style="text-align: center;" class="textboxBloqueado" disabled value="<?php echo $fechaSoli ?>"></input></td>
     			<td><input type="text" style="text-align: center;" size="15" class="textboxBloqueado" disabled value="<?php echo $dias; ?>"></input></td>
-    			<td><input type="text" style="text-align: center;" size="15" class="textboxBloqueado" disabled value=""></input></td>
+    			<td><input type="text" style="text-align: center;" size="15" class="textboxBloqueado" disabled value="<?php echo $diasRestantes; ?>"></input></td>
     			<td><input type="text" style="text-align: center;" size="15" class="textboxBloqueado" disabled value="<?php echo $adicionales; ?>"></input></td>
     		</tr> 			
     	</table>
@@ -106,18 +112,19 @@ foreach ($dat as $key) {
 			      			$Estatus = "APROBADA";
 			      		}else if (($row["aprobacion1"] == 3 AND $row["aprobacion1"] == 3) OR ($row["aprobacion1"] == 2 AND $row["aprobacion1"] == 3) OR ($row["aprobacion1"] == 1 AND $row["aprobacion1"] == 3)) {
 			      			$Estatus = "RECHAZADA";
-			      		}
-						echo '<tr id="celda">
-									<td>'.$nume.'</td>
-									<td><a href="" onclick="solicitud('.$row["solicitud_ID"].')">Generar reporte</a></td>
-									<td>'.$row["fecha"].'</td>
-									<td>'.$row["fecha1"].'</td>
-									<td>'.$row["fecha2"].'</td>
-									<td>'.$row["dias"].'</td>
-									<td>'.$row["adicionales"].'</td>
-									<td><a href="">'.$row["documento"].'</a></td>
-									<td>'.$Estatus.'</td>
-								</tr>';
+			      		}?>
+							<tr id="celda">
+									<td><?php echo$nume;?></td>
+									<td><a href="" onclick="solicitud(<?php echo $row["solicitud_ID"];?>)">Generar reporte</a></td>
+									<td><?php echo $row["fecha"]; ?></td>
+									<td><?php echo $row["fecha1"]; ?></td>
+									<td><?php echo $row["fecha2"]; ?></td>
+									<td><?php echo $row["dias"]; ?></td>
+									<td><?php echo $row["adicionales"]; ?></td>
+									<td><a id="documento" <?php echo($row["documento"] == "cargar documento") ? "class='disabled'" : "href='descargarArchivo.php?id=".$row["solicitud_ID"]."'"; ?> ><?php echo $row["documento"]; ?> </a></td>
+									<td><?php echo $Estatus; ?></td>
+							</tr>
+							<?php
 					}		
 		      	?>
 			</tbody>

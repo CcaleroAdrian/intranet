@@ -11,7 +11,7 @@
 		if ( !filter_var( $usr , FILTER_VALIDATE_EMAIL)   ) {
 			$blnOk= false;
 			$error = "El Usuario ". $usr. " no tiene formato de email valido.";
-			header('Location: index.php?usuarioitw='.$usr.' & err=' . $error . ' ');  
+			header('Location: index.php?usuarioitw='.$usr.' & error=' . $error . ' ');  
 		}
 		
 		If ( $blnOk ) {
@@ -21,10 +21,10 @@
 			$objRegistro = $objOperaciones->getUsuarioSesion( $usr , $pwd );
 			if ( $objRegistro == -1 ) {
 				$error = "Falló la conexión con la base de datos.";
-				header('Location: index.php?err=' . $error . ' ');
+				header('Location: index.php?error=' . $error . ' ');
 			} else if ( $objRegistro == 0 ) {
 				$error = "El usuario o contraseña no son válidos.";
-				header('Location: index.php?usuarioitw='.$usr.' & err=' . $error . ' ');
+				header('Location: index.php?usuarioitw='.$usr.'&error=' . $error . ' ');
 			} else {
 				//Instanciamos la clase sesión
 				$objSesion = new Sesion();
@@ -47,13 +47,13 @@
 	} else {  
 		If ( $usr == ""  AND  $pwd == "" ) {
 			$error = "Los campos Usuario y Contraseña son obligatorios.";
-			header('Location: index.php?err=' . $error . ' ');
+			header('Location: index.php?error=' . $error . ' ');
 		} else If ( $usr == "" ) {
 			$error = "El campo Usuario no puede estar vacio.";
-			header('Location: index.php?err=' . $error . ' ');
+			header('Location: index.php?error=' . $error . ' ');
 		} else {
 			$error = "El campo Contraseña es obligatorio.";
-			header('Location: index.php?usuarioitw='.$usr.' & err=' . $error . ' ');
+			header('Location: index.php?usuarioitw='.$usr.' &error=' . $error . ' ');
 		}
 		
 	}

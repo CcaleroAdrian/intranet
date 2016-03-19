@@ -23,33 +23,32 @@
 		$emailOfna =isset($_POST['emailOfna']) ? $_POST['emailOfna'] : "" ;
 		$direccionOfna =isset($_POST['direccionOfna']) ? $_POST['direccionOfna'] : "" ;
     $responzable = isset($_POST['LiderID']) ? $_POST['LiderID'] : "";
-    $area = isset($_POST['area']) ? $_POST['area'] : "";
-		
+    
 		//Instanciamos la clase que tiene las operaciones a la base de datos
 		$objPerfil = new ActionsDB();
 		// Obtenemos los campos de la tabla usuarios para presentarla en el perfil
-		$respuesta = $objPerfil->setActualizaPerfil( $USUARIO , $idCivil , $direccion , $telPersonal , $celPersonal , $emailPersonal , $telOfna , $celOfna , $emailOfna , $direccionOfna,$responzable, $area );
+    
+		$respuesta = $objPerfil->setActualizaPerfil( $USUARIO , $idCivil , $direccion , $telPersonal , $celPersonal , $emailPersonal , $telOfna , $celOfna , $emailOfna , $direccionOfna,$responzable);
 		If(  $respuesta  ) {
 			$blnOk = true;
 			$success = "La información de su perfil fué actualizada satisfactoriamente.";
 		} else {
 			$blnOk = false;
 			$error = "No fu&eacute; posible realizar la actualizaci&oacute;n de la informaci&oacute;n de su usuario: " . $USUARIO . ".";
-		} 
+		}
 	}
 	
 	//Instanciamos la clase que tiene las operaciones a la base de datos
 	$objOperaciones = new ActionsDB();
 	// Obtenemos los campos de la tabla usuarios para presentarla en el perfil
-	$usr = $objOperaciones->getDatosPerfil( $USUARIO );
-
+	$usr = $objOperaciones->getDatosPerfil($USUARIO);
 	If ( $usr == -1  OR  $usr == 0 ) {
 		$blnOk = false;
 		$error = "No fu&eacute; posible recuperar la informaci&oacute;n del usuario: " . $USUARIO . ".";
 	} 
 
   //Consultamos lideres de asignación
-  $lider = $objOperaciones->mostrarResponzablesAsignacion();
+  $lider = $objOperaciones->mostrarResponzablesAsignacion("",$usr['area_ID']);
 
   //consultamos areas ITW
   $areaITW = $objOperaciones->verAreas();
@@ -74,38 +73,37 @@ if ($usr['DiasLey'] <= 0) {
   }
 </script>
 <script type="text/javascript">
-  function alertas(){
+  $(document).ready(function(){
     var confirmacion = "<?php echo $success;?>";
     if (confirmacion != "") {
       swal({
         title: "Confirmacion",
         text: confirmacion,
         type: "success",
-        showConfirmButton:false
+        showConfirmButton:false,
+        timer:3000
         });
     }
-  }
+  });
+    
 </script>
-      <!--<h4> Mi Perfil &nbsp; </h4>-->
-<!--<div id="tutorial" style="position: fixed; width:60%; background: white; border: 1px solid black; height:400px; margin-bottom: 30px;">
-<a href=""><i class="fa fa-times" onclick="cerrar()"></i></a> 
-</div>-->
+
 <form id="form" name="frmPerfil" method="post" action="<?php echo $_SERVER['PHP_SELF'];  ?>" enctype="multipart/form-data" onsubmit="alertas()">
   <h3>Mi perfil</h3>
   <div class="panel panel-primary">
-    <div id="mensaje" class="panel-heading">INFORMACIÓN BÁSICA <a href="" onclick="guia()"><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
+    <div id="mensaje" class="panel-heading">INFORMACIÓN BÁSICA <a id="tutorial" href="" onclick="mostrarTuto()"><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
     <div class="panel-body">
       <table class="table-responsive">
         <tr>
-          <td><label>Usuario intranet:</label></td>
+          <td><label for="usrIntranet">Usuario intranet:</label></td>
           <td><input  align="left" class="textboxBloqueado" name="usrIntranet" type="text" id="usrIntranet" size="30" maxlength="50"  value=" <?php echo trim($usr['usrIntranet'])  ?>"   disabled="true" ></td>
         </tr>
         <tr>
           <td><label>Nombres(s):</label></td>
-          <td><input align="left"  class="textboxBloqueado" name="nombre" type="text" id="nombre2" size="30" maxlength="30"  value=" <?php echo trim($usr['nombre'])  ?>" disabled="true"  ></td>
+          <td><input align="left"  class="textboxBloqueado" name="nombre" type="text" id="nombre2" size="30" maxlength="30"  value=" <?php echo trim($usr['nombre'])  ?>" disabled="disabled"  ></td>
           <td></td>
           <td><label>Apellido Paterno:</label></td>
-          <td><input align="left"  class="textboxBloqueado" name="paterno" type="text" id="paterno2" size="30" maxlength="30" value=" <?php echo trim($usr['paterno'])  ?>" disabled="true"  ></td>
+          <td><input align="left"  class="textboxBloqueado" name="paterno" type="text" id="paterno2" size="30" maxlength="30" value=" <?php echo trim($usr['paterno'])  ?>" disabled="disabled"  ></td>
           <td></td>
         </tr>
         <tr><td width="130">&nbsp;</td></tr>
@@ -189,26 +187,21 @@ if ($usr['DiasLey'] <= 0) {
       </tr>
       <tr>
           <td><label>Responzable de asignación:</label></td>
-          <td><Select  id="LiderID" name = "LiderID" class="form-control" style="wight:160px" >
+          <td><Select  id="LiderID" name = "LiderID" class="form-control" style="wight:160px" tabindex ="<?php echo $usr['Proyecto_id']; ?>" >
           <?php 
-            foreach ($lider as $key) {
-
-              if ($key["proyecto_ID"] == $usr['Proyecto_id']) {
-                echo '<option value='.$key["proyecto_ID"].' selected>'.utf8_decode($key["nombre"].' '.$key["paterno"].' '.$key["materno"]).'</option>';
-              }
-              echo '<option value='.$key["proyecto_ID"].'>'.utf8_decode($key["nombre"].' '.$key["paterno"].' '.$key["materno"]).'</option>';
-            }
+            foreach ($lider as $value) { ?>
+              <option value='<?php echo $value["proyecto_ID"]; ?>' <?php echo ($value["proyecto_ID"] == $usr["Proyecto_id"]) ? "selected" : "";?>><?php echo utf8_decode($value["nombre"].' '.$value["paterno"].' '.$value["materno"]); ?></option>
+          <?php }
           ?> 
           </select></td>
           <td><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
           <td><label>Área o Departamento:</label></td>
-          <td><Select  id="area" name = "area" class="form-control" style="wight:100px" >
+          <td><Select  id="Area" name = "Area" class="form-control" style="wight:100px" tabindex ="<?php echo $usr['area_ID']; ?>" disabled>
           <?php 
             foreach ($areaITW as $key) {
-              if ($key["area_ID"] == $usr['area_ID'] ) {
-                echo '<option value='.$key["area_ID"].' selected>'.utf8_encode($key["Descripcion"]).'</option>';
-              }
-                echo '<option value='.$key["area_ID"].'>'.utf8_encode($key["Descripcion"]).'</option>';
+          ?>
+              <option value='<?php echo $key["area_ID"]; ?>' <?php echo($key["area_ID"] == $usr["area_ID"]) ? "selected" : "";?>  ><?php echo utf8_encode($key["Descripcion"]); ?></option>
+          <?php
             }
           ?> 
           </select></td>
@@ -223,7 +216,7 @@ if ($usr['DiasLey'] <= 0) {
     </table>
     </div>
  </div>
-  <div align="center"><input onclick="alertas()" type="submit" align="center" class="btn btn-primary" name="btnActualizar" value="Actualizar"></div>
+  <div align="center"><input type="submit" align="center" class="btn btn-primary" name="btnActualizar" value="Actualizar"></div>
   <div>&nbsp;</div>
 </form>
 <?php

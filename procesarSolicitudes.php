@@ -1,18 +1,19 @@
 <?php
 	require 'clases/actionsDB.php'; 
-
+ 
 	$opcion = $_GET['opcion'];
 	$id= isset($_GET['id']) ? trim($_GET['id']) : "" ;
+	$perfil = isset($_GET['perfil']) ? trim($_GET['perfil']) : "" ;
 
 	if ($opcion == 1) {
 		$objOperaciones = new ActionsDB();
-		$resultado = $objOperaciones->procesarSolicitudes($id,$opcion);
+		$resultado = $objOperaciones->procesarSolicitudes($id,$perfil,$opcion);
 		if ($resultado) {
 			$mensaje ="La solicitud fué aceptada";
 		}
 	}elseif ($opcion == 2) {
 		$objOperaciones = new ActionsDB();
-		$resultado = $objOperaciones->procesarSolicitudes($id,$opcion);
+		$resultado = $objOperaciones->procesarSolicitudes($id,$perfil,$opcion);
 		if ($resultado) {
 			$mensaje ="La solicitud fué rechazada";
 		}
@@ -23,7 +24,7 @@
 		if ($resultado > 0 OR $resultado != -1 ) {
 			foreach ($resultado as $key) {
 				
-				$usuario = $objOperaciones->notificarUsuario($key['idUsuario']);//obtenmos datos del usuario
+				$usuario = $objOperaciones->notificarUsuario($key['idUsuario']);//obtenemos datos del usuario
 				foreach ($usuario as $k) {
 					$correo = $k['usrIntranet'];
 					$nombre = utf8_encode($k["nombre"].' '.$k["paterno"].' '.$k["materno"]);
@@ -37,7 +38,7 @@
 					$mail->Username = "intranet@itw.mx";  //usuario de la cuenta SMTP 
 					$mail->Password = "XlKp}MuyDh]c";  //PASWORD del user SMTP
 					$mail->Port = 465;  //puerto de salida
-					$mail->From = "webmaster@itw.mx";  	
+					$mail->From = "Intranet@itw.mx";  	
 					$mail->FromName = "ITWORKERS";
 					$mail->AddAddress($correo , $nombre);
 					$mail->IsHTML(true); // El correo se envía como HTML

@@ -317,7 +317,6 @@
 			$HOY=date('d/m');
 			$ingreso = date('d/m',strtotime($fechaIngreso));
 			if ($ingreso == $HOY) {
-
 				//Calcular años de antiguedad
 				if ($fechaIngreso != 0 OR $fechaIngreso !="" OR $fechaIngreso != null) {
 					$fecha1 = time()-strtotime($fechaIngreso);
@@ -355,7 +354,6 @@
 				}else{
 					$diasRestantes = $vacaciones;
 				}
-
 				//Actualizamos los diasLey
 				editarDiasLey($diasRestantes,$idUser,1);
 			}

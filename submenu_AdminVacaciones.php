@@ -8,7 +8,7 @@ include("intraHeader.php");
 	$objeRestultado = new ActionsDB();
 	$datos = $objeRestultado->verDetalle();
 	//print_r($datos);
-
+	$DESCPERFIL_USR;
 ?>
 <!DOCTYPE html>
 <html>
@@ -18,11 +18,24 @@ include("intraHeader.php");
 </head>
 <body>
 <script type="text/javascript">
+	$(document).ready(function(){
+		$('#admin').on('click',function(e){
+			e.preventDefault();
+		});
+
+		$('#link').on('click',function(e){
+			e.preventDefault();
+		});
+	});
 	function verDetalle(id){
-		var url = "detalle.php?id="+id+"";
+		var url = "detalle.php?id="+id+"&opcion="+1+"";
 		window.open(url,"_blank", 'width=700px,height=550px,resizable=yes,toolbar=no');
 	}
 	
+	function editarSolicitu(id){
+		var url ="detalle.php?id="+id+"&opcion="+2+"";
+		window.open(url,"_blank",'width=700px,height=300px,resizable=yes,toolbar=no');
+	}
 </script>
 	<h3 align="left">ADMINISTRACIÓN DE VACACIONES</h3>
 	<div class="panel panel-primary">
@@ -42,6 +55,9 @@ include("intraHeader.php");
 				<th width="10%" style="text-align: center;">Días Solicitados</th>
 				<th style="text-align: center;">Fecha de Solicitud</th>
 				<th style="text-align: center;">Estatus</th>
+				<?php if($DESCPERFIL_USR == 'SuperUsuario'){
+					echo '<th style="text-align: center;">Acción</th>';
+					}?>
 			</thead>
 			<tbody id="cuerpo">
 			<?php
@@ -62,16 +78,19 @@ include("intraHeader.php");
 		      		}else if (($key["aprobacion_L"] == 3 AND $key["aprobacion_D"] == 3) OR ($key["aprobacion_L"] == 2 AND $key["aprobacion_D"] == 3) OR ($key["aprobacion_L"] == 1 AND $key["aprobacion_D"] == 3)) {
 		      			$Estatus = "RECHAZADA";
 		      		}
-
-		      		//imprimimos resultados
-					echo '<tr style="text-align:center">
-							<td>'.$n.'</td>
-							<td style="text-align:left;"><a href="" onclick="verDetalle('.$key["user_ID"].')">'.$Nombre.'</a></td>
-							<td>'.$key['diasCorrespondientes'].'</td>
-							<td>'.$key['diasSolicitados'].'</td>
-							<td>'.$key['fechaSolicitud'].'</td>
-							<td>'.$Estatus.'</td>
-						</tr>';
+		      	?>
+					<tr style="text-align:center">
+							<td><?php echo $n; ?></td>
+							<td style="text-align:left;"><a id="link" href="" onclick="verDetalle(<?php echo $key["user_ID"]; ?>)"><?php echo $Nombre; ?></a></td>
+							<td><?php echo $key['diasCorrespondientes']; ?></td>
+							<td><?php echo $key['diasSolicitados']; ?></td>
+							<td><?php echo $key['fechaSolicitud']; ?></td>
+							<td><?php echo $Estatus; ?></td>
+							<?php if($DESCPERFIL_USR == 'SuperUsuario'){?>
+							<td id="editarReg" style="text-align: center;"><a id="admin" href="" onclick="editarSolicitu(<?php echo $key["user_ID"];?>)">Editar</a></td>
+							<?php }?>
+					</tr>
+			<?php
 				}
 			?>
 			</tbody>

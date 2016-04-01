@@ -177,7 +177,7 @@
         <!-- ***********DIV para visualizar tutoriales******************-->
 		<div id="ventana">
 			<a id="icono" href="" onclick="esconderTuto()"><i class="fa fa-times fa-2x"></i></a>
-		<iframe id="popup" src="https://www.youtube.com/embed/y6s0r71PImo?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen align="center"></iframe>
+		<iframe id="popup" src="" frameborder="0" allowfullscreen align="center"></iframe>
 		</div>
         <?php  
 		

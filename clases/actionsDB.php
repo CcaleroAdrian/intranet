@@ -498,7 +498,7 @@ class ActionsDB{
 	public function verSolicitudes($idUsuario, $Inicio = "", $TAMANO_PAGINA=""){
 		$query = "";
 		if ($Inicio == "" and $TAMANO_PAGINA == "") {
-			$query = "SELECT solicitudvaciones.solicitud_ID, solicitudvaciones.fechaSolicitud as fecha, solicitudvaciones.fechaI as fecha1, solicitudvaciones.fechaF as fecha2, solicitudvaciones.diasSolicitados as dias, solicitudvaciones.diasAdicionales as adicionales, solicitudvaciones.aprobacion_L as aprobacion1, solicitudvaciones.aprobacion_D as aprobacion2 ,solicitudvaciones.diasRestantes ,solicitudvaciones.documentoURL as documento from solicitudvaciones where user_ID ='".$idUsuario."'";
+			$query = "SELECT solicitudvaciones.solicitud_ID, solicitudvaciones.fechaSolicitud as fecha, solicitudvaciones.fechaI as fecha1, solicitudvaciones.fechaF as fecha2, solicitudvaciones.diasSolicitados as dias, solicitudvaciones.diasAdicionales as adicionales, solicitudvaciones.aprobacion_L as aprobacion1, solicitudvaciones.aprobacion_D as aprobacion2 ,solicitudvaciones.diasRestantes ,solicitudvaciones.documentoURL as documento, solicitudvaciones.diasCorrespondientes from solicitudvaciones where user_ID ='".$idUsuario."'";
 		}else{
 			$query = "SELECT solicitudvaciones.solicitud_ID, solicitudvaciones.fechaSolicitud as fecha, solicitudvaciones.fechaI as fecha1, solicitudvaciones.fechaF as fecha2, solicitudvaciones.diasSolicitados as dias, solicitudvaciones.diasAdicionales as adicionales, solicitudvaciones.aprobacion_L as aprobacion1, solicitudvaciones.aprobacion_D as aprobacion2 ,solicitudvaciones.diasRestantes, solicitudvaciones.documentoURL as documento from solicitudvaciones where user_ID ='".$idUsuario."' ORDER BY solicitudvaciones.solicitud_ID LIMIT ".$Inicio.",".$TAMANO_PAGINA;
 		}

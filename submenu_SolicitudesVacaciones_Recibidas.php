@@ -48,7 +48,6 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 <script type="text/javascript">
 	$(document).ready(function(){
 		var error =  "<?php echo $mensaje; ?>";
-		
 		if (error != "") {
 			swal({title: "CONFIRMACIÓN",text: error,type: "info",timer:3000,showConfirmButton:false});
 		}
@@ -122,8 +121,6 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 							echo '<a href="'.$url.'?pagina='.($pagina+1).'"><span  class="glyphicon glyphicon-chevron-right"></span></a>';
 							}
 							echo '</p>';
-						}else{
-							echo "<div class='col-sm-12'><p>".$mensaje."</p></di>";
 						}
 				      	?>
     	</div>

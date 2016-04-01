@@ -161,7 +161,7 @@ $mensaje = isset($_GET['mensaje']) ? trim($_GET['mensaje']) : "";
 		}else if(otro != ""){
 			swal({title: "CONFIRMACIÓN",text: otro,type: "info",timer:8000,showConfirmButton:false});
 		}else if(mensaje != ""){
-			swal({title: "CONFIRMACIÓN",text: err,type: "info",timer:3000,showConfirmButton:false});
+			swal({title: "CONFIRMACIÓN",text: mensaje,type: "info",timer:3000,showConfirmButton:false});
 		}
 
 

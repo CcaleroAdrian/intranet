@@ -34,4 +34,9 @@ function descarga(object){
 	}
 }
 
+function comentariosPermiso(){
+	var opcion = document.getElementById('categoria').selectedIndex;
+	var eleccion = opcion
+	if (true) {}
+}
 

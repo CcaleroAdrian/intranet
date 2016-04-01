@@ -1,68 +1,54 @@
-//Calculo de vacaciones
-$antiguedad = 0;
-$fecha= $usr['fechaIngreso'];
-if ($fecha != 0 OR $fecha !="" OR $fecha != null) {
-	$fecha1 = time()-strtotime($fecha);
-	$antiguedad =floor($fecha1 / 31536000);
-}
+<?php
+require 'clases/actionsDB.php'; 
+$id = $_GET['id'];
 
-if($antiguedad > 0){
-  if ($antiguedad >= 4 OR $antiguedad <= 8) {
-     $dias = $objOperaciones->verAntiguedad(4);
-  }else if($antiguedad >=9 OR $antiguedad <= 13){
-     $dias = $objOperaciones->verAntiguedad(9);
-  }else if($antiguedad >=14 OR $antiguedad <= 18){
-     $dias = $objOperaciones->verAntiguedad(14);
-  }else if ($antiguedad >= 19 OR $antiguedad <= 23) {
-    $dias = $objOperaciones->verAntiguedad(19);
-  }else if ($antiguedad >= 24 OR $antiguedad <= 28){
-    $dias = $objOperaciones->verAntiguedad(24);
-  }else if ($antiguedad >= 29 OR $antiguedad <= 34) {
-    $dias = $objOperaciones->verAntiguedad(29);
-  }else{
-    $dias = $objOperaciones->verAntiguedad($antiguedad);
-  }
-  foreach ($dias as $key ) {
-    $vacaciones = $key['Dias'];
-  }
-}else{
-  $vacaciones = 0;
-}
+$objOperaciones = new ActionsDB();
 
-$diasDescontar = 0;
-
-//Consultamos la ultima solicitud exitosa
-$ultimaSolicitud = $objOperaciones->verUltimSolicitudID($ID_USR);
-	
-	if ($ultimaSolicitud) {
-		foreach ($ultimaSolicitud as $key) {
-			$diasDescontar = $key['diasAdicionales'];
-		}
-		//Si hay dias a descontar
-		if ($diasDescontar > 0) {
-			//Consultar año de antiguedad cuando fué solicitado dias adicionales
-			$año = $objOperaciones->verUltimSolicitudID($ID_USR);
-			if ($antiguedad < ($antiguedad + 2)) {
-				$vacaciones = $vacaciones - $diasDescontar;
-			}else{
-
-			}
-
-		}else{
-			$diasDescontar = 0;
-		}
-	}else{
-		$diasDescontar = 0;
-	}
-
-	$vacaciones = $vacaciones - $diasDescontar;
-
-
-
-
-$vacaciones = 0;
-if ($usr['DiasLey'] <= 0) {
-	$vacaciones = 0;
-}else{
-	$vacaciones = $usr['DiasLey'];
-}
+?>
+<div class="panel panel-primary">
+   <div class="panel-heading">DATOS GENERALES</div>
+   <div class="panel-body">
+   		<form>
+   			<table>
+   			<tr>
+   			<td><label>Nombre:</label></td>
+   			<td><input type="text" name="nombre" readonly value=""></input></td>
+   			</tr>
+   			<tr>
+   			<td><label>Fecha inicial:</label></td>
+   			<td><input type="date" name="fechaInicio" value=""></input></td>
+   			<td><label>Fecha final:</label></td>
+   			<td><input type="date" name="fechaFinal" value=""></input></td>
+   			</tr>
+   			<tr>
+   			<td><label>D&iacute;as Correspondientes:</label></td>
+   			<td><input type="number" name="vacaciones" value></input></td>
+   			<td><label>D&iacute;as Solicitados:</label></td>
+   			<td><input type="number" name="diasSolicitados" value></input></td>
+   			</tr>
+   			<tr>
+   			<td><label>D&iacute;as Adicionales:</label></td>
+   			<td><input type="number" name="diasAdicionales"></input></td>
+   			<td><label>D&iacute;as Restantes:</label></td>
+   			<td><input type="number" name="diasRestantes"></input></td>
+   			</tr>
+   			<tr>
+   			<td><label>Aprobaci&oacute;n del Gerente:</label></td>
+   			<td><select name="AprobacionGerente">
+   				<option value="1">PENDIENTE</option>
+   				<OPTION value="2">APROVADA</OPTION>
+   				<option value="3">RECHAZADA</option>
+   			</select></td>
+   			<td><label>Aprobaci&oacute;n del Director:</label></td>
+   			<td><select name="AprobacionDirector">
+   				<option value="1">PENDIENTE</option>
+   				<OPTION value="2">APROVADA</OPTION>
+   				<option value="3">RECHAZADA</option>
+   			</select></td>
+   			</tr>
+   		</table>
+   		<div class="col-sm4"><input type="submit" value="GUARDAR"></input></div>
+   		</form>
+   		
+   </div>
+ </div>

@@ -44,11 +44,11 @@ $objOperaciones = new ActionsDB();
 			</tr>
 			<tr>
 				<td><label>Categoría:</label></td>
-				<td><select class="form-control">
-					<option value="">--Seleccionar--</option>
-					<option value="">Incapacidad</option>
-					<option value="">Personal</option>
-					<option value="">Enfermedad</option>
+				<td><select class="form-control" id="categoria">
+					<option value="SELECCIONAR">--Seleccionar--</option>
+					<option value="INCAPACIDAD">INCAPACIDAD</option>
+					<option value="PERSONAL">PERSONAL</option>
+					<option value="ENFERMEDAD">ENFERMEDAD</option>
 				</select></td>
 				<td>&#160;</td>
 				<td><label>D&iacuteas solicitados:</label></td>

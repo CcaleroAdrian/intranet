@@ -6,7 +6,7 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 	}
 
 	//*******PAGINACION DE RESULATADO********
-	$url = "/intranet/sub_menuDirectorio.php";
+	$url = "/intranet/sub_menuDirectorio.php"; 
 	//Instanciamos la clase que tiene las operaciones a la base de datos
 	$objUsuarios = new ActionsDB();
 	// Obtenemos los campos de la tabla usuarios

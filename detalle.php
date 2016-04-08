@@ -3,36 +3,39 @@ require 'clases/actionsDB.php';
 $id = isset($_GET['id']) ? trim($_GET['id']) : "";
 $opcion = isset($_GET['opcion']) ? trim($_GET['opcion']) : "";
 $objOperaciones = new ActionsDB();
+$diasLey = 0;
 	
 //COnsultamos la informacion del usuario
 $usr = $objOperaciones->getDatosPerfilID($id); 
-foreach ($usr as $key) {
-	$nombre = utf8_encode($key["nombre"].' '.$key['paterno'].' '.$key['materno']);
-	$fechaIngreso = $key['fechaIngreso'];
-	$diasLey = $key['DiasLey'];
+if ($usr != 0 || $usr != -1)   {
+  foreach ($usr as $key) {
+  $nombre = utf8_encode($key["nombre"].' '.$key['paterno'].' '.$key['materno']);
+  $fechaIngreso = $key['fechaIngreso'];
+  $diasLey = $key['DiasLey'];
+  }
+
+  if ($diasLey < 0) {
+    $diasLey = 0;
+  }
 }
 
-if ($diasLey < 0) {
-	$diasLey = 0;
-}
 
 //Consultamos la ultima solicitud realizada
 $registro = $objOperaciones->verUltimSolicitudID($id);
 
 //Consultamos todas las solicitudes realizadas por este usuario
 $dat = $objOperaciones->verSolicitudes($id);
-//print_r($dat);
 if ($dat != 0 OR $dat != -1) {
-   foreach ($dat as $value) {
-    $fechaSoli = $value['fecha'];
-    $dias = $value['dias'];
-    $adicionales = $value['adicionales'];
-    $diasRestantes = $value['diasRestantes'];
-    $diasCorrespondientes = $value['diasCorrespondientes'];
-    $fechaInicio = $value['fecha1'];
-    $fechaFinal = $value['fecha2'];
-    $aprobacionA = $value['aprobacion1'];
-    $aprobacionB = $value['aprobacion2'];
+   foreach ($dat as$val) {
+    $fechaSoli =$val['fecha'];
+    $dias =$val['dias'];
+    $adicionales =$val['adicionales'];
+    $diasRestantes =$val['diasRestantes'];
+    $diasCorrespondientes =$val['diasCorrespondientes'];
+    $fechaInicio =$val['fecha1'];
+    $fechaFinal =$val['fecha2'];
+    $aprobacionA =$val['aprobacion1'];
+    $aprobacionB =$val['aprobacion2'];
     }
 }
 
@@ -64,6 +67,11 @@ if ($dat != 0 OR $dat != -1) {
     padding: 0;
   }
 </style>
+<script type="text/javascript">
+  $(document).load(function(){
+    window.close();
+  });
+</script>
 <?php   //Codigo para realizar l
   if ($opcion == 1) { ?>
 <body style="padding-left: 20px;">
@@ -157,14 +165,25 @@ if ($dat != 0 OR $dat != -1) {
 
        //Proceso de actualizacion de datos
       $btn = isset($_POST['guardar']) ? trim($_POST['guardar']) : "";
+      $mensaje = "";
       if ($btn == "GUARDAR") {
         $fecha1 = isset($_POST['date1']) ? trim($_POST['date1']) : "";
         $fecha2 = isset($_POST['date2']) ? trim($_POST['date2']) : "";
         $diasC = isset($_POST['diasCorresp']) ? trim($_POST['diasCorresp']) : "";
-        $diasS = isset($_POST['diasSolici']) ? trim($_POST['diasSolici']) : "";
+        $diasS = isset($_POST['diasSolicitados']) ? trim($_POST['diasSolicitados']) : "";
         $diasA = isset($_POST['diasAdicionales']) ? trim($_POST['diasAdicionales']) : "";
         $diasR = isset($_POST['diasRestantes']) ? trim($_POST['diasRestantes']) : "";
-
+        $aprobacionG = isset($_POST['AprobacionGerente']) ? trim($_POST['AprobacionGerente']) : "";
+        $aprobacionD = isset($_POST['AprobacionDirector']) ? trim($_POST['AprobacionDirector']) : "";
+        //actualizarSolicitudVacaciones($fechaInicial,$fechaFinal,$diasCorrespondientes,$diasSolicitados, $diasAdiconales, $diasRestantes,$aporbacionLider, $aporbacionDirector, $user_ID)
+        $actualizacion = $objOperaciones->actualizarSolicitudVacaciones($fecha1,$fecha2,$diasC,$diasS,$diasA,$diasR,$aprobacionG,$aprobacionD,$id);
+        if ($actualizacion == true) {
+          $mensaje="solicitud actualizada";
+          header("Location:submenu_AdminVacaciones.php?mensaje=".$mensaje."");
+        }else{
+          $mensaje="error al actualizar la modificación de la solicitud, favor de intentarlo mas tarde.";
+          header("Location:submenu_AdminVacaciones.php?error=".$mensaje."");
+        }
       }
 
 
@@ -190,6 +209,16 @@ if ($dat != 0 OR $dat != -1) {
         var ONE_DAY = 1000 * 60 * 60 * 24;
         var diffDays = Math.round(Math.abs((fecha1.getTime() - fecha2.getTime())/(ONE_DAY)));
         document.getElementById('diasSolici').value = diffDays +1;
+
+        var diasV = $('#Vacaciones').val();
+        var diasS = diffDays +1; 
+        if (diasS > diasV) {//comprobar dias adicionales
+          $("#diasAdicionales").val(diasS-diasV);
+          $("#diasRestantes").val(0);
+        } else {
+          $("#diasAdicionales").val(0);
+          $("#diasRestantes").val(diasV-diasS);
+        }
       }
 
   	</script>
@@ -218,16 +247,16 @@ if ($dat != 0 OR $dat != -1) {
    			<tr><td>&#32;</td></tr>
    			<tr>
    			<td><label>D&iacute;as Correspondientes:</label></td>
-   			<td><input type="text" name="diasCorresp"  class="textboxBloqueado" name="vacaciones" value="<?php echo $diasCorrespondientes; ?>" size="2"  readonly></input></td>
+   			<td><input id="Vacaciones" type="text" name="diasCorresp"  class="textboxBloqueado" value="<?php echo $diasCorrespondientes; ?>" size="2"  readonly></input></td>
    			<td><label>D&iacute;as Solicitados:</label></td>
    			<td><input id="diasSolici" type="text"  class="textboxBloqueado" name="diasSolicitados" value="<?php echo $dias; ?>" size="2" readonly></input></td>
    			</tr>
    			<tr><td>&#32;</td></tr>
    			<tr>
    			<td><label>D&iacute;as Adicionales:</label></td>
-   			<td><input type="text" name="diasAdicionales" class="textboxBloqueado" name="diasAdicionales" value="<?php echo $adicionales; ?>" size="2" readonly></input></td>
+   			<td><input id="diasAdicionales" type="text" name="diasAdicionales" class="textboxBloqueado" value="<?php echo $adicionales; ?>" size="2" readonly></input></td>
    			<td><label>D&iacute;as Restantes:</label></td>
-   			<td><input type="text" name="diasRestantes" class="textboxBloqueado" name="diasRestantes" value="<?php echo $diasRestantes; ?>" size="2" readonly></input></td>
+   			<td><input id="diasRestantes" type="text" name="diasRestantes" class="textboxBloqueado" value="<?php echo $diasRestantes; ?>" size="2" readonly></input></td>
    			</tr>
    			<tr><td>&#32;</td></tr>
    			<tr>

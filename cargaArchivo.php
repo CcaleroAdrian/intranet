@@ -6,7 +6,7 @@ $id = $_POST['idArchivo'];
 //El nombre original del fichero en la máquina cliente. 
 $fechaCarga=date('d/m/Y');
 $nombreArchivo = $_FILES['documentos']['name'];
-$nombreArchivo= $nombreArchivo.$fechaCarga;
+//$nombreArchivo= $fechaCarga.$nombreArchivo;
 //$nombreArchivo ="DocumentoSoporte(".$fechaCarga.").pdf";
 
 //El tipo mime del fichero (si el navegador lo proporciona). Un ejemplo podría ser "image/gif". 
@@ -25,9 +25,11 @@ $carpeta = "../intranet/DocumentosSoporte/".$nombreArchivo;
 			$mensaje = "El archivo ha sido cargado correctamente.";
 			$objOperaciones = new ActionsDB();
 			$objOperaciones->updateArchivo($id,$nombreArchivo);
+			echo $mensaje;
 			header("Location: ../intranet/submenu_Solicitud_Vacaciones.php?mensaje='".$mensaje."'");
 		}else{
 			$mensaje = "Error al cargar el archivo.";
+			echo $mensaje;
 			header("Location: ../intranet/submenu_Solicitud_Vacaciones.php?mensaje='".$mensaje."'");
 		}
 		 

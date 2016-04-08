@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!DOCTYPE html>
 <?php
 	
 	require 'clases/sesion.php';
@@ -68,7 +68,7 @@
 		}
 		xmlhttp.open("POST","notificarCorreo.php");
 		xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-		//xmlhttp.send(); 
+		xmlhttp.send(); 
 
 
 		$('#icono').on('click',function(e){

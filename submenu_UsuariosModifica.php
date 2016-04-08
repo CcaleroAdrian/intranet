@@ -8,6 +8,7 @@
 	$nombre = "";
 	$inicio = "";
 	$TAMANO_PAGINA="";
+	$mostrar ="";
 
 	$objUsuarios = new ActionsDB();
 	// Obtenemos los campos de la tabla usuarios para presentarla en el perfil
@@ -64,7 +65,65 @@
 		 }
  		return nuevoAlias;
 	}
- 
+
+	function verOpcion(fila){
+		area = fila.getAttribute("data-area");
+		id = fila.getAttribute("data-id");
+
+		swal({   title: "ASIGNACIÓN DE GERENTES",
+				   text: "Seleccione la opción a realizar",
+				   type: "warning",
+				   showCancelButton: true,
+				   confirmButtonColor: " #337ab7",
+				   cancelButtonColor: "#ff3333",
+				   confirmButtonText: "Asignar",
+				   cancelButtonText: "Deshasignar",
+				   closeOnConfirm: false,
+				   closeOnCancel: false
+				}, 
+				function(isConfirm){ 
+				  if (isConfirm) {
+				  	swal({title:"ASIGNACIÓN DE GERENTE",
+				  		  text:"El usuario ha sido asignado como gerente.",
+				  		  type:"info",
+				  		  confirmButtonColor: " #337ab7",
+				  		  showConfirmButton:false,
+				  		  timer:2000
+				  		}); 
+				  	guardarDatos(id,area,3);
+				  } else{
+				  	swal({title:"DESHASIGNACIÓN DE GERENTE",
+				  	text: "El usuario ha sido deshasignado como gerente.",
+				  	type: "info",
+				  	confirmButtonColor: " #337ab7",
+				    confirmButtonText: "OK"
+				  	});
+				  	guardarDatos(id,area,4);
+				  }
+				});
+		
+
+	}
+ 	
+ 	function guardarDatos(id,area,opcion){
+ 		var xmlhttp;
+		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+					xmlhttp=new XMLHttpRequest();
+				
+		}else{// code for IE6, IE5
+					xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+		}
+		
+		xmlhttp.onreadystatechange=function(){
+			if (xmlhttp.readyState==4 && xmlhttp.status==200){
+				var resultado =xmlhttp.responseText;
+			}
+		}
+		xmlhttp.open("POST","acciones.php",true);
+		xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		xmlhttp.send("opcion="+opcion+"&id="+id+"&area="+area);
+ 	}
+
     $(window).load(function(){
     	var otro = "<?php echo isset($_GET['mensaje']) ? trim(utf8_decode($_GET['mensaje'])) : ""; ?>";
     	var usuario = "<?php echo isset($_GET['usuario']) ? trim(utf8_decode($_GET['usuario'])) : "";?>";
@@ -90,21 +149,42 @@
   			<input id="filtroTabla" onkeyup="busqueda({opcion:4,id:0})" class="form-control glyphicon glyphicon-search" size="35" align="center" autofocus>
   			</div>
 		</form><br>
-		<table width="95%"  align="center" cellpadding="2" cellspacing="3"  class="table table-condensed table-responsive" border="0" bordercolor="#eeeeee">
-          <tr class="active">
+		<table width="95%"  align="center" cellpadding="2" cellspacing="3"  class="table table-responsive" border="0" bordercolor="#eeeeee">
+          <thead class="active">
             <th height="14" scope="col" style="display:none;"><span >Usuario</span></th>
             <th height="14" scope="col" ><span >Nombre(s)</span></th>
             <th height="14" scope="col"><span >Paterno</span></th>
             <th height="14" scope="col"><span >Materno</span></th>
             <th height="14" scope="col"><span >Perfil</span></th>
             <th height="14" scope="col"><span >Estado</span></th>
-            <th height="14" scope="col"><span >Modificar</span></th>
-            <th height="14" scope="col"><span >Eliminar</span></th>
-          </tr>
+            <th height="14" scope="col" style="text-align: center;" colspan="3"><span >Acción</span></th>
+          </thead>
           <tbody id="cuerpo">
 		  <?php 
 		  	foreach ( $usuarios as $reg  )  {
-        		echo "<tr><td style='display:none;''>".$reg["usrIntranet"]."</td> <td>".utf8_encode($reg["nombre"])."</td> <td>".utf8_encode($reg["paterno"])."</td> <td>".utf8_encode($reg["materno"])."</td><td>".$reg["facultad"]."</td> <td>".$reg["estado"]."</td> <td> <a href='page_ModificaUsuario.php?Usuario=".$reg["usrIntranet"]."'> <div align='center'><span class='glyphicon glyphicon-pencil' style='color:black;'></span></div><a/></td><td> <a href='page_EliminaUsuario.php?Usuario=".$reg["idUsuario"]."&nombre=".utf8_encode($reg['nombre'].' '.$reg['paterno'].' '.$reg['materno'])."'> <div align='center'><span class='glyphicon glyphicon-remove' style='color:red;'></span></div> <a/>  </td> </tr>";
+		  		$dato = $objUsuarios->verGerente($reg["idUsuario"]);
+		  		$numRegi = count($dato);
+	
+		  		if ($numRegi != 0) {
+		  			$mostrar = "GERENTE";
+		  		}else{
+		  			$mostrar="";
+		  		}
+        		echo "<tr>
+        			<td style='display:none;''>".$reg["usrIntranet"]."</td>
+        			<td>".utf8_encode($reg["nombre"])."</td> 
+        			<td>".utf8_encode($reg["paterno"])."</td> 
+        			<td>".utf8_encode($reg["materno"])."</td>
+        			<td>".$reg["facultad"]."</td> 
+        			<td>".$mostrar."</td> 
+        			<td style='text-align: center;'><a href='page_ModificaUsuario.php?Usuario=".$reg["usrIntranet"]."'><i class='fa fa-pencil'></i>
+        			</td>
+        			<td style='text-align: center;'><a href='page_EliminaUsuario.php?Usuario=".$reg["usrIntranet"]."'><i class='fa fa-trash' style='color:red;'></i></a>
+        			</td>
+        			<td style='text-align: center;'><a onclick='verOpcion(this)' data-id='".$reg["idUsuario"]."' data-area='".$reg['area_ID']."'><i class='fa fa-street-view'></i></a>
+        			</td>
+        			
+        			</tr>";
 		  	}
 		  ?> 
 		  </tbody>

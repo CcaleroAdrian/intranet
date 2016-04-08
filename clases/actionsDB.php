@@ -166,7 +166,7 @@ class ActionsDB{
 					sexo.desc AS genero , usuarios.idCivil as idCivil, estado_civil.desc AS civil , usuarios.direccion as direccion, 
 					usuarios.fechaIngreso as fechaIngreso, usuarios.fechaSalida as fechaSalida ,usuarios.telPersonal as telPersonal, 
 					usuarios.celPersonal as celPersonal, lower( usuarios.emailPersonal ) as emailPersonal, usuarios.telOfna as telOfna, 
-					usuarios.celOfna as celOfna, lower( usuarios.emailOfna ) as emailOfna, usuarios.direccionOfna as direccionOfna  
+					usuarios.celOfna as celOfna, lower( usuarios.emailOfna ) as emailOfna, usuarios.direccionOfna as direccionOfna, usuarios.area_ID, usuarios.Proyecto_id
 					FROM   usuarios 
 					LEFT JOIN perfil ON perfil.idPerfil = usuarios.idPerfil
 					LEFT JOIN estatus ON estatus.idEstatus = usuarios.idEstatus
@@ -181,7 +181,7 @@ class ActionsDB{
 					sexo.desc AS genero , usuarios.idCivil as idCivil, estado_civil.desc AS civil , usuarios.direccion as direccion, 
 					usuarios.fechaIngreso as fechaIngreso, usuarios.fechaSalida as fechaSalida ,usuarios.telPersonal as telPersonal, 
 					usuarios.celPersonal as celPersonal, lower( usuarios.emailPersonal ) as emailPersonal, usuarios.telOfna as telOfna, 
-					usuarios.celOfna as celOfna, lower( usuarios.emailOfna ) as emailOfna, usuarios.direccionOfna as direccionOfna  
+					usuarios.celOfna as celOfna, lower( usuarios.emailOfna ) as emailOfna, usuarios.direccionOfna as direccionOfna, usuarios.area_ID ,usuarios.Proyecto_id 
 					FROM   usuarios 
 					LEFT JOIN perfil ON perfil.idPerfil = usuarios.idPerfil
 					LEFT JOIN estatus ON estatus.idEstatus = usuarios.idEstatus
@@ -196,7 +196,7 @@ class ActionsDB{
 					sexo.desc AS genero , usuarios.idCivil as idCivil, estado_civil.desc AS civil , usuarios.direccion as direccion, 
 					usuarios.fechaIngreso as fechaIngreso, usuarios.fechaSalida as fechaSalida ,usuarios.telPersonal as telPersonal, 
 					usuarios.celPersonal as celPersonal, lower( usuarios.emailPersonal ) as emailPersonal, usuarios.telOfna as telOfna, 
-					usuarios.celOfna as celOfna, lower( usuarios.emailOfna ) as emailOfna, usuarios.direccionOfna as direccionOfna  
+					usuarios.celOfna as celOfna, lower( usuarios.emailOfna ) as emailOfna, usuarios.direccionOfna as direccionOfna, usuarios.area_ID  ,usuarios.Proyecto_id
 					FROM   usuarios 
 					LEFT JOIN perfil ON perfil.idPerfil = usuarios.idPerfil
 					LEFT JOIN estatus ON estatus.idEstatus = usuarios.idEstatus
@@ -1181,6 +1181,115 @@ class ActionsDB{
 			}
 	}
 
+	public function actualizarSolicitudVacaciones($fechaInicial,$fechaFinal,$diasCorrespondientes,$diasSolicitados, $diasAdiconales, $diasRestantes,$aporbacionLider, $aporbacionDirector, $user_ID){
+		
+		$query =" UPDATE solicitudvaciones SET fechaI='".$fechaInicial."',fechaF='".$fechaFinal."',diasCorrespondientes='".$diasCorrespondientes."',diasSolicitados='".$diasSolicitados."',diasAdicionales='".$diasAdiconales."',diasRestantes='".$diasRestantes."',aprobacion_L='".$aporbacionLider."',aprobacion_D='".$aporbacionDirector."' where user_ID ='".$user_ID."'";
+
+		$resultado = false;
+		
+		$mysqli = $this->objDb->getConnAdmin();
+		if ($mysqli->connect_errno) {
+			$resultado = false; 
+		}else{
+			if ( $mysqli->query($query) ) {
+			 $resultado = true; 
+			}
+			$mysqli->close();
+		} 
+		return $resultado;
+	}
+
+	public function inserSolicitudPermiso($usuario,$fecha1, $fecha2, $dias,$motivo,$descripcion, $proyecto){
+		$query = "INSERT INTO `solicitudpermisos`(`user_ID`, `fechaInicio`, `fechaFinal`, `diasSolicitados`, `motivo`, `descripcion`,`Proyecto`) VALUES ('".$usuario."','".$fecha1."','".$fecha2."','".$dias."','".$motivo."','".$descripcion."','".$proyecto."')";
+
+		$mysqli = $this->objDb->getConnAdmin();
+		if ($mysqli->connect_errno) {
+			$resultado = false;
+		}else{
+			if ( $mysqli->query( $query ) ) {
+				$resultado = true; 
+			} else {
+				$resultado = false;  
+			}
+			$mysqli->close();
+		} 
+		return $resultado;
+	}
+
+	public function consultarSolicitudesPermiso($id){
+		$query="SELECT * FROM `solicitudpermisos` WHERE `user_ID` = '".$id."'";
+
+		$mysqli = $this-> objDb->getConnBasic();
+		if ($mysqli->connect_errno) {
+				$return -1;
+		}else{
+			if (!$resultado = $mysqli->query($query)) {
+				return -1;
+			}else{
+				$datos = $resultado->num_rows;
+				$users = array();
+				while ($usr = $resultado->fetch_assoc()) {
+					$users[]=$usr;
+				}
+					return $users;
+			}
+				$mysqli->close();
+		}
+	}
+
+	public function asignarGerente($id,$area){
+		$query="INSERT INTO `proyectos`(`usuario_ID`, `area_ID`) VALUES (".$id.",".$area.")";
+		$mysqli = $this->objDb->getConnAdmin();
+		if ($mysqli->connect_errno) {
+			$resultado = false;
+		}else{
+			if ( $mysqli->query( $query ) ) {
+				$resultado = true; 
+			} else {
+				$resultado = false;  
+			}
+			$mysqli->close();
+		} 
+		return $resultado;
+	}
+
+	public function eliminarGerente($id,$area){
+		$query="DELETE FROM `proyectos` WHERE usuario_ID ='".$id."'";
+		$mysqli = $this->objDb->getConnAdmin();
+		if ($mysqli->connect_errno) {
+			$resultado = false;
+		}else{
+			if ( $mysqli->query( $query ) ) {
+				$resultado = true; 
+			} else {
+				$resultado = false;  
+			}
+			$mysqli->close();
+		} 
+		return $resultado;
+	}
+
+	public function verGerente($proyecto){
+		$resultado = false; 
+		$query="SELECT  `usuario_ID`, `area_ID` FROM `proyectos` WHERE `usuario_ID`= ".$proyecto."";
+		
+		$mysqli = $this-> objDb->getConnBasic();
+		if ($mysqli->connect_errno) {
+				$return -1;
+		}else{
+			if (!$resultado = $mysqli->query($query)) {
+				return -1;
+			}else{
+				$datos = $resultado->num_rows;
+				$users = array();
+				while ($usr = $resultado->fetch_assoc()) {
+					$users[]=$usr;
+				}
+					return $users;
+			}
+			$mysqli->close();
+		}
+	}
 }
 
 

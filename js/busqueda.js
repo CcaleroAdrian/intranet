@@ -54,7 +54,7 @@ function fechas(){
 		var acccion = "";
 		var diasV = $('#Vacaciones').val();//Dias de vaciones disponibles
 		var diasS = diffDays +1; 
-		if (diasS > 0) {//comprobar que se han solicitado dias
+		if (diasS > 0) {//comprobar que se han solicitado dias 
 		
 			if (diasS > diasV) {//comprobar dias adicionales
 				$("#diasAdicionales").val(diasS-diasV);

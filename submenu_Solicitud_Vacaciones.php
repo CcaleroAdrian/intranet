@@ -17,6 +17,7 @@ $error2 = "";
 $ID_USR;
 $VisualizarR = false;
 $TAMANO_PAGINA = 5;
+$area="";
 
 //OBTENER INFO DIRECTOR
 $director = $objOperaciones->DatosDirector();
@@ -56,38 +57,7 @@ if ($director) {
 		}
 	}
 
-	$dat = $objOperaciones->verSolicitudes($ID_USR);
-	//print_r($dat);
-	if ($dat == 0 OR $dat == -1) {
-		$VisualizarR = false;
-		$error2 = "No fué posible recuperar las solicitudes realizadas anteriormente";
-	}else{
-		$VisualizarR = true;
-
-		//REALIZAMOS PAGINACION
-		//*******PAGINACION DE RESULTADO********
-		$url = "/intranet/sub_menu_Solicitud_Vacaciones.php";
-		//Instanciamos la clase que tiene las operaciones a la base de datos
-		$numRegi = count($dat);
-		//Limito los resultados por pagina
-		 
-		$pagina = false;
-		//examino la pagina a mostrar y el inicio del registro a mostrar
-	    if (isset($_GET["pagina"]))
-	        $pagina = $_GET["pagina"];
-
-			if (!$pagina) { 
-			   	$inicio = 0; 
-			   	$pagina = 1; 
-			} 
-			else { 
-			   	$inicio = ($pagina - 1) * $TAMANO_PAGINA; 
-			}
-			//calculo el total de páginas 
-			$total_paginas = ceil($numRegi / $TAMANO_PAGINA); 
-
-			$usuarios = $objOperaciones->verSolicitudes($ID_USR,$inicio,$TAMANO_PAGINA);
-	}
+	
 
 //********Enviar el correo de notificacion*********
 //Recuperamos los datos a enviar por correo
@@ -126,7 +96,7 @@ if ($btn == "Enviar") {
 			}
 			$success = "Se realiz&oacute; el registro de su solicitud " ;
 			$usuarios = $objOperaciones->verSolicitudes($ID_USR,0,$TAMANO_PAGINA);
-			header("Refresh:0");
+			//header("Refresh:0");
 		} else { 
 			$error1 = "Hubo un error al registrar su solicitud. Favor de intentarlo más tarde";
 		}
@@ -146,6 +116,8 @@ $mensaje = isset($_GET['mensaje']) ? trim($_GET['mensaje']) : "";
 ?>
 <script type="text/javascript">
 	$(document).ready(function(){
+
+		var xmlhttp;
 		var success = "<?php echo utf8_encode($success); ?>";
 		var error =  "<?php echo $error1; ?>";
 		var err = "<?php echo $error2; ?>";
@@ -170,21 +142,48 @@ $mensaje = isset($_GET['mensaje']) ? trim($_GET['mensaje']) : "";
 		var vacaciones = "<?php echo $diasLey; ?>";
 		if (Gerente == 0) {
 			$("#btnSubmit").attr("disabled","disabled");
-		}else if(vacaciones == -1){
+		}else if(vacaciones < 0){
 			$("#btnSubmit").attr("disabled","disabled");
 		}
+
+
+		//Consultamos resultados con ajax
+		paginacion(0);
+
 	});
 
+	function paginacion(pagina){
+		var op = 2;
+		var id = "<?php echo $ID_USR;?>";
+
+		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+					xmlhttp=new XMLHttpRequest();
+				
+			}else{// code for IE6, IE5
+					xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+			}
+		
+			xmlhttp.onreadystatechange=function(){
+				if (xmlhttp.readyState==4 && xmlhttp.status==200){
+					document.getElementById("cuerpo").innerHTML=xmlhttp.responseText;
+				}
+			}
+			
+			xmlhttp.open("POST","acciones.php",true);
+			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			xmlhttp.send("pagina="+pagina+"&opcion="+op+"&id="+id);
+	}
+
 	//Funcion para hacer visible la caja de texto de carga de archivo;
-	function cargarDocumento(Objecto){
-			var datos = Array();
-			datos[0] = Objecto.id;
-			datos[1] = Objecto.documento;
-			if (datos[1] == "cargar documento") {
-				document.getElementById('cargaArchivo').style.visibility= 'initial';
-				$('#idRegistro').val(datos[0]);
+	function cargarDocumento(fila){
+			datos = fila.getAttribute("data-input");
+			id = fila.getAttribute("data-id");
+			if (datos == "cargar documento") {
+				document.getElementById('cargaArchivo').style.display = "block";
+				$('#idRegistro').val(id);
 			}
 	}
+
 
 </script>
 <style type="text/css">
@@ -241,99 +240,7 @@ $mensaje = isset($_GET['mensaje']) ? trim($_GET['mensaje']) : "";
 	</form>	
 	<div class="panel panel-primary">
     <div class="panel-heading">SOLICITUDES ENVIADAS</div>
-    <div class="panel-body">
-    <?php
-    if ($VisualizarR == false) {
-    ?>
-    	<div id="mensaje" align="center" height="30%"></div>
-    	
-    <?php
-    }else{
-    ?>
-	<table class="table table-bordered" id="table_Solicitudes"> 
-			<thead>
-			<tr>
-				<th>N</th>
-				<th >Fecha de solicitud</th>
-				<th >Fecha inicio</th>
-				<th >Fecha fin</th>
-				<th >D&iacuteas Solicitados</th>
-				<th >D&iacuteas adicionales</th>
-				<th>Documento soporte</th>
-				<th>Estatus</th>
-			</tr>
-			</thead>
-			<tbody id="jod">
-				<?php 
-					$nume = 0;
-		      		foreach($usuarios as $row) {
-		      		$nume +=1;
-		      		//Determinar estutus solicitud
-		      		if ($row["adicionales"] != 0) {
-		      			if (($row["aprobacion1"] == 1 AND $row["aprobacion2"] == 1) OR ($row["aprobacion1"] == 2 AND $row["aprobacion2"] == 1)) {//Estatus pendiente
-		      				$Estatus = "PENDIENTE";
-		      			}else if ($row["aprobacion1"] == 2 AND $row["aprobacion2"] == 2) {
-		      				$Estatus = "APROBADA";
-		      			}else{
-		      				$Estatus = "RECHAZADA";
-		      			}
-
-		      		}else{
-		      			if ($row["aprobacion1"] == 1) {
-		      				$Estatus = "PENDIENTE";
-		      			}elseif ($row["aprobacion1"] == 2) {
-		      				$Estatus = "APROBADA";
-		      			}else{
-		      				$Estatus = "RECHAZADA";
-		      			}
-		      		} ?>
-		      	
-						<tr id="celda">
-							<td><?php echo $nume; ?></td>
-							<td><?php echo$row["fecha"]; ?></td>
-							<td><?php echo$row["fecha1"]; ?></td>
-							<td><?php echo$row["fecha2"]; ?></td>
-							<td style="text-align: center;"><?php echo$row["dias"]; ?></td>
-							<td style="text-align: center;"><?php echo$row["adicionales"]; ?></td>
-							<td><a <?php echo($row["documento"] == "cargar documento") ? "" : "href='descargarArchivo.php?id=".$row["solicitud_ID"]."'"; ?> onclick="cargarDocumento({id:<?php echo $row['solicitud_ID']?>,documento:'<?php echo $row['documento'] ?>'})" ><?php echo $row["documento"]; ?></a></td>
-							<td><?php echo$Estatus; ?></td>
-						</tr>
-				<?php
-					}		
-		      	?>
-			</tbody>
-		</table>
-		<?php 
-							if ($total_paginas > 1) {
-								if ($pagina != 1)
-								echo '<a href="'.$url.'?pagina='.($pagina-1).'"><span class="glyphicon glyphicon-chevron-left"></span></a>';
-							for ($i=1;$i<=$total_paginas;$i++) {
-								if ($pagina == $i)
-								//si muestro el �ndice de la p�gina actual, no coloco enlace
-								echo $pagina;
-								else
-								//si el �ndice no corresponde con la p�gina mostrada actualmente,
-								//coloco el enlace para ir a esa p�gina
-								echo '  <a href="'.$url.'?pagina='.$i.'">'.$i.'</a>  ';
-							}
-							if ($pagina != $total_paginas)
-							echo '<a href="'.$url.'?pagina='.($pagina+1).'"><span  class="glyphicon glyphicon-chevron-right"></span></a>';
-							}
-							echo '</p>';
-				      	?>
-		<br>
-		<div class="col-sm-10" id="cargaArchivo" style="visibility: hidden;" ><!---->
-			<form class="form-inline" action="cargaArchivo.php" method="post" enctype="multipart/form-data">
-			<div class="form-group">
-			<input type="text" value="" style="display: none" id="idRegistro" name="idArchivo"></input>
-			<label>Documento soporte:</label>
-			<input id="document" class="form-control" name="documentos" type="file" accept="*"></input>
-			<button type="sumit" class="btn btn-primary">CARGAR</button>
-			</div>
-			</form>
-		</div>
-	 <?php }?>
-		</div>
+    <div class="panel-body" id="cuerpo">
 	</div>
 <?php
 	include("intraFooter.php"); 

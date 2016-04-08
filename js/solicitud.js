@@ -40,3 +40,24 @@ function comentariosPermiso(){
 	if (true) {}
 }
 
+function fechas(){
+	var y = $('#fecha1').val();
+	var x = $('#fecha2').val();
+	
+	var fecha1 = new Date(x);
+	var fecha2 = new Date(y);
+	var ONE_DAY = 1000 * 60 * 60 * 24;
+	var diffDays = Math.round(Math.abs((fecha1.getTime() - fecha2.getTime())/(ONE_DAY)));
+	document.getElementById('diasSolicitados').value = diffDays +1;
+}
+
+function motivos(){
+	var opcion = document.getElementById('categoria').value;
+	if (opcion == 'PERSONAL') {
+		document.getElementById("etiqueta").style.display = "block";
+		document.getElementById("motivo").style.display = "block";
+	}else{
+		document.getElementById("etiqueta").style.display = "none";
+		document.getElementById("motivo").style.display = "none";
+	}
+}

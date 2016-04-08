@@ -9,6 +9,8 @@ include("intraHeader.php");
 	$datos = $objeRestultado->verDetalle();
 	//print_r($datos);
 	$DESCPERFIL_USR;
+	$mensaje = isset($_GET['mensaje']) ? trim($_GET['mensaje']) : "";
+	$error = isset($_GET['error']) ? trim($_GET['error']) : "";
 ?>
 <!DOCTYPE html>
 <html>
@@ -26,6 +28,26 @@ include("intraHeader.php");
 		$('#link').on('click',function(e){
 			e.preventDefault();
 		});
+
+		var mensaje = "<?php echo $mensaje; ?>";
+		var error = "<?php echo $error; ?>";
+		if (mensaje != "") {
+			swal({title: "SOLICITUD DE VACACIONES",
+				   text: "¿Desea solicitar días de vacaciones adicionales?",
+				   type:  "success",
+				   confirmButtonColor: " #337ab7",
+				   confirmButtonText: "ACEPTAR",
+				   closeOnConfirm: false,
+				   closeOnCancel: false}, 
+				function(isConfirm){ 
+				  if (isConfirm) {
+				  	window.close();
+				 }
+			});
+		}
+		if (error != "") {
+			swal({title: "CONFIRMACIÓN",text: error,type: "error",timer:3000,showConfirmButton:false});
+		}
 	});
 	function verDetalle(id){
 		var url = "detalle.php?id="+id+"&opcion="+1+"";

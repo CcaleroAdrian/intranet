@@ -1,18 +1,41 @@
 <?php
 include("intraHeader.php");
 if ( $USUARIO == "" OR  $USUARIO == null ) { 
-		header('Location: index.php');
+		header('Location: index.php'); 
 	}
 
 	//CARGA DE INFORMACION DE USUARIO
-$objOperaciones = new ActionsDB();
-// Obtenemos los campos de la tabla usuarios para presentarla en la solicitud
+	$objOperaciones = new ActionsDB();
+	// Obtenemos los campos de la tabla usuarios para presentarla en la solicitud
 	$usr = $objOperaciones->getDatosPerfil($USUARIO);
 	If ( $usr == -1  OR  $usr == 0 ) {
 		$error1 = "No fué posible recuperar la informaci&oacute;n del usuario: ";
 	} 
 
-	$dat = $objOperaciones->verSolicitudes($ID_USR);
+	//Consultar Area o Departamento del usuario
+	$a = $objOperaciones->verAreas($usr['area_ID']);
+	if ($a) {
+		foreach ($a as $value) {
+			$area = utf8_encode($value['Descripcion']);
+		}
+	}
+
+	$btn = isset($_POST['btnSolicitar']) ? trim($_POST['btnSolicitar']) : "";
+	if ($btn == "Solicitar") {
+
+		$proyecto = $usr['Proyecto_id'];
+		$
+		$categoria = isset($_POST['categoria']) ? trim($_POST['categoria']) : "";
+		$fechaInicio = isset($_POST['fecha1']) ? trim($_POST['fecha1']) : "";
+		$fechaFin = isset($_POST['fecha2']) ? trim($_POST['fecha2']) : "";
+		$dias = isset($_POST['diasS']) ? trim($_POST['diasS']) : "";
+
+		if ($dias != 0) {
+			$resultado = $objOperaciones->inserSolicitudPermiso
+		}
+		
+	}
+	/*$dat = $objOperaciones->verSolicitudes($ID_USR);
 
 	//	print_r($dat);
 	If ($dat == 0 ) {
@@ -20,7 +43,7 @@ $objOperaciones = new ActionsDB();
 		$error2 = "No fué posible recuperar las solicitudes realizadas anteriormente";
 	}else{
 		$VisualizarR = true;
-	}
+	}*/
 ?>
 <meta http-equiv=content-type content=text/html; charset=utf-8>
 <script type="text/javascript" src="js/solicitud.js"></script>
@@ -39,12 +62,12 @@ $objOperaciones = new ActionsDB();
 			</tr>
 			<tr>
 				<td><label >&#193rea o departamento:</label></td>
-				<td><input id="area" name="area" class="bloqueado" value="Desarrollo " disabled></input></td>
+				<td><input id="area" name="area" class="bloqueado" value="<?php echo $area; ?>" disabled></input></td>
 				<td>&#160;</td>
 			</tr>
 			<tr>
 				<td><label>Categoría:</label></td>
-				<td><select class="form-control" id="categoria">
+				<td><select class="form-control" id="categoria" name="categoria" onchange="motivos()">
 					<option value="SELECCIONAR">--Seleccionar--</option>
 					<option value="INCAPACIDAD">INCAPACIDAD</option>
 					<option value="PERSONAL">PERSONAL</option>
@@ -57,15 +80,22 @@ $objOperaciones = new ActionsDB();
 			<tr><td>&#160;</td></tr>
 			<tr>
 			<td ><label>Fecha inicio:</label></td>
-				<td ><input id="fecha1" size="10" type="date" name="fecha1" value="" class="form-control"/></td>
+				<td ><input id="fecha1" size="10" type="date" name="fecha1" value="" onchange="fechas()" class="form-control"/></td>
 				<td>&#160;</td>
 				<td ><label>Fecha fin:</label></td>
 				<td><input type="date" name="fecha2" id="fecha2" onchange="fechas()" size="70px" class="form-control"/></td>
 			</tr>
 			<tr><td>&#160;</td></tr>
 			<tr>
+				<td>
+					<label id="etiqueta" style="display: none;">Motivo:</label>
+				</td>
+				<td colspan="4"><textarea id="motivo" name="comentarios" placeholder="Escribe el motivo de tu solicitud." rows="3" cols="70" style="display: none;"></textarea></td>
+			</tr>
+			<tr><td>&#160;</td></tr>
+			<tr>
 				<td>&#160;</td>
-				<td style="padding-left:25%"><button type =" submit " class ="btn btn-primary " name="btnSolicitar" onclick="solicitud()">&#160;Enviar&#160;</button></td>
+				<td style="padding-left:25%"><button type =" submit " class ="btn btn-primary " name="btnSolicitar" name="Solicitar">&#160;Enviar&#160;</button></td>
 				<td align="left"><!--<button class="btn btn-danger">Cancelar</button>--></td>
 			</tr>
 		</table>
@@ -88,13 +118,11 @@ $objOperaciones = new ActionsDB();
 			<thead>
 			<tr>
 				<th></th>
-				<th class="invisible">ID</th>
-				<th >Fecha de solicitud</th>
 				<th >Fecha inicio</th>
 				<th >Fecha fin</th>
 				<th >D&iacuteas Solicitados</th>
-				<th >D&iacuteas adicionales</th>
-				<th >Estatus</th>
+				<th >Motivo</th>
+				<th> Documento</th>
 			</tr>
 			</thead>
 			<tr>
@@ -105,22 +133,22 @@ $objOperaciones = new ActionsDB();
 		      		}else{
 		      			$Estatus = "APROBADA";
 		      		}
-				echo '<tr>
-							<td>
-								<a href="">Seleccionar</a></td>
-							<td class="invisible">'.$row["solicitud_ID"].'</td>
-							<td>'.$row["fecha"].'</td>
-							<td>'.$row["fecha1"].'</td>
-							<td>'.$row["fecha2"].'</td>
-							<td>'.$row["dias"].'</td>
-							<td>'.$row["adicionales"].'</td>
-							<td>'.$Estatus.'</td>
-						</tr>';
-					}		
+		      	?>
+				<tr>
+					<td>
+						<a href="">Seleccionar</a></td>
+					<td style="display:none;"></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<?php	}		
 		      	?>
 			</tr>
 		</table><br><br/>
-		<div class="col-sm-8">
+		<div class="col-sm-8" style="display: none;">
 			<label>Documento soporte:</label>
 			<input id="document" class="form-control" name="documentos" type="file" accept=".pdf"></input></td>
 		</div>

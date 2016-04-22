@@ -1,12 +1,12 @@
 <?php
 
-	require'clases/actionsDB.php'; 
+	require'clases/actionsDB.php';  
 	require'clases/sesion.php';
 
 	$usr =isset($_POST['usuarioitw']) ? trim( strtolower($_POST['usuarioitw']) ) : "" ;
 	$pwd =isset($_POST['pwditw']) ? trim ( $_POST['pwditw'] ) : "" ;
 	$blnOk = true;
-	if ( $usr <> "" AND $pwd <> "" ) {
+	if ( $usr <> "" AND $pwd <> "" ) { 
 		 
 		if ( !filter_var( $usr , FILTER_VALIDATE_EMAIL)   ) {
 			$blnOk= false;
@@ -21,17 +21,16 @@
 			$objRegistro = $objOperaciones->getUsuarioSesion( $usr , $pwd );
 			if ( $objRegistro == -1 ) {
 				$error = "Falló la conexión con la base de datos.";
-				header('Location: index.php?error=' . $error . ' ');
+				header('Location: index.php?error=' . $objRegistro . ' ');
 			} else if ( $objRegistro == 0 ) {
 				$error = "El usuario o contraseña no son válidos.";
-				header('Location: index.php?usuarioitw='.$usr.'&error=' . $error . ' ');
+				header('Location: index.php?usuarioitw='.$usr.'&error=' . $objRegistro . ' ');
 			} else {
 				//Instanciamos la clase sesión
 				$objSesion = new Sesion();
 
 				//Iniciamos la sesion
 				$objSesion->init();
-				session_set_cookie_params(0, "/", $HTTP_SERVER_VARS["HTTP_HOST"], 0);
 				//Guardamos en sesión el usuario, el idPerfil, la desc. del perfil y su ID
 				$objSesion->set('USUARIO', $objRegistro["usrIntranet"] );
 				$objSesion->set('ID_PERFIL', $objRegistro["idPerfil"]);

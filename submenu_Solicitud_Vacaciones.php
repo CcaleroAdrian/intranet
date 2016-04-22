@@ -156,7 +156,7 @@ $mensaje = isset($_GET['mensaje']) ? trim($_GET['mensaje']) : "";
 		var op = 2;
 		var id = "<?php echo $ID_USR;?>";
 
-		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+			if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
 					xmlhttp=new XMLHttpRequest();
 				
 			}else{// code for IE6, IE5

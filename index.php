@@ -4,7 +4,6 @@
 	
 	$usr = isset($_GET['usuarioitw']) ? trim( strtolower($_GET['usuarioitw']) ) : "" ;
 	if($USUARIO == '' or $USUARIO==null ){
-
 ?>
  
  <script type="text/javascript">

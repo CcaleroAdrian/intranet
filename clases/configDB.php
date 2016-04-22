@@ -1,5 +1,5 @@
 <?php
-class ConfigDB{
+class ConfigDB{ 
 
 	//variables para los datos de la base de datos 
 	public $serverIntranet;  

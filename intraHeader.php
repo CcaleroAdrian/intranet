@@ -1,8 +1,6 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <?php
-	
 	require 'clases/sesion.php';
-	//require 'clases/configCon.php';
 	require 'clases/actionsDB.php';   
 	
 	$objsesion = new Sesion();
@@ -15,20 +13,6 @@
 	
 	// Evitar los warnings the variables no definidas!!!
 	$error = isset($_GET['err']) ? $_GET['err'] : "" ;
-	//Proceso de caducidad de sesión por inactividad
-	$ahora = date("Y-n-j H:i:s"); 
-
-
-    $tiempo_transcurrido = (strtotime($ahora)-strtotime($HoraIngreso)); 
-     //comparamos el tiempo transcurrido 
-    if($tiempo_transcurrido >= 6000) { 
-     //si pasaron 10 minutos o más 
-      header('cerrarSesion.php'); //envío al usuario a la pag. de autenticación 
-      //sino, actualizo la fecha de la sesión 
-    }else { 
-    	$_SESSION["HoraIngreso"] = $ahora; 
-   } 
-	
 	$NumBanner = rand( 1 , 5 )
 ?> 
 <html lang=''>
@@ -63,7 +47,7 @@
 		}
 		xmlhttp.onreadystatechange=function(){
 			if (xmlhttp.readyState==4 && xmlhttp.status==200){
-				console.log("Respuesta:"+xmlhttp.responseText);
+				console.log(xmlhttp.responseText);
 			}
 		}
 		xmlhttp.open("POST","notificarCorreo.php");

@@ -1,5 +1,5 @@
 <?php 
-include('configDB.php');
+include('configDB.php'); 
 
 class ActionsDB{
 	public $objDb; 
@@ -77,13 +77,13 @@ class ActionsDB{
 		//echo $query;
 		$mysqli = $this->objDb->getConnBasic();
 		if ($mysqli->connect_errno) { 
-			$res = -1;
+			$res = 'error de conexion';
 		}else{
 			if (!$resultado = $mysqli->query($query)) { 
-				$res = -1;
+				$res = 'error en query';
 			}else {
 				if ($resultado->num_rows == 0) {   
-					$res = 0;
+					$res = 'no hay resultados';
 				} else {  
 					$res = $resultado->fetch_assoc(); // regresamos los campos
 					$resultado->free();
@@ -1273,6 +1273,118 @@ class ActionsDB{
 		$resultado = false; 
 		$query="SELECT  `usuario_ID`, `area_ID` FROM `proyectos` WHERE `usuario_ID`= ".$proyecto."";
 		
+		$mysqli = $this-> objDb->getConnBasic();
+		if ($mysqli->connect_errno) {
+				$return -1;
+		}else{
+			if (!$resultado = $mysqli->query($query)) {
+				return -1;
+			}else{
+				$datos = $resultado->num_rows;
+				$users = array();
+				while ($usr = $resultado->fetch_assoc()) {
+					$users[]=$usr;
+				}
+					return $users;
+			}
+			$mysqli->close();
+		}
+	}
+
+	public function guardadActividad($ID,$fecha,$Act,$Ge,$L,$Ma,$M,$J,$V,$MES){
+		$query = "INSERT INTO actividades_usuario (usuarioID, fechaActividad, actividad, Gerente, L, Ma, M, J, V, MES) VALUES ('".$ID."','".$fecha."','".$Act."','".$Ge."','".$L."','".$Ma."','".$M."','".$J."','".$V."','".$MES."')";
+
+		$mysqli = $this->objDb->getConnAdmin();
+		if ($mysqli->connect_errno) {
+			$resultado = false;
+		}else{
+			if ( $mysqli->query( $query ) ) {
+				$resultado = true; 
+			} else {
+				$resultado = false;  
+			}
+			$mysqli->close();
+		} 
+		return $resultado;
+	}
+
+	public function actividadesMesUsuario($ID,$fechaIncio,$fechaFin){
+		$query = "SELECT`actividad_ID`,`fechaActividad`,`actividad`,`L`,`Ma`,`M`,`J`,`V` FROM `actividades_usuario` WHERE `usuarioID` = ".$ID." AND  fechaActividad BETWEEN '".$fechaIncio."' AND '".$fechaFin."'";
+
+		$mysqli = $this-> objDb->getConnBasic();
+		if ($mysqli->connect_errno) {
+				$return -1;
+		}else{
+			if (!$resultado = $mysqli->query($query)) {
+				return -1;
+			}else{
+				$datos = $resultado->num_rows;
+				$users = array();
+				while ($usr = $resultado->fetch_assoc()) {
+					$users[]=$usr;
+				}
+				return $users;
+			}
+			$mysqli->close();
+		}
+	}
+
+	public function consultarActividadID($id){
+		$query = "SELECT `actividad_ID`,`fechaActividad`,`actividad`,`L`,`Ma`,`M`,`J`,`V` FROM `actividades_usuario` WHERE `actividad_ID` = '".$id."'";
+
+		$mysqli = $this-> objDb->getConnBasic();
+		if ($mysqli->connect_errno) {
+				$return -1;
+		}else{
+			if (!$resultado = $mysqli->query($query)) {
+				return -1;
+			}else{
+				$datos = $resultado->num_rows;
+				$users = array();
+				while ($usr = $resultado->fetch_assoc()) {
+					$users[]=$usr;
+				}
+					return $users;
+			}
+			$mysqli->close();
+		}
+	}
+
+	public function updateActividad($ID,$FECHA,$ACTIVIDAD,$LUNES,$MARTES,$MIERCOLES,$JUEVES,$VIERNES){
+		$query = "UPDATE `actividades_usuario` SET `fechaActividad`='".$FECHA."',`actividad`='".$ACTIVIDAD."',`L`='".$LUNES."',`Ma`='".$MARTES."',`M`='".$MIERCOLES."',`J`='".$JUEVES."',`V`='".$VIERNES."' WHERE `actividad_ID` ='". $ID."'";	
+		$resultado = false;
+		
+		$mysqli = $this->objDb->getConnAdmin();
+		if ($mysqli->connect_errno) {
+			$resultado = false; 
+		}else{
+			if ( $mysqli->query($query) ) {
+			 $resultado = true; 
+			}
+			$mysqli->close();
+		} 
+		return $resultado;
+	}
+
+	public function deleteActividad($ID){
+		$query="DELETE FROM `actividades_usuario` WHERE `actividad_ID`='".$ID."'";
+		$mysqli = $this->objDb->getConnAdmin();
+		if ($mysqli->connect_errno) {
+			$resultado = false;
+		}else{
+			if ( $mysqli->query( $query ) ) {
+				$resultado = true; 
+			} else {
+				$resultado = false;  
+			}
+			$mysqli->close();
+		} 
+		return $resultado;
+	}
+
+	public function verUsuariosActividades(){
+		$query = "SELECT u.idUsuario,au.actividad_ID,u.nombre,u.paterno,u.materno FROM usuarios as u INNER JOIN actividades_usuario as au on u.idUsuario = au.usuarioID GROUP BY u.idUsuario";
+
 		$mysqli = $this-> objDb->getConnBasic();
 		if ($mysqli->connect_errno) {
 				$return -1;

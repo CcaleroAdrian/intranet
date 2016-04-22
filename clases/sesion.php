@@ -15,12 +15,10 @@ class Sesion{
 	}
 	
 	public function destroy(){
-		
 		session_unset();
 		session_destroy();
 		
 	}
-	
 }
 
 ?>

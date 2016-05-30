@@ -18,46 +18,7 @@ $ID_USR;
 $VisualizarR = false;
 $TAMANO_PAGINA = 5;
 $area="";
-
-//OBTENER INFO DIRECTOR
-$director = $objOperaciones->DatosDirector();
-if ($director) {
-	foreach ($director as $value) {
-		$directorID = $value['idUsuario'];
-	}
-}
-//CARGA DE INFORMACION DE USUARIO
-
-// Obtenemos los campos de la tabla usuarios para presentarla en la solicitud
-	$usr = $objOperaciones->getDatosPerfil($USUARIO); 
-	$diasLey = $usr['DiasLey'];
-
-	if ( $usr == -1  OR  $usr == 0 ) {
-		$error1 = "No fué posible recuperar la informaci&oacute;n del usuario: ";
-	}else{
-		if ($usr['Proyecto_id'] == 0 OR $usr['Proyecto_id'] == "") {
-			$error = "Debes seleccionar un Gerente de proyectos de tu Área o Departamento antes de realizar la captura de tu solicitud de lo contrario esta no será enviada.";
-		}
-	} 
-
-	//Consultar Area o Departamento del usuario
-	$a = $objOperaciones->verAreas($usr['area_ID']);
-	if ($a) {
-		foreach ($a as $value) {
-			$area = utf8_encode($value['Descripcion']);
-		}
-	}
-
-	//OBTENER INFO LIDER DE PROYECTO
-	$lider = $objOperaciones->verLider($usr['Proyecto_id']);
-	$LiderID = 0;
-	if ($lider != 0 AND $lider != -1) {
-		foreach ($lider as $key) {
-			$LiderID = $key['usuario_ID'];
-		}
-	}
-
-	
+$directorID = 1;	
 
 //********Enviar el correo de notificacion*********
 //Recuperamos los datos a enviar por correo
@@ -103,18 +64,14 @@ if ($btn == "Enviar") {
 	}else{$error = "Debes seleccionar un Gerente de proyectos de tu Área o Departamento antes de realizar la captura de tu solicitud de lo contrario esta no será enviada.";}
 }
 
-//Comparamos que el valor retorno no sea menor a 0
-if ($usr['DiasLey'] < 0) {
-	$vacaciones = 0;
-	$error2 = "Debido a que has solicitado días por adelantado, no podras realizar nuevas solicitudes.";
-}else{
-	$vacaciones = $usr['DiasLey'];
-}
-
 $mensaje = isset($_GET['mensaje']) ? trim($_GET['mensaje']) : "";
 
 ?>
 <script type="text/javascript">
+	var url = 'https://apex-a261292.db.us2.oraclecloudapps.com/apex/itw/empleados/';
+	var id = "<?php echo $ID_USR; ?>";
+	var Gerente;
+	var vacaciones;
 	$(document).ready(function(){
 
 		var xmlhttp;
@@ -138,15 +95,8 @@ $mensaje = isset($_GET['mensaje']) ? trim($_GET['mensaje']) : "";
 
 
 		//Desactivar boton de enviar en caso de no seleccionar Gerente o No disponer de días
-		var Gerente = "<?php echo $LiderID; ?>";
-		var vacaciones = "<?php echo $diasLey; ?>";
-		if (Gerente == 0) {
-			$("#btnSubmit").attr("disabled","disabled");
-		}else if(vacaciones < 0){
-			$("#btnSubmit").attr("disabled","disabled");
-		}
-
-
+		var data = {ID: id};
+		caragarInforUser(data,url);
 		//Consultamos resultados con ajax
 		paginacion(0);
 
@@ -184,6 +134,52 @@ $mensaje = isset($_GET['mensaje']) ? trim($_GET['mensaje']) : "";
 			}
 	}
 
+	function caragarInforUser(data,url){
+		$.ajax({
+        method: "GET",
+        url: url,
+        dataType: "json",
+        headers:data,
+        beforeSend:function(){
+          var div = document.getElementById('mensaje');
+          var spinner = new Spinner(opts).spin(div);
+        },
+        success: function(data) {
+	        //$('#email_1').val(data['email_1']);
+	        //$('#empleado_id').val(data['empleado_id']);
+	        var nombre = data['apellido_paterno']+' '+data['apellido_materno']+ ' '+ data['nombre'];
+	        $('#nombreUser').val(nombre);
+
+	        var vacaciones = parseInt(data['vacaciones']);
+	        if (vacaciones == 0) {
+	        	$('#Vacaciones').val(vacaciones);
+	        }else if(vacaciones < 0){
+	          	vacaciones = 0;
+	            $('#Vacaciones').val(vacaciones);
+	            $("#btnSubmit").attr("disabled","disabled");
+	        }else{
+	          	$('#Vacaciones').val(vacaciones);
+	        }
+
+	        $.ajax({
+		        method: "GET",
+		        url: 'https://apex-a261292.db.us2.oraclecloudapps.com/apex/itw/liderArea/',
+		        dataType: "json",
+		        headers: {AREA_ID:data['area_id']},
+		        success: function(data) {
+		         responsableArea= data['nombre'];
+		         correoArea = data['email_1'];
+		         nombreArea = data['nombre_area'];
+		         Gerente = data['empleado_id'];
+		         $('#area1').val(nombreArea);
+		        }
+	      	});
+
+          $( ".spinner" ).remove();
+        }
+      });
+	}
+
 
 </script>
 <style type="text/css">
@@ -194,7 +190,6 @@ $mensaje = isset($_GET['mensaje']) ? trim($_GET['mensaje']) : "";
 <!--<script type="text/javascript" src="js/solicitud.js"></script>-->
 <script type="text/javascript" src="js/busqueda.js"></script>
 	<h3 align="left">SOLICITUD DE VACACIONES</h3>
-
 	<form  id="formulario" name="frmSolicitud" method="post" action="<?php echo $_SERVER['PHP_SELF'];  ?>" enctype="multipart/form-data">
 	<div class="panel panel-primary">
     <div class="panel-heading">CAPTURA<a id="tutorial" href="" onclick="mostrarTuto()"><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
@@ -202,17 +197,17 @@ $mensaje = isset($_GET['mensaje']) ? trim($_GET['mensaje']) : "";
 		<table id="form1" class="table-responsive">
 			<tr >
 				<td ><label>Nombre del empleado:</label></td>
-				<td colspan="2"><input id="nombreUser" name="nombreEmpleado" class="bloqueado" value="<?php echo utf8_encode($usr['nombre'].' '.$usr['paterno'].' '.$usr['materno']);?>"></input></td>
+				<td colspan="3"><input id="nombreUser" size="30" name="nombreEmpleado" class="bloqueado" readonly></input></td>
 				<td id="mensajes"></td>
 			</tr>
 			<tr>
 				<td><label >&#193rea o departamento:</label></td>
-				<td><input id="area1" name="area" class="bloqueado" value="<?php echo $area; ?>" readonly="readonly"></input></td>
+				<td><input id="area1" name="area" class="bloqueado" readonly="readonly"></input></td>
 				<td>&#160;</td>
 			</tr>
 			<tr>
 				<td><label>D&iacuteas ley:</label></td>
-				<td><input id="Vacaciones" name="Vaca" value="<?php echo $vacaciones;?>" class="bloqueado" readonly></input></td>
+				<td><input id="Vacaciones" name="Vaca" class="bloqueado" readonly></input></td>
 				<td><label>D&iacuteas solicitados: </label></td>
 				<td><input id="diasSolicitados" name="diasSolicitados" value="" class="bloqueado" readonly></input></td>
 			</tr>

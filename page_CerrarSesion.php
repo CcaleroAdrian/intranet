@@ -6,23 +6,28 @@ $objses = new Sesion();
 $objses->init();
 $objses->destroy();
 
-?>
-	<form name="frmContinua" method="post" action="index.php"  >
-	<table width="90%"  border="0" cellspacing="2" cellpadding="0" class="tblFrm">
-		  <tr>
-			<td>&nbsp;</td>
-		  </tr>
-		  <tr>
-			<td height="300">
-			  <div align="center">
-			    <p>Ha finalizado la sesi&oacute;n en la Intranet de ITW.</p>
-			    <p>
-			      <input name="btnContinuar" type="submit" id="btnContinuar" value="Continuar" class="btnRojo">
-			    </p>
-			  </div></td>
-		  </tr>
-		  <tr>
-			<td>&nbsp;</td>
-		  </tr>
-	</table>	
-	</form>  
+?> 
+ <link rel="stylesheet" type="text/css" href="intraCss/sweetalert.css"/>
+ <link rel="shortcut icon" type="image/gif" href="intraImg/animated_favicon1.gif" />
+ <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+ <script type="text/javascript" src="js/sweetalert.min.js"></script>
+ 
+<script type="text/javascript">
+	$(document).ready(function(){
+		swal({
+			title: "Confirmacion",
+			text: "Ha finalizado la sesion en la Intranet de ITW.",
+			type: "success",
+			showCancelButton: false,
+			confirmButtonText: "Continuar",
+			confirmButtonColor: " #337ab7",
+			closeOnConfirm: false,
+			timer:4000
+			},
+			function(isConfirm){ 
+				  if (isConfirm) {
+				  	window.location.href = "../intranet/";	  
+				  }
+			});
+	});
+</script>

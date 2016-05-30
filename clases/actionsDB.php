@@ -599,7 +599,7 @@ class ActionsDB{
 	}
 
 	//Function para contar registros encontrados
-	public function verSolicitudesIDB($LiderId,$descripPerfil){
+	public function verSolicitudesIDB($LiderId){
 		$query = "";
 
 		if($descripPerfil != "DIRECCION"){

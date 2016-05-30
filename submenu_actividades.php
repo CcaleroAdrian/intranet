@@ -1,5 +1,7 @@
 <?php
 	include("intraHeader.php");   
+	date_default_timezone_set('AMERICA/Mexico_City');
+	setlocale (LC_TIME, 'spanish-mexican');
 
 	if ( $USUARIO == "" OR  $USUARIO == null ) {  
 		header('Location: index.php');
@@ -7,33 +9,14 @@
 	
 	$ID_USR;
 	//Instanciamos la clase que tiene las operaciones a la base de datos
-	$objOperaciones = new ActionsDB();
-	// Obtenemos los campos de la tabla usuarios para presentarla en el perfil
-	$usr = $objOperaciones->getDatosPerfil( $USUARIO );
-    $a = $objOperaciones->verAreas($usr['area_ID']);
-	if ($a) {
-		foreach ($a as $value) {
-			$area = utf8_encode($value['Descripcion']);
-		}
-	}
 
-	//OBTENER INFO LIDER DE PROYECTO
-	$lider = $objOperaciones->verLider($usr['Proyecto_id']);
-	$LiderID = 0;
-	if ($lider != 0 AND $lider != -1) {
-		foreach ($lider as $key) {
-			$LiderID = $key['usuario_ID'];
-		}
-	}
-	
-	date_default_timezone_set('AMERICA/Mexico_City');
-	setlocale (LC_TIME, 'spanish-mexican');
 	$anio = date('Y');
 	$mes = date('m');
 	$dia = date('d', mktime(0,0,0,$mes+1,$anio));
 
 	$fecha1=date("Y-m-d",mktime(0,0,0,$mes,1,$anio));
 	$fecha2=date('Y-m-d',(mktime(0,0,0,$mes+1,1,$anio)-1));
+
 	$m=date('F',mktime(0,0,0,$mes,1,$anio));
 
 
@@ -49,7 +32,7 @@
 		var fecha1 = "<?php echo $fecha1;?>";
 		var fecha2 = "<?php echo $fecha2;?>";
 		var Mes = "<?php echo date('n'); ?>";
-		var gerente = "<?php echo $LiderID; ?>";
+		var gerente;
 		var solicitudID;
 		
 		function add(){
@@ -143,6 +126,8 @@
 
 		$(document).ready(function(){
 			consultarActividades(id,fecha1,fecha2);
+			var data = {ID: id};
+			caragarInforUser(data);
 		});
 
 		function modificar(id){
@@ -372,7 +357,99 @@
 				}
 			}
 		}
-		
+
+		function caragarInforUser(data){
+			$.ajax({
+		        method: "GET",
+		        url: "https://apex-a261292.db.us2.oraclecloudapps.com/apex/itw/empleados/",
+		        dataType: "json",
+		        headers:data,
+			    beforeSend:function(){
+			        var div = document.getElementById('mensaje');
+			        var spinner = new Spinner(opts).spin(div);
+			    },
+			    success: function(data) {
+				    var nombre = data['apellido_paterno']+' '+data['apellido_materno']+ ' '+ data['nombre'];
+				    $('#nombre').val(nombre);
+				    //console.log(nombre);
+			        $.ajax({
+					    method: "GET",
+					    url: 'https://apex-a261292.db.us2.oraclecloudapps.com/apex/itw/liderArea/',
+					    dataType: "json",
+					    headers: {AREA_ID:data['area_id']},
+					    success: function(data) {
+					     //responsableArea= data['nombre'];
+					     //correoArea = data['email_1'];
+					     nombreArea = data['nombre_area'];
+					     	Gerente = data['empleado_id'];
+					     	$('#area').val(nombreArea);
+						}
+			   		});
+
+			        $( ".spinner" ).remove();
+			    }
+		    });
+		}
+
+		function copiar(id){
+			var xmlhttp;
+			var datos = Array();
+			document.getElementById('update').style.visibility = "initial";
+
+			if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+				xmlhttp=new XMLHttpRequest();
+					
+			}else{// code for IE6, IE5
+				xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+			}
+			
+			xmlhttp.onreadystatechange=function(){
+				if (xmlhttp.readyState==4 && xmlhttp.status==200){
+					//respuesta =xmlhttp.responseText;
+					var datos= $.parseJSON(xmlhttp.responseText);
+					$('#fecha').val(datos[0].fechaActividad);
+					$('#actividad').html(datos[0].actividad)
+					$('#lunes').html(datos[0].L);
+					$('#martes').html(datos[0].Ma);
+					$('#miercoles').html(datos[0].M);
+					$('#jueves').html(datos[0].J);
+					$('#viernes').html(datos[0].V);
+					solicitudID = datos[0].actividad_ID;
+				}
+			}
+				
+			xmlhttp.open("POST","acciones.php",true);
+			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			xmlhttp.send("id="+id+"&opcion="+ 7);
+		}
+
+		function activarCasilla(){
+			var fecha = $('#fecha').val();
+			//console.log(fecha);
+			var dia = new Date(fecha);
+			var n = dia.getDay();
+			//console.log(n);
+			switch(n){
+				case 0:
+					$('#lunes').text(8);
+					break;
+				case 1:
+					$('#martes').text(8);
+					break;
+				case 2:
+					$('#miercoles').text(8);
+					break;
+				case 3:
+					$('#jueves').text(8);
+					break;
+				case 4:
+					$('#viernes').text(8);
+					break;
+			}
+
+		}
+		contenteditable="false"
+
 	</script>
 <style type="text/css">
 	.hide{
@@ -419,11 +496,11 @@
    			<table>
    				<tr>
 	   				<td><label>Usuario: </label></td>
-	   				<td><label><?php echo utf8_encode($usr['nombre'].' '.$usr['paterno'].' '.$usr['materno']);?></label></td>
+	   				<td><input type="text" id="nombre" class="bloqueado" size="30" readonly></td>
    				</tr>
    				<tr>
    					<td><label>Área: </label></td>
-	   				<td><label><?php echo $area;?></label></td>
+	   				<td><input type="text" id="area" class="bloqueado" readonly></td>
    				</tr>
    			</table>
    			<br>
@@ -439,8 +516,12 @@
    					<th width="1">V</th>
    				</thead>
    				<tbody "formulario"><tr>
-   					<td class="active" width="45px"><a id="add" class="edit fa fa-plus" onclick="add()"></a><a class="otro fa fa-floppy-o" id="update" onclick="update()" style="margin-left: 5px; visibility: hidden;"></a></td>
-   					<td contenteditable="false" width="125" class="info"><input type="date" style="width: 130px; border:none; background-color: transparent;" id="fecha"></input></td>
+   					<td class="active" width="45px">
+   						<a id="add" class="edit fa fa-plus" onclick="add()"></a>
+   						<a class="otro fa fa-floppy-o" id="update" onclick="update()" style="margin-left: 5px; visibility: hidden;"></a>
+   					</td>
+   					<td contenteditable="false" width="125" class="info"><input type="date" style="width: 130px; border:none; background-color: transparent;" id="fecha" min="<?php echo $fecha1; ?>" max="<?php echo $fecha2; ?>" onchange="activarCasilla()"></input>
+   					</td>
    						<td contenteditable="true" colspan="2" class="active" id="actividad"></td>
    						<td contenteditable="true" style="width: 1px;" class="info" id="lunes" onfocusout="validar()"></td>
    						<td contenteditable="true" style="width: 1px;" class="active" id="martes" onfocusout="validar()"></td>

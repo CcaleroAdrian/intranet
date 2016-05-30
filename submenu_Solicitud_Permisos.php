@@ -2,51 +2,72 @@
 include("intraHeader.php");
 if ( $USUARIO == "" OR  $USUARIO == null ) { 
 		header('Location: index.php'); 
-	}
-
+}
+	$ID_USR;
 	//CARGA DE INFORMACION DE USUARIO
+	$VisualizarR = false;
 	$objOperaciones = new ActionsDB();
 	// Obtenemos los campos de la tabla usuarios para presentarla en la solicitud
-	$usr = $objOperaciones->getDatosPerfil($USUARIO);
-	If ( $usr == -1  OR  $usr == 0 ) {
-		$error1 = "No fué posible recuperar la informaci&oacute;n del usuario: ";
-	} 
-
-	//Consultar Area o Departamento del usuario
-	$a = $objOperaciones->verAreas($usr['area_ID']);
-	if ($a) {
-		foreach ($a as $value) {
-			$area = utf8_encode($value['Descripcion']);
-		}
-	}
 
 	$btn = isset($_POST['btnSolicitar']) ? trim($_POST['btnSolicitar']) : "";
 	if ($btn == "Solicitar") {
 
 		$proyecto = $usr['Proyecto_id'];
-		$
 		$categoria = isset($_POST['categoria']) ? trim($_POST['categoria']) : "";
 		$fechaInicio = isset($_POST['fecha1']) ? trim($_POST['fecha1']) : "";
 		$fechaFin = isset($_POST['fecha2']) ? trim($_POST['fecha2']) : "";
 		$dias = isset($_POST['diasS']) ? trim($_POST['diasS']) : "";
 
 		if ($dias != 0) {
-			$resultado = $objOperaciones->inserSolicitudPermiso
+			//$resultado = $objOperaciones->inserSolicitudPermiso
 		}
 		
 	}
-	/*$dat = $objOperaciones->verSolicitudes($ID_USR);
-
-	//	print_r($dat);
-	If ($dat == 0 ) {
-		$VisualizarR = false;
-		$error2 = "No fué posible recuperar las solicitudes realizadas anteriormente";
-	}else{
-		$VisualizarR = true;
-	}*/
 ?>
 <meta http-equiv=content-type content=text/html; charset=utf-8>
 <script type="text/javascript" src="js/solicitud.js"></script>
+<script type="text/javascript">
+	var id = "<?php echo $ID_USR; ?>";
+	var Gerente;
+	$(document).ready(function(){
+		var data = {ID: id};
+		caragarInforUser(data);
+	});
+
+	function caragarInforUser(data){
+		$.ajax({
+	        method: "GET",
+	        url: "https://apex-a261292.db.us2.oraclecloudapps.com/apex/itw/empleados/",
+	        dataType: "json",
+	        headers:data,
+		    beforeSend:function(){
+		        var div = document.getElementById('mensaje');
+		        var spinner = new Spinner(opts).spin(div);
+		    },
+		    success: function(data) {
+			    var nombre = data['apellido_paterno']+' '+data['apellido_materno']+ ' '+ data['nombre'];
+			    $('#nombre').val(nombre);
+			    //console.log(nombre);
+		        $.ajax({
+				    method: "GET",
+				    url: 'https://apex-a261292.db.us2.oraclecloudapps.com/apex/itw/liderArea/',
+				    dataType: "json",
+				    headers: {AREA_ID:data['area_id']},
+				    success: function(data) {
+				     //responsableArea= data['nombre'];
+				     //correoArea = data['email_1'];
+				     nombreArea = data['nombre_area'];
+				     	Gerente = data['empleado_id'];
+				     	$('#area').val(nombreArea);
+					}
+		   		});
+
+		        $( ".spinner" ).remove();
+		    }
+	    });
+	}
+</script>
+
 	<h3 align="left">SOLICITUD DE PERMISOS</h3>
 
 	<form  id="form" name="frmSolicitud" action="<?php echo $_SERVER['PHP_SELF'] . "?idMenu=". $idMenu ."&idSubMenu=". $idSubMenu . "";  ?>" enctype="multipart/form-data" method="post" height="350pt"  >
@@ -54,15 +75,15 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 	<!--correo_notificacion.php?fecha=<?php echo $usr['fechaIngreso']; ?>-->
 	<div class="panel panel-primary">
     <div class="panel-heading">CAPTURA <a id="tutorial" href="" onclick="mostrarTuto()"><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
-    <div class="panel-body">
+    <div class="panel-body" id="mensaje">
 		<table id="form1" class="table-responsive">
 			<tr >
 				<td><label>Nombre del empleado:</label></td>
-				<td colspan="3"><input id="nombreUser" name="nombreEmpleado" class="bloqueado" value="<?php echo utf8_encode($usr['nombre'].' '.$usr['paterno'].' '.$usr['materno']);?>" disabled></input></td>
+				<td colspan="3"><input id="nombre" name="nombreEmpleado" class="bloqueado" size="30" readonly></input></td>
 			</tr>
 			<tr>
 				<td><label >&#193rea o departamento:</label></td>
-				<td><input id="area" name="area" class="bloqueado" value="<?php echo $area; ?>" disabled></input></td>
+				<td><input id="area" name="area" class="bloqueado" readonly></input></td>
 				<td>&#160;</td>
 			</tr>
 			<tr>

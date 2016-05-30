@@ -1,18 +1,15 @@
 <?php
-	include("intraHeader.php");   
-
-	if ( $USUARIO == "" OR  $USUARIO == null ) {  
-		header('Location: index.php');
-	}
+	include("intraHeader.php"); 
 	
 	$ID_USR;
 	//Instanciamos la clase que tiene las operaciones a la base de datos
 	$objOperaciones = new ActionsDB();
-
+	
 	$usuarios = $objOperaciones->verUsuariosActividades();
-
+	$anio = date('Y');
+	$anioI = date('Y',mktime(0,0,0,1,1,date('Y')-10));
+	$anioF = date('Y',mktime(0,0,0,1,1,date('Y')+10));
 ?>
-	<!DOCTYPE html>
 	<html>
 	<head>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
@@ -20,15 +17,13 @@
 		<script type="text/javascript">
 			var meses = [];
 			var user;
+			var anio;
 
 			function ver(){
 				meses = $('#mes').val();
 			}
 
 			function previsualizacion(){
-				var fecha = new Date();
-				var anio = fecha.getFullYear();
-				user = $('#usuario').val();
 				meses = $('#mes').val();
 
 				document.getElementById('descarga').style.display='inline';
@@ -36,67 +31,61 @@
 				if(meses.length != null){
 					for (var i =0; i<= meses.length- 1; i++) {
 						var indice = meses[i];
-						fecha1 = new Date(fecha.getFullYear(), indice-1, 1);
-						fecha2 = new Date(fecha.getFullYear(), indice, 0);
-
-						f1= ""+anio+"-"+indice+"-"+fecha1.getDate()+"";
-						fe2= ""+anio+"-"+indice+"-"+fecha2.getDate()+"";
-
 						switch(parseInt(indice)){
 							case 1:
 								document.getElementById('en').style.display = "inline";
-								context(user,f1,fe2,enero);
+								
 								break;
 							case 2:
 								document.getElementById('feb').style.display = "inline";
-								context(user,f1,fe2,febrero);
+								
 								break;
 							case 3:
 								document.getElementById('mar').style.display = "inline";
-								context(user,f1,fe2,marzo);
+								
 								break;
 							case 4:
 								document.getElementById('abr').style.display = "inline";
-								context(user,f1,fe2,abril);
+								
 								break;
 							case 5:
 								document.getElementById('may').style.display = "inline";
-								context(user,f1,fe2,mayo);
+								
 								break;
 							case 6:
 								document.getElementById('jun').style.display = "inline";
-								context(user,f1,fe2,junio);
+								
 								break;
 							case 7:
 								document.getElementById('jul').style.display = "inline";
-								context(user,f1,fe2,julio);
+								
 								break;
 							case 8:
 								document.getElementById('agos').style.display = "inline";
-								context(user,f1,fe2,agosto);
+								
 								break;
 							case 9:
 								document.getElementById('sep').style.display = "inline";
-								context(user,f1,fe2,septiembre);
+								
 								break;
 							case 10:
 								document.getElementById('oct').style.display = "inline";
-								context(user,f1,fe2,octubre);
+								
 								break;
 							case 11:
 								document.getElementById('nov').style.display = "inline";
-								context(user,f1,fe2,noviembre);
+								
 								break;
 							case 12:
 								document.getElementById('dic').style.display = "inline";
-								context(user,f1,fe2,diciembre);
+								
 								break;
 						}
 					}
 				}
 			}
 
-			function context(id,fechaI,fechaF,div){
+			function context(id,fechaI,fechaF){
 				var xmlhttp;
 				if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
 					xmlhttp=new XMLHttpRequest();
@@ -119,7 +108,34 @@
 			}
 			
 			function descarga(){
-				window.open('descargaExcel.php','_blank');
+				meses = $('#mes').val();
+				user = $('#usuario').val();
+				anio = $('#anio').val();
+
+				var ObjectMes = {};
+				for (var i = 0; i <=meses.length-1; i++) {
+					ObjectMes[i] = meses[i];
+				}
+				mes= JSON.stringify(ObjectMes);
+				
+				var url = "descargaExcel.php?id="+user+"&meses="+mes+"&anio="+anio+"";
+				console.log(url);
+				window.open(url,'_blank');
+			}
+
+			function verReporteMes(mes){
+				user = $('#usuario').val();
+				anio = $('#anio').val();
+
+				fecha1 = new Date(anio, mes-1, 1);
+				fecha2 = new Date(anio, mes, 0);
+
+				f1= ""+anio+"-"+mes+"-"+fecha1.getDate()+"";
+				fe2= ""+anio+"-"+mes+"-"+fecha2.getDate()+"";
+				
+				context(user,f1,fe2);
+
+				document.getElementById('enero').style.display='block';
 			}
 
 		</script>
@@ -152,7 +168,7 @@
    					<td>&#160;&#160;&#160;&#160;</td>
    					<td><label>Mes:</label></td>
    					<td>
-   						<select id="mes"  class="selectpicker" multiple title="Seleccionar mes" onchange="ver()">
+   						<select id="mes"  class="selectpicker" multiple title="Seleccionar mes" data-actions-box="true" onchange="ver()">
 		   					<option  value="1">ENERO</option>
 		   					<option  value="2">FEBRERO</option>
 		   					<option  value="3">MARZO</option>
@@ -168,7 +184,26 @@
    						</select>
    					</td>
    					<td>&#160;&#160;&#160;&#160;</td>
-   					<td><input type="button" value="GENERAR" class="btn btn-primary" onclick="previsualizacion()"></input></td>
+   					<td><label>Año</label></td>
+   					<td>
+   						<select id="anio" class="form-control" style="width: 80px;">
+   							<?php
+   								for ($i=$anioI; $i<= $anioF; $i++) {?>
+   									
+   								<option value='<?php echo $i; ?>' <?php  echo ($i == $anio) ?  "selected" : "";  ?>><?php echo $i ?></option>
+
+   							<?php	}
+   							?>
+   						</select>
+   					</td>
+   				</tr>
+   				<tr>
+   					<td>&#160;&#160;&#160;&#160;</td>
+   				</tr>
+   				<tr>
+   					<td colspan="3"></td>
+   					<td><td><input type="button" value="GENERAR" class="btn btn-primary" onclick="previsualizacion()"></input></td></td>
+   					<td colspan="3"></td>
    				</tr>
    			</table>
    		</div>
@@ -178,55 +213,44 @@
    		<div class="panel-body">
    			<ul id="tabs" class="nav nav-tabs" role="tablist">
    				<li id="en" style="display: none;" role='presentation'>
-   					<a aria-controls='enero' role='tab' data-toggle='tab'>ENERO</a>
+   					<a aria-controls='enero' role='tab' data-toggle='tab' onclick='verReporteMes(1)'>ENERO</a>
    				</li>
    				<li id="feb" style="display: none;" role='presentation'>
-   					<a aria-controls='febrero' role='tab' data-toggle='tab'>FEBRERO</a>
+   					<a aria-controls='febrero' role='tab' data-toggle='tab' onclick='verReporteMes(2)'>FEBRERO</a>
    				</li>
    				<li id="mar" style="display: none;" role='presentation'>
-   					<a aria-controls='marzo' role='tab' data-toggle='tab'>MARZO</a>
+   					<a aria-controls='marzo' role='tab' data-toggle='tab' onclick='verReporteMes(3)'>MARZO</a>
    				</li>
    				<li id="abr" style="display: none;" role='presentation'>
-   					<a aria-controls='abril' role='tab' data-toggle='tab'>ABRIL</a>
+   					<a aria-controls='abril' role='tab' data-toggle='tab' onclick='verReporteMes(4)'>ABRIL</a>
    				</li>
    				<li id="may" style="display: none;" role='presentation'>
-   					<a aria-controls='mayo' role='tab' data-toggle='tab'>MAYO</a>
+   					<a aria-controls='mayo' role='tab' data-toggle='tab' onclick='verReporteMes(5)'>MAYO</a>
    				</li>
    				<li id="jun" style="display: none;" role='presentation'>
-   					<a aria-controls='junio' role='tab' data-toggle='tab'>JUNIO</a>
+   					<a aria-controls='junio' role='tab' data-toggle='tab' onclick='verReporteMes(6)'>JUNIO</a>
    				</li>
    				<li id="jul" style="display: none;" role='presentation'>
-   					<a aria-controls='julio' role='tab' data-toggle='tab'>JULIO</a>
+   					<a aria-controls='julio' role='tab' data-toggle='tab' onclick='verReporteMes(7)'>JULIO</a>
    				</li>
    				<li id="agos" style="display: none;" role='presentation'>
-   					<a aria-controls='agosto' role='tab' data-toggle='tab'>AGOSTO</a>
+   					<a aria-controls='agosto' role='tab' data-toggle='tab' onclick='verReporteMes(8)'>AGOSTO</a>
    				</li>
    				<li id="sep" style="display: none;" role='presentation'>
-   					<a aria-controls='septiembre' role='tab' data-toggle='tab'>SEPTIEMBRE</a>
+   					<a aria-controls='septiembre' role='tab' data-toggle='tab' onclick='verReporteMes(9)'>SEPTIEMBRE</a>
    				</li>
    				<li id="oct" style="display: none;" role='presentation'>
-   					<a aria-controls='octubre' role='tab' data-toggle='tab'>OCTUBRE</a>
+   					<a aria-controls='octubre' role='tab' data-toggle='tab' onclick='verReporteMes(10)'>OCTUBRE</a>
    				</li>
    				<li id="nov" style="display: none;" role='presentation'>
-   					<a aria-controls='noviembre' role='tab' data-toggle='tab'>NOVIEMBRE</a>
+   					<a aria-controls='noviembre' role='tab' data-toggle='tab' onclick='verReporteMes(11)'>NOVIEMBRE</a>
    				</li>
    				<li id="dic" style="display: none;" role='presentation'>
-   					<a aria-controls='diciembre' role='tab' data-toggle='tab'>DICIEMBRE</a>
+   					<a aria-controls='diciembre' role='tab' data-toggle='tab' onclick='verReporteMes(12)'>DICIEMBRE</a>
    				</li>
    			</ul>
    			<div class="tab-content">
-			    <div role="tabpanel" class="tab-pane fade" id="enero"></div>
-			    <div role="tabpanel" class="tab-pane fade" id="febrero"></div>
-			    <div role="tabpanel" class="tab-pane fade" id="marzo"></div>
-			    <div role="tabpanel" class="tab-pane fade" id="abril"></div>
-			    <div role="tabpanel" class="tab-pane fade" id="mayo"></div>
-			    <div role="tabpanel" class="tab-pane fade" id="junio"></div>
-			    <div role="tabpanel" class="tab-pane fade" id="julio"></div>
-			    <div role="tabpanel" class="tab-pane fade" id="agosto"></div>
-			    <div role="tabpanel" class="tab-pane fade" id="septiembre"></div>
-			    <div role="tabpanel" class="tab-pane fade" id="octubre"></div>
-			    <div role="tabpanel" class="tab-pane fade" id="noviembre"></div>
-			    <div role="tabpanel" class="tab-pane fade" id="diciembre"></div>
+			    <div role="tabpanel"  id="enero" style="display: none;"></div>
   			</div>
   			<button id="descarga" class="btn btn-link" style="margin-left: 80%; display:none;" onclick="descarga()"><span class="fa fa-arrow-down"></span></span> DESCARGAR</button>
    		</div>

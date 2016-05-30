@@ -52,7 +52,7 @@ function fechas(){
 		document.getElementById('diasSolicitados').value = diffDays +1;
     	//document.getElementById('diasSolicitados').val(diffDays +1);
 		var acccion = "";
-		var diasV = $('#Vacaciones').val();//Dias de vaciones disponibles
+		var diasV = $('#vacaciones').val();//Dias de vaciones disponibles
 		var diasS = diffDays +1; 
 		if (diasS > 0) {//comprobar que se han solicitado dias 
 		
@@ -91,7 +91,10 @@ function fechas(){
 				    confirmButtonText: "OK"
 				  	});
 				  	//Reseteo de los campos
-				  	document.getElementById('formulario').reset();
+				  	//document.getElementById('formulario').reset();
+				  	document.getElementById('diasSolicitados').value= "";
+				  	document.getElementById('diasRestantes').value="";
+				  	document.getElementById('diasAdicionales').value="";
 				  }
 				});
 			

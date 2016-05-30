@@ -4,61 +4,12 @@
 	if ( $USUARIO == "" OR  $USUARIO == null ) { 
 		header('Location: index.php');
 	}
+
+  $AREA;
+  $ID_USR;
+
 	$error = "";
-  $success= ""; 
 	$blnOk = true;
-	$idMenu =isset($_GET['idMenu']) ? trim($_GET['idMenu']) : "" ;
-	$idSubMenu =isset($_GET['idSubMenu']) ? trim($_GET['idSubMenu']) : "" ;
-	$btnActualizar =isset($_POST['btnActualizar']) ? trim($_POST['btnActualizar']) : "" ;
-	
-	If ( $btnActualizar == "Actualizar") {
-		
-		$idCivil =isset($_POST['idCivil']) ? $_POST['idCivil'] : "" ;
-		$direccion =isset($_POST['direccion']) ? $_POST['direccion'] : "" ;
-		$telPersonal =isset($_POST['telPersonal']) ? $_POST['telPersonal'] : "" ; 
-		$celPersonal =isset($_POST['celPersonal']) ? $_POST['celPersonal'] : "" ;
-		$emailPersonal =isset($_POST['emailPersonal']) ? $_POST['emailPersonal'] : "" ;
-		$telOfna =isset($_POST['telOfna']) ? $_POST['telOfna'] : "" ;
-		$celOfna =isset($_POST['celOfna']) ? $_POST['celOfna'] : "" ;
-		$emailOfna =isset($_POST['emailOfna']) ? $_POST['emailOfna'] : "" ;
-		$direccionOfna =isset($_POST['direccionOfna']) ? $_POST['direccionOfna'] : "" ;
-    $responzable = isset($_POST['LiderID']) ? $_POST['LiderID'] : "";
-    
-		//Instanciamos la clase que tiene las operaciones a la base de datos
-		$objPerfil = new ActionsDB();
-		// Obtenemos los campos de la tabla usuarios para presentarla en el perfil
-    
-		$respuesta = $objPerfil->setActualizaPerfil( $USUARIO , $idCivil , $direccion , $telPersonal , $celPersonal , $emailPersonal , $telOfna , $celOfna , $emailOfna , $direccionOfna,$responzable);
-		If(  $respuesta  ) {
-			$blnOk = true;
-			$success = "La información de su perfil fué actualizada satisfactoriamente.";
-		} else {
-			$blnOk = false;
-			$error = "No fu&eacute; posible realizar la actualizaci&oacute;n de la informaci&oacute;n de su usuario: " . $USUARIO . ".";
-		}
-	}
-	
-	//Instanciamos la clase que tiene las operaciones a la base de datos
-	$objOperaciones = new ActionsDB();
-	// Obtenemos los campos de la tabla usuarios para presentarla en el perfil
-	$usr = $objOperaciones->getDatosPerfil($USUARIO);
-	If ( $usr == -1  OR  $usr == 0 ) {
-		$blnOk = false;
-		$error = "No fu&eacute; posible recuperar la informaci&oacute;n del usuario: " . $USUARIO . ".";
-	} 
-
-  //Consultamos lideres de asignación
-  $lider = $objOperaciones->mostrarResponzablesAsignacion("",$usr['area_ID']);
-
-  //consultamos areas ITW
-  $areaITW = $objOperaciones->verAreas();
-
-$vacaciones = 0;
-if ($usr['DiasLey'] <= 0) {
-  $vacaciones = 0;
-}else{
-  $vacaciones =$usr['DiasLey'];
-}
 
 
  ?> 
@@ -73,84 +24,348 @@ if ($usr['DiasLey'] <= 0) {
   }
 </script>
 <script type="text/javascript">
+  var url = 'https://apex-a261292.db.us2.oraclecloudapps.com/apex/itw/empleados/';
   $(document).ready(function(){
-    var confirmacion = "<?php echo $success;?>";
-    if (confirmacion != "") {
-      swal({
-        title: "Confirmacion",
-        text: confirmacion,
-        type: "success",
-        showConfirmButton:false,
-        timer:3000
-        });
+
+
+    var id = "<?php echo $ID_USR; ?>";
+    var data = {ID: id};
+    cargarDatos(data);
+
+    
+    $('#form').on('submit',function(event){
+      event.preventDefault();
+    var header = {
+        EMPLEADO_ID: id,
+        ESTADO_CIVL_ID: $('#estado_civl_id').val(),
+        TELEFONO:  $('#telefono').val(),
+        CELULAR:$('#celular').val(),
+        EMAIL_2: $('#email_2').val(),
+        ESTADO_DOMICILIO_ID: $('#estado_domicilio_id').val(),
+        CIUDAD_DOMICILIO_ID: $('#ciudad_domicilio_id').val(),
+        DELEGACION_ID:  $('#delegacion_id').val(),
+        COLONIA:  $('#colonia').val(),
+        CALLE:  $('#calle').val(),
+        CP:  $('#cp').val(),
+        NUM_EXTERIOR:  $('#num_exterior').val(),
+        NUM_INTERIOR: $('#num_interior').val()
+    }  
+    console.log(header);
+    console.log('<br>EREALIZE ARRAY'+$(this).serializeArray());
+      $.ajax({
+          method:'POST',
+          url: 'https://apex-a261292.db.us2.oraclecloudapps.com/apex/itw/empleados/',
+          dataType: 'json',
+          headers:$("#form").serialize(),
+          beforeSend: function() {
+            var div = document.getElementById('mensaje');
+            var spinner = new Spinner(opts).spin(div);
+            $('html, body').animate( {scrollTop : 0}, 800 );
+          },
+          success: function(data) {
+            console.log(data);
+            swal({
+              title: "Confirmacion",
+              text: "Información actualizada correctamente",
+              type: "success",
+              showConfirmButton:false,
+              timer:3000
+              });
+            $( ".spinner" ).remove();
+            cargarDatos(data);
+          },
+          error:function(jqXHR,textStatus,errorMessage){
+            console.log(textStatus);
+            console.log(errorMessage);
+            console.log(jqXHR);
+            $( ".spinner" ).remove();
+          },
+          timeout:6000
+      });
+    });
+
+    /** CARGARDATOS
+      *
+      * @Descripcion: Funcion para realizar la consulta y carga de datos
+      *                del perfil de usuario.
+      * @Parametros: ID de usuario.
+      * @Retur: Array con los datos del usuario
+      **/
+    function cargarDatos(data){
+      
+      /** DATOS USARIO
+        * Realiza peticion a servicio RestFul para traer los datos del USUARIO
+        *
+        * @return: Retorna un array con los datos del usuario
+        * 
+      **/
+      $.ajax({
+        method: "GET",
+        url: url,
+        dataType: "json",
+        headers:data,
+        beforeSend:function(){
+          var div = document.getElementById('mensaje');
+          var spinner = new Spinner(opts).spin(div);
+        },
+        success: function(data) {
+          $('#email_1').val(data['email_1']);
+          $('#empleado_id').val(data['empleado_id']);
+          $('#nombre').val(data['nombre']);
+          $('#apellido_materno').val(data['apellido_materno']);
+          $('#apellido_paterno').val(data['apellido_paterno']);
+          $('#fecha_nacimiento').val(data['fecha_nacimiento']);
+          $('#estado_civl_id').val(data['estado_civl_id']);
+          $('#telefono').val(data['telefono']);
+          $('#celular').val(data['celular']);
+          $('#email_2').val(data['email_2']);
+          $('#estado_domicilio_id').val(data['estado_domicilio_id']);
+          $('#ciudad_domicilio_id').val(data['delegacion_id']);
+          $('#delegacion_id').val(data['delegacion_id']);
+          $('#colonia').val(data['colonia']);
+          $('#calle').val(data['calle']);
+          $('#cp').val(data['cp']);
+          $('#num_exterior').val(data['num_exterior']);
+          $('#num_interior').val(data['num_interior']);
+          $('#fecha_antiguedad').val(data['fecha_antiguedad']);
+          $('#area_id').val(data['area_id']);
+          $('#email').val(data['email_1']);
+          $('#LiderID').val(data['area_id']);
+          $('#ubicacion').val(data['ubicacion']);
+
+          var vacaciones = parseInt(data['vacaciones']);
+          if (vacaciones < 1) {
+            vacaciones = 0;
+            $('#vacaciones').val(vacaciones);
+          }else{
+            $('#vacaciones').val(vacaciones);
+          }
+          $( ".spinner" ).remove();
+        }
+      }); 
+
+      /** AREAS
+        *
+        *Realiza peticion a servicio RestFul para traer lista de AREAS 
+        *
+        *@return: Retorna un array con los datos(area_id,nombre)
+        *          y los añade en un tag "SELECET"
+      **/
+      $.ajax({
+        method: "GET",
+        url: 'https://apex-a261292.db.us2.oraclecloudapps.com/apex/itw/areas/',
+        dataType: "json",
+        success: function(data) {
+          var areas = "";
+          for (var i=0;  i<= data['items'].length-1; i++) {
+              var opcion = '<option value="'+data["items"][i].area_id+'">'+data["items"][i].nombre_area+'</option>';
+              areas += opcion;
+          }
+          $('#area_id').html(areas);
+        }
+      });
+
+      /** ESTADOS
+        *
+        *Realiza peticion a servicio RestFul para traer lista de ESTADOS dadas de alta en el sistema
+        *
+        *@return: Retorna un array con los datos(estado_id,nombre)
+        *          y los añade en un tag "SELECET"
+      **/
+      $.ajax({
+        method: 'GET',
+        url: 'https://apex-a261292.db.us2.oraclecloudapps.com/apex/itw/estado/',
+        dataType: 'json',
+        success: function(data) {
+          var estados = "";
+          for (var i=0;  i<= data['items'].length-1; i++) {
+              var opcion = '<option value="'+data["items"][i].estado_id+'">'+data["items"][i].nombre+'</option>';
+              estados += opcion;
+          }
+          $('#estado_domicilio_id').html(estados);
+        }
+      });
+
+      /** CIUDADES
+        *
+        *Realiza peticion a servicio RestFul para traer lista de Ciudades dadas de alta en el sistema
+        *
+        *@return: Retorna un array con los datos(ciudad_id,nombre)
+        *          y los añade en un tag "SELECET"
+      **/
+      $.ajax({
+        method: 'GET',
+        url: 'https://apex-a261292.db.us2.oraclecloudapps.com/apex/itw/ciudad/',
+        dataType: 'json',
+        success: function(data) {
+          var ciudades = "";
+          for (var i=0;  i<= data['items'].length-1; i++) {
+              var opcion = '<option value="'+data["items"][i].ciudad_id+'">'+data["items"][i].nombre+'</option>';
+              ciudades += opcion;
+          }
+        }
+      });
+
+      /** DELEGACIONES
+        *
+        *Realiza peticion a servicio RestFul para traer lista de Delegacion dadas de alta en el sistema
+        *
+        *@return: Retorna un array con los datos(delegacion_id,delegacion)
+        *          y los añade en un tag "SELECET"
+      **/
+      $.ajax({
+        method: 'GET',
+        url: 'https://apex-a261292.db.us2.oraclecloudapps.com/apex/itw/delegacion/',
+        dataType: 'json',
+        success: function(data) {
+          var opciones = "";
+          for (var i=0;  i<= data['items'].length-1; i++) {
+              var opcion = '<option value="'+data["items"][i].delegacion_id+'">'+data["items"][i].delegacion+'</option>';
+              opciones += opcion;
+          }
+          $('#delegacion_id').html(opciones);
+          $('#ciudad_domicilio_id').html(opciones);
+        }
+      });
+
+      /** RESPONSABLE DE AREA
+        *
+        *Realiza peticion a servicio RestFul para traer lista de coordinadores de area
+        *
+        *@return: Retorna un array con los datos(area_id,nombre)
+        *          y los añade en un tag "SELECET"
+      **/
+      $.ajax({
+        method: 'GET',
+        url: 'https://apex-a261292.db.us2.oraclecloudapps.com/apex/itw/responsable/',
+        dataType: 'json',
+        success: function(data) {
+          var ciudades = "";
+          for (var i=0;  i<= data['items'].length-1; i++) {
+              var opcion = '<option value="'+data["items"][i].area_id+'">'+data["items"][i].nombre+'</option>';
+              ciudades += opcion;
+          }
+          $('#LiderID').html(ciudades);
+        }
+      });
     }
   });
+
+
     
 </script>
 
-<form id="form" name="frmPerfil" method="post" action="<?php echo $_SERVER['PHP_SELF'];  ?>" enctype="multipart/form-data" onsubmit="alertas()">
+<form id="form" enctype="multipart/form-data">
   <h3>Mi perfil</h3>
   <div class="panel panel-primary">
-    <div id="mensaje" class="panel-heading">INFORMACIÓN BÁSICA <a id="tutorial" href="" onclick="mostrarTuto()"><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
+    <div id="mensaje" class="panel-heading">INFORMACIÓN BÁSICA <a id="tutorial" href="" onclick="mostrarTuto()"><i class="fa fa-info-circle fa-lg" style="color: white;"></i></a></div>
     <div class="panel-body">
-      <table class="table-responsive">
+      <table class="table-resposive">
         <tr>
+          <td width="5"></td>
           <td><label for="usrIntranet">Usuario intranet:</label></td>
-          <td><input  align="left" class="textboxBloqueado" name="usrIntranet" type="text" id="usrIntranet" size="30" maxlength="50"  value=" <?php echo trim($usr['usrIntranet'])  ?>"   disabled="true" ></td>
-        </tr>
-        <tr>
-          <td><label>Nombres(s):</label></td>
-          <td><input align="left"  class="textboxBloqueado" name="nombre" type="text" id="nombre2" size="30" maxlength="30"  value=" <?php echo trim($usr['nombre'])  ?>" disabled="disabled"  ></td>
-          <td></td>
-          <td><label>Apellido Paterno:</label></td>
-          <td><input align="left"  class="textboxBloqueado" name="paterno" type="text" id="paterno2" size="30" maxlength="30" value=" <?php echo trim($usr['paterno'])  ?>" disabled="disabled"  ></td>
-          <td></td>
-        </tr>
-        <tr><td width="130">&nbsp;</td></tr>
-        <tr>
-          <td><label>Apellido Materno:</label></td>
-          <td><input align="left"  class="textboxBloqueado" name="materno" style="width:119px" type="text" id="materno2" size="30" maxlength="30" value=" <?php echo trim($usr['materno'])  ?>" disabled="true"  ></td>
-          <td></td>
-          <td><label>Fecha de nacimiento:</label></td>
-          <td><input align="left"  class="textboxBloqueado" name="fechaNacimiento" type="text" id="fechaNacimiento" size="10" maxlength="10"  value=" <?php echo $usr['fechaNacimiento'];  ?>" disabled="true"  ></td>
-          <td></td>
-        </tr>
-        <tr><td width="130">&nbsp;</td></tr>
-        <tr>
-          <td><label>Sexo:</label></td>
-          <td><select name="idSexo" id="select" disabled="true"  class="selectBloqueado form-control" >
-              <option value="1" <?php echo ($usr['idSexo'] == "1") ?  "selected" : "";  ?> >MASCULINO</option>
-              <option value="2" <?php echo ($usr['idSexo'] == "2") ?  "selected" : "" ; ?> >FEMENINO</option>
-              </select>
+          <td><input  align="left" class="textboxBloqueado" type="text" id="email_1" size="30" maxlength="50" readonly ></td>
+          <td>&nbsp;</td>
+          <td width="5">
+            <label>ID:</label>
           </td>
+          <td>  
+            <input class="textboxBloqueado" id="empleado_id" name="EMPLEADO_ID" type="text" size="30" readonly></input>
+          </td>
+        </tr>
+        <tr>
+          <td width="5"></td>
+          <td><label>Nombres(s):</label></td>
+          <td><input align="left"  class="textboxBloqueado" type="text" id="nombre" size="30" maxlength="30" readonly  ></td>
+          <td width="5"></td>
+          <td><label>Apellido Paterno:</label></td>
+          <td><input align="left"  class="textboxBloqueado" type="text" id="apellido_paterno" size="30" maxlength="30" readonly ></td>
           <td></td>
+        </tr>
+        <tr><td>&nbsp;</td></tr>
+        <tr>
+          <td width="5"></td>
+          <td><label>Apellido Materno:</label></td>
+          <td><input align="left"  class="textboxBloqueado" style="width:119px" type="text" id="apellido_materno" size="30" maxlength="30" readonly  ></td>
+          <td width="5"></td>
+          <td><label>Fecha de nacimiento:</label></td>
+          <td><input align="left"  class="textboxBloqueado" type="text" id="fecha_nacimiento" size="10" maxlength="10" readonly></td>
+          <td></td>
+        </tr>
+        <tr><td>&nbsp;</td></tr>
+        <tr>
+          <td width="5"><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
           <td><label>Estado civil:</label></td>
-          <td><Select  id="idCivil" name = "idCivil" tabindex = " <?php echo $usr['idCivil']; ?> " class="form-control" style="wight:110px" > 
-          <option value="1" <?php echo ($usr['idCivil'] == "1") ?  "selected" : "";  ?> >SOLTERO</option>
-          <option value="2" <?php echo ($usr['idCivil'] == "2") ?  "selected" : "";  ?> >CASADO</option>
-          <option value="3" <?php echo ($usr['idCivil'] == "3") ?  "selected" : "";  ?> >DIVORCIADO</option>
-          <option value="4" <?php echo ($usr['idCivil'] == "4") ?  "selected" : "";  ?> >UNION LIBRE</option>
-          </select></td><td><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
-          <td></td>
-        </tr>
-        <tr><td width="130">&nbsp;</td></tr>
-        <tr>
+          <td><Select  id="estado_civl_id" name="ESTATO_CIVL_ID"  class="form-control" > 
+          <option value="1" >CASADO</option>
+          <option value="2" >DIVORCIADO</option>
+          <option value="3" >SOLTERO</option>
+          <option value="4" >UNION LIBRE</option>
+          <option value="5" >VIUDO</option>
+          </select></td>
+          <td width="5"><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
           <td><label>Tel&eacute;fono personal:</label></td>
-          <td><input align="left"  class="textboxBlanco" name="telPersonal" type="tel" id="telPersonal2" size="10" maxlength="12" value=" <?php echo trim($usr['telPersonal'])  ?>" ></td>
-          <td><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
-          <td><label>Celular personal:</label></td>
-          <td><input align="left"  class="textboxBlanco" name="celPersonal" type="tel" id="celPersonal" size="10" maxlength="12" value=" <?php echo $usr['celPersonal']  ?>" ></td>
-          <td><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
+          <td><input align="left"  class="textboxBlanco" name="TELEFONO" type="tel" id="telefono" size="10" maxlength="12"  ></td>
           <td></td>
         </tr>
-        <tr><td width="130">&nbsp;</td></tr>
+        <tr><td>&nbsp;</td></tr>
         <tr>
-          <td><label>Email personal:</label></td>
-          <td style="width:10px"><input align="left"  class="textboxBlanco" name="emailPersonal" type="email" id="emailPersonal" size="20" maxlength="50" value="<?php echo trim($usr['emailPersonal']);?>" ></td>
-          <td><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
-          <td><label>Direcci&oacute;n</label>
-          <td><textarea name="direccion" cols="33" class="textboxBlanco" id="direccion2" align="left" style="height:60px"> <?php echo trim($usr['direccion']) ?></textarea></td>
-          <td><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
+          <td width="5"><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
+          <td><label>Celular personal:</label></td>
+          <td><input class="textboxBlanco" name="CELULAR" type="tel" id="celular" size="10" maxlength="12" ></td>
+          <td width="5"><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
+           <td><label>Email personal:</label></td>
+          <td style="width:10px"><input align="left"  class="textboxBlanco" name="EMAIL_2" type="email" id="email_2" size="20" maxlength="50" ></td>
+          <td></td>
+        </tr>
+        <tr><td>&nbsp;</td></tr>
+        <tr>
+          <td width="5"><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
+          <td><label>Estado:</label></td>
+          <td> 
+            <select id="estado_domicilio_id" name="ESTADO_DOMICILIO_ID" class="form-control"></select>
+          </td>
+          <td width="5"><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
+          <td><label>Ciudad:</label></td>
+          <td><select id="ciudad_domicilio_id" class="form-control" name="CIUDAD_DOMICILIO_ID"></select></td>
+          <td></td>
+        </tr>
+        <tr><td>&nbsp;</td></tr>
+        <tr>
+          <td width="5"><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
+          <td><label>Delegaci&oacute;:</label></td>
+          <td> 
+            <select id="delegacion_id" name="DELEGACION_ID" class="form-control"></select>
+          </td>
+          <td width="5"><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
+          <td><label>Colonia:</label></td>
+          <td><input class="textboxBlanco" type="text" id="colonia" name="COLONIA"></input></td>
+          <td></td>
+        </tr>
+        <tr><td>&nbsp;</td></tr>
+        <tr>
+          <td width="5"><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
+          <td><label>Calle:</label></td>
+          <td> 
+            <input class="textboxBlanco" type="text" id="calle" name="CALLE"></input>
+          </td>
+          <td width="5"><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
+          <td><label>CP:</label></td>
+          <td><input class="textboxBlanco" type="text"  id="cp" name="CP"></input></td>
+          <td></td>
+        </tr>
+        <tr><td>&nbsp;</td></tr>
+        <tr>
+          <td width="5"><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
+          <td><label>N&uacute;mero Exterior:</label></td>
+          <td> 
+            <input class="textboxBlanco" type="text" id="num_exterior" name="NUM_EXTERIOR"></input>
+          </td>
+          <td width="5"><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
+          <td><label>N&uacute;mero Interior:</label></td>
+          <td><input class="textboxBlanco" type="text" name="NUM_INTERIOR" id="num_interior"></input></td>
+          <td></td>
+        </tr>
       </table>     
 
     </div>
@@ -160,55 +375,42 @@ if ($usr['DiasLey'] <= 0) {
     <div class="panel-body">
     <table class="table-responsive">
       <tr>
+        <td width="5"></td>
         <td><label>Fecha de ingreso</label></td>
-        <td><input align="left"  class="textboxBloqueado" name="fechaNacimiento" type="text" id="fechaNacimiento" size="10" maxlength="10"  value="<?php echo $usr['fechaIngreso'];  ?>" disabled="true"  ></td>
-        <td></td>
+        <td><input class="textboxBloqueado" type="text" id="fecha_antiguedad" size="10" maxlength="10" readonly></td>
+        <td width="5"></td>
+         <td>&nbsp;</td>
         <td><label>Días de vacaciones</label></td>
-        <td><input align="left"  class="textboxBloqueado" name="nombre" type="text" id="nombre2" size="2" maxlength="3"  value="<?php echo $vacaciones ?> " disabled="true"  ></td>
+        <td><input align="left"  class="textboxBloqueado" type="text" id="vacaciones" size="2" maxlength="3" readonly></td>
         <td></td>
       </tr>
-      <tr><td width="130">&nbsp;</td></tr>
+      <tr><td>&nbsp;</td></tr>
       <tr>
-        <td><label>Tel&eacute;fono de Oficina</label></td>
-        <td><input align="left"  class="textboxBlanco" name="telOfna" type="tel" id="telOfna" size="10" maxlength="12" value=" <?php echo trim($usr['telOfna'])  ?>" ></td>
-        <td><span class="glyphicon glyphicon-asterisk" style="color:red;" z-index="1"></span></td>
-        <td><label>Celular de trabajo</label></td>
-        <td><input align="left"  class="textboxBlanco" name="celOfna" type="tel" id="celOfna" size="10" maxlength="12" value=" <?php echo trim($usr['celOfna'])  ?>" ></td>
-        <td><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
-      </tr>
-      <tr><td width="130">&nbsp;</td></tr>
-      <tr>
-      <td><label>Email de oficina</label></td>
-      <td><input align="left"  class="textboxBlanco" name="emailOfna" type="text" id="emailOfna" size="20" maxlength="60" value=" <?php echo trim($usr['emailOfna']);  ?>" ></td>
-      <td><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
-      <td><label>Ubicaci&oacute;n de Oficina</label></td>
-      <td><textarea name="direccionOfna" cols="33" class="textboxBlanco" id="direccionOfna3" align="left"> <?php echo trim($usr['direccionOfna'])  ?></textarea></td>
-      <td><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
+        <td width="5"><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
+        <td><label>Email de oficina</label></td>
+        <td><input align="left"  class="textboxBlanco" type="text" id="email" size="20" maxlength="60" readonly></td>
+         <td>&nbsp;</td>
+        <td width="5"><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
+        <td><label>Ubicaci&oacute;n de Oficina</label></td>
+        <td><textarea cols="33" class="textboxBlanco" id="ubicacion" name="UBICACION" align="left"></textarea></td>
+        <td></td>
       </tr>
       <tr>
+          <td width="5"><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
           <td><label>Responzable de asignación:</label></td>
-          <td><Select  id="LiderID" name = "LiderID" class="form-control" style="wight:160px" tabindex ="<?php echo $usr['Proyecto_id']; ?>" >
-          <?php 
-            foreach ($lider as $value) { ?>
-              <option value='<?php echo $value["proyecto_ID"]; ?>' <?php echo ($value["proyecto_ID"] == $usr["Proyecto_id"]) ? "selected" : "";?>><?php echo utf8_decode($value["nombre"].' '.$value["paterno"].' '.$value["materno"]); ?></option>
-          <?php }
-          ?> 
+          <td><Select  id="LiderID" class="form-control" style=" width:200px" disabled>
           </select></td>
-          <td><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
+          <td width="25">&nbsp;</td>
+          <td width="5"><span class="glyphicon glyphicon-asterisk" style="color:red;"></span></td>
           <td><label>Área o Departamento:</label></td>
-          <td><Select  id="Area" name = "Area" class="form-control" style="wight:100px" tabindex ="<?php echo $usr['area_ID']; ?>" disabled>
-          <?php 
-            foreach ($areaITW as $key) {
-          ?>
-              <option value='<?php echo $key["area_ID"]; ?>' <?php echo($key["area_ID"] == $usr["area_ID"]) ? "selected" : "";?>  ><?php echo utf8_encode($key["Descripcion"]); ?></option>
-          <?php
-            }
-          ?> 
-          </select></td>
+          <td><Select  id="area_id" class="form-control" style="width:100px" disabled></select>
+          </td>
       </tr>
       <tr>
-        <td colspan="4"><span class="glyphicon glyphicon-asterisk" style="color:red"><label style="color:red;">Datos modificables.</label></span></td>
+        <td width="5"><span class="glyphicon glyphicon-asterisk" style="color:red"></span></td>
+        <td colspan="4"><label style="color:red;">Datos modificables.</label></td>
         <td height="20" colspan=""></td>
+         <td>&nbsp;</td>
         <td>&nbsp;</td><td colspan="">&nbsp;</td>
         <td colspan="2"></td>
         <td></td>
@@ -216,7 +418,7 @@ if ($usr['DiasLey'] <= 0) {
     </table>
     </div>
  </div>
-  <div align="center"><input type="submit" align="center" class="btn btn-primary" name="btnActualizar" value="Actualizar"></div>
+  <div align="center"><input type="submit" align="center" class="btn btn-primary" value="Actualizar"/></div>
   <div>&nbsp;</div>
 </form>
 <?php

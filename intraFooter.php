@@ -9,7 +9,7 @@
   </tr>
 
   <tr bgcolor="#ffffff" height="18">
-    <td><div align="center" class="footer"><b>ITWorkers</b> | <span >Derechos reservados <?php echo date("Y")?> </span> </div></td>
+    <td><div align="center" class="footer"><b>IT Workers</b> (C) <span ><?php echo date("Y")?> Derechos reservados </span> </div></td>
   </tr>
   <tr>
     <td height="10"><img src="intraImg/intraFooter.jpg" width="800" height="20"></td>

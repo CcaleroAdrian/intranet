@@ -12,11 +12,11 @@ $(window).load(function(){
 	    return urlObj;
     	}
 		//Ajustar el tamaño de la caja de texto a la longitud del nombre
-		var texto=document.getElementById("nombreUser");
+		/*var texto=document.getElementById("nombre");
     	var txt = texto.value;
    		var tamano= txt.length;
     	tamano *=12; //el valor multiplicativo debe cambiarse dependiendo del tamaño de la fuente
-    	texto.style.width=tamano+"px";
+    	texto.style.width=tamano+"px";*/
 });
 
  	

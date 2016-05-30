@@ -170,11 +170,11 @@ switch ($OPCION) {
 	case 3:
 				$usuario = $objectOperaciones->asignarGerente($ID,$AREA);
 				echo $usuario;
-		break;
+				break;
 	case 4:
 				$usuario = $objectOperaciones->eliminarGerente($ID,$AREA);
 				echo $usuario;
-		break;
+				break;
 	case 5:
 				$respuesta = $objectOperaciones->guardadActividad($ID,$FECHA,$ACTIVIDAD,$GERENTE,$LUNES,$MARTES,$MIERCOLES,$JUEVES,$VIERNES,$MES);
 				if ($respuesta == true) {
@@ -184,23 +184,23 @@ switch ($OPCION) {
 				}else{
 					echo 'false';
 				}
-		break;
+				break;
 	case 6:
 			consultarDatos($ID,$FECHA1,$FECHA2);
-		break;
+				break;
 	case  7:
 				$actividad = $objectOperaciones->consultarActividadID($ID);
 				if ($actividad != 0 OR $actividad != -1) {
 					echo json_encode($actividad);
 				}
-		break;
+				break;
 	case 8:
 				   $actidadUpdate = $objectOperaciones->updateActividad($SOLICITUD_ID,$FECHA,$ACTIVIDAD,$LUNES,$MARTES,$MIERCOLES,$JUEVES,$VIERNES);
 
 					if ($actidadUpdate != 0 OR $actidadUpdate != -1) {
 						consultarDatos($ID,$FECHA1,$FECHA2);
 					}
-		break;
+					break;
 	case 9:
 			$actividadDelete = $objectOperaciones->deleteActividad($SOLICITUD_ID);
 			try {
@@ -208,7 +208,7 @@ switch ($OPCION) {
 			} catch (Exception $e) {
 				echo 'Message: ' .$e->getMessage();
 			}
-		break;
+					break;
 	case 10:
 		visualizaReport($ID,$F1,$F2);
 		break;
@@ -227,7 +227,7 @@ function consultarDatos($id,$fecha1,$fecha2){
 						$horasTotales= ($horasTotales + ($v["L"] + $v["Ma"] +$v["M"] +$v["J"] + $v["V"]));
 						echo '<tr id="fila">
    						<td style="width:2px;">
-   						<a class="fa fa-pencil" onclick="modificar('.$v["actividad_ID"].')"></a>&#32;<a  class="table-remove fa fa-times" onclick="borrar('.$v["actividad_ID"].')"></a></td>
+   						<a class="fa fa-pencil" onclick="modificar('.$v["actividad_ID"].')"></a>&#32;<a id="copy" class="fa fa-clone" aria-hidden="true" onclick="copiar('.$v["actividad_ID"].')"></a>&#32;<a  class="table-remove fa fa-times" onclick="borrar('.$v["actividad_ID"].')"></a></td>
    						<td contenteditable="false" style="width:110px;"><input type="date" style="width: 130px; border:none;" readonly="true" value="'.$v["fechaActividad"].'"></input></td>
    						<td contenteditable="false">'.$v["actividad"].'</td>
    						<td contenteditable="false" style="width: 1px;">'.$v["L"].'</td>
@@ -261,22 +261,38 @@ function visualizaReport($id,$fecha1,$fecha2){
 	$actividades = $objectOperaciones->actividadesMesUsuario($id,$fecha1,$fecha2);
 				$horasTotales = 0;
 				if ($actividades != -1 OR $actividades != null) {
-					foreach ($actividades as $v) {
-						$horasTotales= ($horasTotales + ($v["L"] + $v["Ma"] +$v["M"] +$v["J"] + $v["V"]));
-						echo '<tr id="fila">
-   						<td contenteditable="false" style="width:110px;"><input type="date" style="width: 130px; border:none;" readonly="true" value="'.$v["fechaActividad"].'"></input></td>
-   						<td contenteditable="false">'.$v["actividad"].'</td>
-   						<td contenteditable="false" style="width: 1px;">'.$v["L"].'</td>
-   						<td contenteditable="false" style="width: 1px;">'.$v["Ma"].'</td>
-   						<td contenteditable="false" style="width: 1px;">'.$v["M"].'</td>
-   						<td contenteditable="false" style="width: 1px;">'.$v["J"].'</td>
-   						<td contenteditable="false" style="width: 1px;">'.$v["V"].'</td>
-   						</tr>';
+					echo "<table class='table table-bordered'>
+						<thead>
+							<th>Fecha</th>
+							<th>Actividad</th>
+							<th>L</th><th>Ma</th><th>M</th><th>J</th><th>V</th>
+						</thead>
+						<tbody>";
+					$logitu = sizeof($actividades);
+					if ($logitu == 0) {
+						echo "<tr>
+								<td colspan='7'>No se encontraron actividades en este mes</td>
+							</tr>";
+					}else{
+						foreach ($actividades as $v) {
+							$horasTotales= ($horasTotales + ($v["L"] + $v["Ma"] +$v["M"] +$v["J"] + $v["V"]));
+							echo '
+							<tr id="fila">
+	   						<td contenteditable="false" style="width:110px;"><input type="date" style="width: 130px; border:none;" readonly="true" value="'.$v["fechaActividad"].'"></input></td>
+	   						<td contenteditable="false">'.$v["actividad"].'</td>
+	   						<td contenteditable="false" style="width: 1px;">'.$v["L"].'</td>
+	   						<td contenteditable="false" style="width: 1px;">'.$v["Ma"].'</td>
+	   						<td contenteditable="false" style="width: 1px;">'.$v["M"].'</td>
+	   						<td contenteditable="false" style="width: 1px;">'.$v["J"].'</td>
+	   						<td contenteditable="false" style="width: 1px;">'.$v["V"].'</td>
+	   						</tr>';
+						}
 					}
-						echo "<tr><td colspan='8' class='danger'><label style='margin-left:85%;'>TOTAL HRS: ".$horasTotales."</label></td></tr>";
+						echo "<tr><td colspan='8' class='info'><label style='margin-left:85%;'>TOTAL HRS: ".$horasTotales."</label></td></tr>";
 				}else{
 					echo "No se encontrarón actividades del usuario en este mes.";
 				}
+				echo "</tbody></table>";
 	} catch (Exception $e) {
 		echo 'Message: ' .$e->getMessage();
 	}

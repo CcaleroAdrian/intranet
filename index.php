@@ -1,16 +1,15 @@
-<?php   
+  <?php   
 	include("intraHeader.php"); 
-	$NumImgIndex = rand( 1 , 4 ); 
-	
-	$usr = isset($_GET['usuarioitw']) ? trim( strtolower($_GET['usuarioitw']) ) : "" ;
+	$NumImgIndex = rand( 1 , 4 );  
+
 	if($USUARIO == '' or $USUARIO==null ){
-?>
+?> 
  
  <script type="text/javascript">
  	$(window).load(function(){
- 		var error = "<?php echo isset($_GET['error']) ? trim($_GET['error']) : ''; ?>";
+ 		var error = "<?php echo isset($_GET['ERROR']) ? trim($_GET['ERROR']) : ''; ?>";
  		if (error != "") {
- 		 swal({title: "Confirmacion", text: error, type: "error",timer:3000,showConfirmButton:false});
+ 		 swal({title: "Confirmacion", text: error, type: "error",timer:3500,showConfirmButton:false});
 		};
  	});
  </script>
@@ -20,7 +19,7 @@
 			<tr>
         <td>
 
-		<form name="usuario" action="procesa_IniciarSesion.php" method="post" style="padding:6% 0% 10% 0%;">
+		<form id="form1" name="usuario" action="procesa_IniciarSesion.php" method="POST" style="padding:6% 0% 10% 0%;">
          <div class="form-group">
            <span style="color:#4d94ff; padding:0% 0% 0% 40%; font-size:150%;"><b>LOGIN INTRANET<b></span>       
          </div>
@@ -28,14 +27,14 @@
             <label  class="col-sm-2 control-label "style="padding-right:17%; color:#4d94ff" align="center">Usuario:</label>
             <div class="col-sm-5 input-group">
             	<span class="input-group-addon">@</span>
-            	<input type="email" name="usuarioitw" id="usuarioitw" maxlength="80" placeholder="usuario@itw.mx" class="form-control" value="<?php echo trim($usr) ?>" autofocus autocomplete="off"/>
+            	<input type="email" name="EMAIL" id="usuarioitw" maxlength="80" placeholder="usuario@itw.mx" class="form-control" value="" autofocus autocomplete="off" required/>
             </div>
           </div>
           <div class="form-group" align="justify" style="padding-left:14%;">
             <label class="col-sm-2 control-label" style="padding-right:18%; color:#4d94ff">Contrase&ntilde;a:</label>
             <div class="col-sm-5 input-group" style="padding-left:0%; " >
             	<span class="input-group-addon glyphicon glyphicon-user"></span>
-   				<input  class="form-control glyphicon glyphicon-user" name="pwditw" type="password" id="pwditw"  maxlength="8" placeholder="Contrase&ntilde;a"  />
+   				<input  class="form-control glyphicon glyphicon-user" name="PWD" type="password" id="pwditw"  maxlength="8" placeholder="Contrase&ntilde;a" required />
             </div>
           </div>
           <div class='col-sm-8'>&nbsp;</div><div class='col-sm-4'>&nbsp;</div>

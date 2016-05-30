@@ -1,18 +1,18 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <?php
 	require 'clases/sesion.php';
-	require 'clases/actionsDB.php';   
+	require 'clases/actionsDB.php'; 
 	
 	$objsesion = new Sesion();
 	$objsesion->init();
+
 	$USUARIO = isset($_SESSION['USUARIO']) ? trim( $_SESSION['USUARIO']) : null ;
-	$PERFIL_USR = isset($_SESSION['ID_PERFIL']) ? $_SESSION['ID_PERFIL'] : null ;
-	$DESCPERFIL_USR = isset($_SESSION['DESC_PERFIL']) ? trim($_SESSION['DESC_PERFIL']) : null ;
+	$AREA = isset($_SESSION['AREAID']) ? trim($_SESSION['AREAID']) : null ;
 	$ID_USR = isset($_SESSION['IDUSUARIO'])? trim($_SESSION['IDUSUARIO']) : null;
+	$PERFIL_USR = isset($_SESSION['PERFIL_ID']) ? trim($_SESSION['PERFIL_ID']) : null;
 	$HoraIngreso = isset($_SESSION['HoraIngreso']) ? trim($_SESSION['HoraIngreso']) : null;
-	
 	// Evitar los warnings the variables no definidas!!!
-	$error = isset($_GET['err']) ? $_GET['err'] : "" ;
+	$error = isset($_GET['ERROR']) ? $_GET['ERROR'] : "" ;
 	$NumBanner = rand( 1 , 5 )
 ?> 
 <html lang=''>
@@ -28,10 +28,13 @@
    <title>ITWorkers</title> 
    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
    <script type="text/javascript" src="js/funciones.js" ></script>
-  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js" async></script>
+   <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+  <!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>-->
   <script type="text/javascript" src="intraCss/bootstrap/js/jquery.js"></script>
   <script type="text/javascript" src="intraCss/bootstrap/js/bootstrap.min.js"></script>
   <script type="text/javascript" src="js/sweetalert.min.js"></script>
+  <script type="text/javascript" src="js/spin.min.js"></script>
+  <!--<script type="text/javascript" src="https://code.google.com/p/crypto-js/#MD5"></script>-->
 
 </head>
 <body>
@@ -52,7 +55,7 @@
 		}
 		xmlhttp.open("POST","notificarCorreo.php");
 		xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-		xmlhttp.send(); 
+		//xmlhttp.send(); 
 
 
 		$('#icono').on('click',function(e){
@@ -73,6 +76,28 @@
 		document.getElementById("ventana").style.display = "none";
 	}
 
+	var opts = {
+      	lines: 13, // The number of lines to draw
+    	length: 23, // The length of each line
+	    width: 15, // The line thickness
+	    radius: 46, // The radius of the inner circle
+	    scale: 2.5, // Scales overall size of the spinner
+	    corners: 0.7, // Corner roundness (0..1)
+	    color: '#e60000', // #rgb or #rrggbb or array of colors
+	    opacity: 0.20, // Opacity of the lines
+	    rotate: 85, // The rotation offset
+	    direction: -1, // 1: clockwise-1: counterclockwise
+	    speed: 0.5, // Rounds per second
+	    trail: 85, // Afterglow percentage
+	    fps: 20, // Frames per second when using setTimeout() as a fallback for CSS
+	    zIndex: 2e9, // The z-index (defaults to 2000000000)
+	    className: 'spinner', // The CSS class to assign to the spinner
+	    top: '65%', // Top position relative to parent
+	    left: '50%', // Left position relative to parent
+	    shadow: true, // Whether to render a shadow
+	    hwaccel: false, // Whether to use hardware acceleration
+	    position: 'absolute' // Element positioning
+  }
 </script>
 	<table width="800" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#EEEEEE">
 		<!-- Renglón con imágen TOP de Intranet -->
@@ -88,7 +113,7 @@
 						<td width="100%" >
 							<?php 
 								if($USUARIO <> ''){
-									echo "<span class='txtBienvenido' > Bienvenido, </span >  <span class='txtUsuario'>" . $_SESSION['USUARIO']. "</span>" ;
+									echo "<span class='txtBienvenido' > Bienvenido, </span >  <span class='txtUsuario'>" .$USUARIO. "</span>" ;
 								}
 							?>  
 						</td> 
@@ -120,7 +145,7 @@
 							<td>
 							</td>
 							<td>
-							  <a href="cerrarSesion.php"   onmouseover="MM_swapImage('ImageCierraSesion','','intraImg/btnCerrarSesion2.png',1)" onmouseout="MM_swapImgRestore()"><img src="intraImg/btnCerrarSesion.png" name="ImageCierraSesion"  id="ImageCierraSesion"  align="center"  alt="Cerrar Sesión"/></a>
+							  <a href="page_CerrarSesion.php"   onmouseover="MM_swapImage('ImageCierraSesion','','intraImg/btnCerrarSesion2.png',1)" onmouseout="MM_swapImgRestore()"><img src="intraImg/btnCerrarSesion.png" name="ImageCierraSesion"  id="ImageCierraSesion"  align="center"  alt="Cerrar Sesión"/></a>
 							</td>
 						<?php
 							}

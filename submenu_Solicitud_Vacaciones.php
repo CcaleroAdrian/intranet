@@ -11,94 +11,102 @@ date_default_timezone_set('AMERICA/Mexico_City');
 setlocale (LC_TIME, 'spanish-mexican');
 $objOperaciones = new ActionsDB();
 //Variables
-$success = "";
-$error1 = "";
-$error2 = "";
 $ID_USR;
+$AREAN;
+$LIDER;
+$NOMBRE;
 $VisualizarR = false;
-$TAMANO_PAGINA = 5;
-$area="";
-$directorID = 1;	
-
-//********Enviar el correo de notificacion*********
-//Recuperamos los datos a enviar por correo
-$btn = isset($_POST['btnSolicitar']) ? trim($_POST['btnSolicitar']) : "";
-//Evento guardar solicitud de vacaciones
-if ($btn == "Enviar") {
-
-	$nombre = isset($_POST['nombreEmpleado']) ? trim($_POST['nombreEmpleado']): "";//nombre del empleado
-	$a =isset($_POST['area']) ? trim($_POST['area']): "";//are a la que pertenece
-	$diasSoli =isset($_POST['diasSolicitados']) ? trim($_POST['diasSolicitados']) : "";//dias solicitados
-	$diasVa =isset($_POST['Vaca']) ? trim($_POST['Vaca']) : "";//dias de vacaciones correspondientes
-	$fechaI = isset($_POST['fecha1']) ? trim($_POST['fecha1']) : "";
-	$fechaF = isset($_POST['fecha2']) ? trim($_POST['fecha2']) : "";
-	$date = strtotime($_POST['fecha1']);//fecha Inicial
-	$dates = strtotime($_POST['fecha2']);//fecha Final
-	$fechaIn = strtotime($usr['fechaIngreso']);
-	$diasAdi= isset($_POST['DiasAdicionales']) ? trim($_POST['DiasAdicionales']) : "";
-	$diasRestantes =  isset($_POST['DiasRestantes']) ? trim($_POST['DiasRestantes']) : "";
-
-	$otro = date("d-F-Y", $date);//fecha inicial de vacaciones
-	$FechaFinal =date("d-F-Y", $dates);//fecha final de vacaciones
-	$fechaIngreso = date("d-F-Y", $fechaIn);//fecha de ingreso
-
-	
-	$objectAlta = new ActionsDB();
-	if ($usr['Proyecto_id'] != 0 OR $usr['Proyecto_id'] != "") {
-		$resultado =$objectAlta->insertSolicitud($ID_USR,$fechaI,$fechaF,$diasVa,$diasSoli,$diasAdi,$diasRestantes,$LiderID,$directorID);
-		if( $resultado ) {
-
-			//Actualizamos los dás ley del usuario;
-			if ($diasVa < $diasSoli) {
-				$dias = "-".$diasAdi;
-				$objectAlta->editarDiasLey($dias,$ID_USR,1);
-			}elseif ($diasVa > $diasSoli) {
-				$objectAlta->editarDiasLey($diasRestantes,$ID_USR,1);
-			}
-			$success = "Se realiz&oacute; el registro de su solicitud " ;
-			$usuarios = $objOperaciones->verSolicitudes($ID_USR,0,$TAMANO_PAGINA);
-			//header("Refresh:0");
-		} else { 
-			$error1 = "Hubo un error al registrar su solicitud. Favor de intentarlo más tarde";
-		}
-	}else{$error = "Debes seleccionar un Gerente de proyectos de tu Área o Departamento antes de realizar la captura de tu solicitud de lo contrario esta no será enviada.";}
-}
-
-$mensaje = isset($_GET['mensaje']) ? trim($_GET['mensaje']) : "";
-
+$TAMANO_PAGINA = 10;	
+$fecha1 = date('Y-m-d', strtotime('+1 day')) ;
+//$resultado =$objectAlta->insertSolicitud($ID_USR,$fechaI,$fechaF,$diasVa,$diasSoli,$diasAdi,$diasRestantes,$LiderID,$directorID);
 ?>
 <script type="text/javascript">
 	var url = 'https://apex-a261292.db.us2.oraclecloudapps.com/apex/itw/empleados/';
 	var id = "<?php echo $ID_USR; ?>";
-	var Gerente;
+	var lider = "<?php echo $LIDER; ?>";
 	var vacaciones;
 	$(document).ready(function(){
 
-		var xmlhttp;
-		var success = "<?php echo utf8_encode($success); ?>";
-		var error =  "<?php echo $error1; ?>";
-		var err = "<?php echo $error2; ?>";
-		var otro = "<?php echo $error; ?>";
-		var mensaje = "<?php echo $mensaje; ?>";
-		
-		if (error != "") {
-			swal({title: "CONFIRMACIÓN",text: error,type: "error",timer:3000,showConfirmButton:false});
-		}else if (success != "") {
-			swal({title: "CONFIRMACIÓN",text: success, type:"success", timer:3000, showConfirmButton:false});
-		}else if (err != "") {
-			swal({title: "CONFIRMACIÓN",text: err,type: "info",showConfirmButton:true});
-		}else if(otro != ""){
-			swal({title: "CONFIRMACIÓN",text: otro,type: "info",timer:8000,showConfirmButton:false});
-		}else if(mensaje != ""){
-			swal({title: "CONFIRMACIÓN",text: mensaje,type: "info",timer:3000,showConfirmButton:false});
-		}
-
-
-		//Desactivar boton de enviar en caso de no seleccionar Gerente o No disponer de días
-		var data = {ID: id};
-		caragarInforUser(data,url);
+		consultarVacaciones();
 		//Consultamos resultados con ajax
 		paginacion(0);
+
+		$('#btnSubmit').on('click',function(event){
+			event.preventDefault();
+			if ($('#fecha1').val() != "" && $('#fecha2').val() != "") {
+				swal({   title: "SOLICITUD DE VACACIONES",
+					   text: "<span style='color:#000099'>¿Desea solicitar un periodo vacacional?</span>",
+					   html: true,
+					   imageUrl: "intraImg/logoITWfinal.png",
+					   showCancelButton: true,
+					   confirmButtonColor: " #337ab7",
+					   cancelButtonColor: "#ff3333",
+					   confirmButtonText: "Si, Deseo solicitar",
+					   cancelButtonText: "No, Deseo solicitar",
+					   closeOnConfirm: false,
+					   closeOnCancel: false
+					}, 
+					function(isConfirm){ 
+					  if (isConfirm) {
+					  	  
+					  	swal({title:"PROCESANDO SOLICITUD",
+					  		  text:"<span style='color:#000099'>Tú solicitud esta siendo enviada.</span>",
+					  		  imageUrl: "intraImg/logoITWfinal.png",
+					  		  confirmButtonColor: " #337ab7",
+					  		  html: true,
+					  		  showConfirmButton:false,
+					  		  timer:2000
+					  		}); 
+					  	var data = {ID_USR:id,FECHAI:$('#fecha').val() ,FECHAF:$('#fecha2').val(),DIASC:$('#Vacaciones').val(),
+							DIASSOC:$('#diasSolicitados').val(),DIASAD:$('#diasAdicionales').val(),DIASRES:$('#diasRestantes').val(),LIDER:lider}
+						$.post('procesarVacaciones.php',data).done(function(data){
+							var vacaciones = parseInt(data);
+							console.log(data);
+							if (vacaciones != 0 || vacaciones != "") {
+									$.ajax({
+										    method: "POST",
+										    url: "https://apex-a261292.db.us2.oraclecloudapps.com/apex/itw/vacaciones/",
+										    dataType: "json",
+										    timeout: 6000,
+										    headers:{VACACIONES:vacaciones,ID:id} })
+											.done(function(data, textStatus, jqXHR){
+												console.log("datad"+ata);
+												console.log("textStatus"+textStatus);
+												console.log("jqXHR"+jqXHR);
+										    });
+									swal({title: "CONFIRMACIÓN",text: "<span style='color:#000099'>solicitud de vacaciones, registrada exitosamente.</span>",imageUrl: "intraImg/logoITWfinal.png",html: true,timer:4000,showConfirmButton:false});									
+							}else{
+								swal({title: "ERROR",text: "<span style='color:#F8BB86'>Hubo un error al registrar su solicitud. Favor de intentarlo más tarde.</span>",imageUrl: "intraImg/logoITWfinal.png",html: true,timer:4000,showConfirmButton:false});
+							}
+
+							consultarInfo();//consulta de vacaciones
+						});
+						document.getElementById('formulario').reset();
+
+					  } else{
+					  	swal({title:"SOLICITUD CANCELADA",
+					  	text: "<span style='color:#F8BB86'>Tú solicitud ha sido cancelada.</span>",
+					  	imageUrl: "intraImg/logoITWfinal.png",
+					  	html: true,
+					  	confirmButtonColor: " #337ab7",
+					    confirmButtonText: "OK"
+					  	});
+					  	//Reseteo de los campos
+					  	document.getElementById('formulario').reset();
+					  	consultarVacaciones();
+					  }
+					});
+			}else{
+				swal({title:"Aviso",
+					  		  text:"<span style='color:#F8BB86''>Los campos fecha Inicio y Fecha fin<br>No pueden ir vacios.</span>",
+					  		  imageUrl: "intraImg/logoITWfinal.png",
+					  		  confirmButtonColor: " #337ab7",
+					  		  html: true,
+					  		  showConfirmButton:false,
+					  		  timer:2000
+					  		}); 
+			}
+		});
 
 	});
 
@@ -134,53 +142,71 @@ $mensaje = isset($_GET['mensaje']) ? trim($_GET['mensaje']) : "";
 			}
 	}
 
-	function caragarInforUser(data,url){
+	//Consultar dias de vacaciones
+	function consultarVacaciones(){
 		$.ajax({
-        method: "GET",
-        url: url,
-        dataType: "json",
-        headers:data,
-        beforeSend:function(){
-          var div = document.getElementById('mensaje');
-          var spinner = new Spinner(opts).spin(div);
-        },
-        success: function(data) {
-	        //$('#email_1').val(data['email_1']);
-	        //$('#empleado_id').val(data['empleado_id']);
-	        var nombre = data['apellido_paterno']+' '+data['apellido_materno']+ ' '+ data['nombre'];
-	        $('#nombreUser').val(nombre);
-
-	        var vacaciones = parseInt(data['vacaciones']);
-	        if (vacaciones == 0) {
-	        	$('#Vacaciones').val(vacaciones);
-	        }else if(vacaciones < 0){
-	          	vacaciones = 0;
-	            $('#Vacaciones').val(vacaciones);
-	            $("#btnSubmit").attr("disabled","disabled");
-	        }else{
-	          	$('#Vacaciones').val(vacaciones);
-	        }
-
-	        $.ajax({
 		        method: "GET",
-		        url: 'https://apex-a261292.db.us2.oraclecloudapps.com/apex/itw/liderArea/',
+		        url: "https://apex-a261292.db.us2.oraclecloudapps.com/apex/itw/vacaciones/",
 		        dataType: "json",
-		        headers: {AREA_ID:data['area_id']},
-		        success: function(data) {
-		         responsableArea= data['nombre'];
-		         correoArea = data['email_1'];
-		         nombreArea = data['nombre_area'];
-		         Gerente = data['empleado_id'];
-		         $('#area1').val(nombreArea);
-		        }
-	      	});
-
-          $( ".spinner" ).remove();
-        }
-      });
+		        timeout: 6000,
+		        headers:{ID : id},
+			    beforeSend:function(){
+			        var div = document.getElementById('mensaje');
+			        var spinner = new Spinner(opts).spin(div);
+			    },
+			    success: function(data) {
+			    	var vacaciones = parseInt(data['vacaciones']);
+			    	if (vacaciones < 0) {
+			    		$('#Vacaciones').val(0);
+			    		$('#btnSubmit').attr('disabled','disabled');
+			    	}else{
+			    		$('#Vacaciones').val(vacaciones);
+			    	}
+				    
+			        $( ".spinner" ).remove();
+			    }
+		    });
 	}
 
-
+	//Consultar dias de vacaciones
+	function consultarInfo(){
+		$.ajax({
+		        method: "GET",
+		        url: "https://apex-a261292.db.us2.oraclecloudapps.com/apex/itw/vacaciones/",
+		        dataType: "json",
+		        timeout: 6000,
+		        headers:{ID : id},
+			    success: function(data) {
+			    	var vacaciones = parseInt(data['vacaciones']);
+			    	if (vacaciones < 0) {
+			    		$('#Vacaciones').val(0);
+			    		$('#btnSubmit').attr('disabled','disabled');
+			    	}else{
+			    		$('#Vacaciones').val(vacaciones);
+			    	}
+				    
+			        $( ".spinner" ).remove();
+			    }
+		});
+		var op = 2;
+		var pagina=0;
+			if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+					xmlhttp=new XMLHttpRequest();
+				
+			}else{// code for IE6, IE5
+					xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+			}
+		
+			xmlhttp.onreadystatechange=function(){
+				if (xmlhttp.readyState==4 && xmlhttp.status==200){
+					document.getElementById("cuerpo").innerHTML=xmlhttp.responseText;
+				}
+			}
+			
+			xmlhttp.open("POST","acciones.php",true);
+			xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			xmlhttp.send("pagina="+pagina+"&opcion="+op+"&id="+id);
+	}
 </script>
 <style type="text/css">
 	a{
@@ -190,19 +216,19 @@ $mensaje = isset($_GET['mensaje']) ? trim($_GET['mensaje']) : "";
 <!--<script type="text/javascript" src="js/solicitud.js"></script>-->
 <script type="text/javascript" src="js/busqueda.js"></script>
 	<h3 align="left">SOLICITUD DE VACACIONES</h3>
-	<form  id="formulario" name="frmSolicitud" method="post" action="<?php echo $_SERVER['PHP_SELF'];  ?>" enctype="multipart/form-data">
+	<form  id="formulario" name="frmSolicitud" enctype="multipart/form-data">
 	<div class="panel panel-primary">
     <div class="panel-heading">CAPTURA<a id="tutorial" href="" onclick="mostrarTuto()"><i class="fa fa-info-circle fa-lg"style="padding-left: 10px; color: white;"></i></a></div>
     <div class="panel-body">
 		<table id="form1" class="table-responsive">
 			<tr >
 				<td ><label>Nombre del empleado:</label></td>
-				<td colspan="3"><input id="nombreUser" size="30" name="nombreEmpleado" class="bloqueado" readonly></input></td>
-				<td id="mensajes"></td>
+				<td colspan="3"><input id="nombreUser" size="30" value="<?php echo $NOMBRE ?>" name="nombreEmpleado" class="bloqueado" readonly></input></td>
+				<td id="mensaje"></td>
 			</tr>
 			<tr>
 				<td><label >&#193rea o departamento:</label></td>
-				<td><input id="area1" name="area" class="bloqueado" readonly="readonly"></input></td>
+				<td><input id="area1" name="area" value="<?php echo $AREAN ?>" class="bloqueado" readonly="readonly"></input></td>
 				<td>&#160;</td>
 			</tr>
 			<tr>
@@ -219,14 +245,14 @@ $mensaje = isset($_GET['mensaje']) ? trim($_GET['mensaje']) : "";
 			</tr>
 			<tr>
 			<td ><label>Fecha inicio:</label></td>
-				<td ><input id="fecha" size="10" type="date" name="fecha1" onchange="fechas()" value="" class="form-control" required=”required”/></td>
+				<td ><input id="fecha" size="10" type="date" name="fecha1" onchange="fechas()" min="<?php echo $fecha1; ?>"  class="form-control" required=”required”/></td>
 				<td ><label>Fecha fin:</label></td>
-				<td colspan="2"><input type="date" name="fecha2" id="fecha2" onchange="fechas()" class="form-control" required=”required”/></td>
+				<td colspan="2"><input type="date" name="fecha2" id="fecha2" min="<?php echo $fecha1; ?>" onchange="fechas()" class="form-control" required=”required”/></td>
 			</tr>
 			<tr><td>&#160;</td></tr>
 			<tr>
 				<td>&#160;</td>
-				<td style="padding-left:25%"><button id="btnSubmit" type ="submit" class ="btn btn-primary " name="btnSolicitar" value="Enviar">&#160;Enviar&#160;</button></td>
+				<td style="padding-left:25%"><button id="btnSubmit" type ="submit" class ="btn btn-primary ">&#160;Enviar&#160;</button></td>
 				<td align="left"><!--<button class="btn btn-danger">Cancelar</button>--></td>
 			</tr>
 		</table>

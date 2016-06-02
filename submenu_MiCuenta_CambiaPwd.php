@@ -20,17 +20,17 @@
 			//Validar que las contraseña sean de 8 caracteres
 			if ( (strlen($pwd1) <> 8 )  OR (strlen($pwd2) <> 8 ) ) {
 				$valok = false;
-				$mensaje = "La nueva contraseña debe ser de 8 caracteres.";
+				$mensaje = "<span style='color:#F8BB86'>La nueva contraseña debe ser de 8 caracteres.</span>";
 			}elseif ( $valok  AND ( $pwd1 <> $pwd2 ) ) {
 				$valok = false;
-				$mensaje = "Las contraseñas deben ser iguales.";
+				$mensaje = "<span style='color:#F8BB86'>Las contraseñas deben ser iguales.</span>";
 			}else{
 				$password =isset($pwd1) ? trim(md5($pwd1)) : "";
 				$valok = true;
 			} 
 		}else {
 			$valok = false;
-			$mensaje = "Debe capturar ambos campos.";
+			$mensaje = "<span style='color:#F8BB86'>Debe capturar ambos campos.</span>";
 		}
 	} 
 		
@@ -42,7 +42,8 @@
  			swal({
 	        title: "Alerta",
 	        text: error,
-	        type: "error",
+	        html:true,
+	        imageUrl: "intraImg/logoITWfinal.png",
 	        timer: 3000,
 	        showConfirmButton:false
 	        });
@@ -73,8 +74,9 @@
 			          success: function(data) {
 			            swal({
 			              title: "Confirmacion",
-			              text: "Información actualizada correctamente cerrando sesión.",
-			              type: "success",
+			              text: "<span style='color:#000099'>Información actualizada correctamente cerrando sesión.</span>",
+			              imageUrl: "intraImg/logoITWfinal.png",
+			              html:true,
 			              showConfirmButton:false,
 			              timer:4000
 			              });
@@ -82,7 +84,6 @@
 			            window.location.href = "../intranet/page_CerrarSesion.php";
 			          },
 			          error:function(jqXHR,estado,error){
-			            console.log(error);
 			            $( ".spinner" ).remove();
 			            $("#pwd1").val();
 			            $("#pwd2").val();

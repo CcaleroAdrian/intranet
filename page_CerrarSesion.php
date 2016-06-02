@@ -16,8 +16,9 @@ $objses->destroy();
 	$(document).ready(function(){
 		swal({
 			title: "Confirmacion",
-			text: "Ha finalizado la sesion en la Intranet de ITW.",
-			type: "success",
+			text: "<span style='color:#000099'>Ha finalizado la sesion en la Intranet de ITW.</span>",
+			imageUrl: "intraImg/logoITWfinal.png",
+			html:true,
 			showCancelButton: false,
 			confirmButtonText: "Continuar",
 			confirmButtonColor: " #337ab7",

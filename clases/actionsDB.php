@@ -555,22 +555,22 @@ class ActionsDB{
 	}
 
 	//Funcion para visualizar solicitudes por ID usuario
-	public function verSolicitudesID($LiderId, $descripPerfil, $inicio = 0 ,$TAMANO_PAGINA = 0, $nombre = ""){
+	public function verSolicitudesID($LiderId, $inicio = 0 ,$TAMANO_PAGINA = 0, $nombre = ""){
 		$query = "";
 
-		if($descripPerfil != "DIRECCION" and $nombre == ""){//visualizar solicitudes recibidas
+		if($LiderId != 1 and $nombre == ""){//visualizar solicitudes recibidas a gerentes de AREA
 
 			$query = "SELECT solicitud_ID, user_ID, fechaI,fechaF,diasCorrespondientes,diasSolicitados,diasAdicionales,documentoURL FROM solicitudvaciones  where lider_ID = '".$LiderId."' and aprobacion_L in(1) and documentoURL != 'cargar documento' LIMIT ".$inicio.",".$TAMANO_PAGINA;
 
-		}else if ($descripPerfil == "DIRECCION" and $nombre == "") {//visualizar solicitudes recibidas
+		}else if ($LiderId == 1 and $nombre == "") {//visualizar solicitudes recibidas a Director
 			$query = "SELECT solicitud_ID,user_ID,fechaI,fechaF,diasCorrespondientes,diasSolicitados,diasAdicionales,documentoURL FROM solicitudvaciones  where Director_ID ='".$LiderId."' and aprobacion_D in (1) and documentoURL != 'cargar documento' AND aprobacion_L in(2) AND diasAdicionales != 0 order by user_ID limit ".$inicio.",".$TAMANO_PAGINA;
 		
 		//******BUSQUEDA CON LA CAJA DE TEXTO
-		}else if($descripPerfil != "DIRECCION" and $nombre != ""){//busqueda desde la caja de texto
+		}else if($LiderId != 1 and $nombre != ""){//busqueda desde la caja de texto
 
 			$query = "SELECT S.user_ID,S.fechaI,S.fechaF,S.diasCorrespondientes,S.diasSolicitados,S.diasAdicionales FROM solicitudvaciones as S left JOIN  usuarios as us on S.user_ID = us.idUsuario WHERE S.lider_ID ='".$LiderId."' AND S.aprobacion_L = 0 and us.nombre LIKE '%".$nombre."%'";
 		
-		}else if($descripPerfil == "DIRECCION" and $nombre != ""){//busqueda desde la caja de texto
+		}else if($LiderId == 1 and $nombre != ""){//busqueda desde la caja de texto
 
 			$query = "SELECT S.user_ID,S.fechaI,S.fechaF,S.diasCorrespondientes,S.diasSolicitados,S.diasAdicionales FROM solicitudvaciones as S left JOIN  usuarios as us on S.user_ID = us.idUsuario WHERE S.Director_ID ='".$LiderId."' AND S.aprobacion_D = 0 and us.nombre LIKE '%".$nombre."%'";
 		}
@@ -599,12 +599,12 @@ class ActionsDB{
 	}
 
 	//Function para contar registros encontrados
-	public function verSolicitudesIDB($LiderId){
+	public function verSolicitudesIDB($LiderId){ 
 		$query = "";
 
-		if($descripPerfil != "DIRECCION"){
-			$query = " SELECT solicitud_ID,user_ID,fechaI,fechaF,diasCorrespondientes,diasSolicitados,diasAdicionales FROM solicitudvaciones  WHERE lider_ID = '".$LiderId."' AND aprobacion_L in (1) AND documentoURL != 'sin archivo'";
-		} else{
+		if($LiderId != 1){//Solicitudes para gerentes de area
+			$query = " SELECT solicitud_ID,user_ID,fechaI,fechaF,diasCorrespondientes,diasSolicitados,diasAdicionales FROM solicitudvaciones  WHERE lider_ID = '".$LiderId."' AND aprobacion_L in (1) AND documentoURL != 'cargar documento'";
+		} else{//Solicitudes para el director
 			$query = "SELECT solicitud_ID,user_ID,fechaI,fechaF,diasCorrespondientes,diasSolicitados,diasAdicionales,documentoURL FROM solicitudvaciones  where Director_ID ='".$LiderId."' and aprobacion_D in (1) and documentoURL != 'cargar documento' AND aprobacion_L in(2) AND diasAdicionales != 0 ";
 		}
 

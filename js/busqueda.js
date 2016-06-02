@@ -52,7 +52,7 @@ function fechas(){
 		document.getElementById('diasSolicitados').value = diffDays +1;
     	//document.getElementById('diasSolicitados').val(diffDays +1);
 		var acccion = "";
-		var diasV = $('#vacaciones').val();//Dias de vaciones disponibles
+		var diasV = $('#Vacaciones').val();//Dias de vaciones disponibles
 		var diasS = diffDays +1; 
 		if (diasS > 0) {//comprobar que se han solicitado dias 
 		
@@ -61,8 +61,9 @@ function fechas(){
 				$("#diasRestantes").val(0);
 
 				swal({   title: "SOLICITUD DE VACACIONES",
-				   text: "¿Desea solicitar días de vacaciones adicionales?",
-				   type: "warning",
+				   text: "<span style='color:#000099'>¿Desea solicitar días de vacaciones adicionales?</span>",
+				   imageUrl: "intraImg/logoITWfinal.png",
+				   html:true,
 				   showCancelButton: true,
 				   confirmButtonColor: " #337ab7",
 				   cancelButtonColor: "#ff3333",
@@ -75,26 +76,51 @@ function fechas(){
 				  if (isConfirm) {
 				  	  
 				  	swal({title:"GUARDANDO SOLICITUD",
-				  		  text:"Tú solicitud esta siendo guardada.",
-				  		  type:"info",
+				  		  text:"<span style='color:#000099'>Tú solicitud esta siendo guardada.</span>",
+				  		  imageUrl: "intraImg/logoITWfinal.png",
+				  		  html:true,
 				  		  confirmButtonColor: " #337ab7",
 				  		  showConfirmButton:false,
 				  		  timer:2000
 				  		}); 
-				  	$('#btnSubmit').click();
+				  	var data = {ID_USR:id,FECHAI:$('#fecha').val() ,FECHAF:$('#fecha2').val(),DIASC:$('#Vacaciones').val(),
+						DIASSOC:$('#diasSolicitados').val(),DIASAD:$('#diasAdicionales').val(),DIASRES:$('#diasRestantes').val(),LIDER:lider}
+					$.post('procesarVacaciones.php',data);
+						var vacaciones = parseInt(data);
+						document.getElementById('formulario').reset();
+						if (vacaciones != 0 || vacaciones != "") {
+								$.ajax({
+									    method: "POST",
+									    url: "https://apex-a261292.db.us2.oraclecloudapps.com/apex/itw/vacaciones/",
+									    dataType: "json",
+									    timeout: 6000,
+									    headers:{VACACIONES:vacaciones,ID:id} })
+										.done(function(data, textStatus, jqXHR){
+											console.log("datad"+ata);
+											console.log("textStatus"+textStatus);
+											console.log("jqXHR"+jqXHR);
+									    });
+								swal({title: "CONFIRMACIÓN",text: "<span style='color:#000099'>solicitud de vacaciones, registrada exitosamente.</span>",imageUrl: "intraImg/logoITWfinal.png",html:true,timer:4000,showConfirmButton:false});									
+						}else{
+							swal({title: "ERROR",text: "<span style='color:#F8BB86'>Hubo un error al registrar su solicitud. Favor de intentarlo más tarde.</span>",imageUrl: "intraImg/logoITWfinal.png",html:true,timer:4000,showConfirmButton:false});
+						}
+
+						consultarInfo();//consulta de vacaciones
 
 				  } else{
 				  	swal({title:"SOLICITUD CANCELADA",
-				  	text: "Tú solicitud extraordinaria fué cancelada.",
-				  	type: "info",
+				  	text: "<span style='color:#F8BB86'>Tú solicitud extraordinaria fué cancelada.<span style='color:#F8BB86'>",
+				  	imageUrl: "intraImg/logoITWfinal.png",
+				  	html:true,
 				  	confirmButtonColor: " #337ab7",
 				    confirmButtonText: "OK"
 				  	});
 				  	//Reseteo de los campos
-				  	//document.getElementById('formulario').reset();
-				  	document.getElementById('diasSolicitados').value= "";
-				  	document.getElementById('diasRestantes').value="";
-				  	document.getElementById('diasAdicionales').value="";
+				  	document.getElementById('formulario').reset();
+				  	consultarVacaciones();
+				  	//document.getElementById('diasSolicitados').value="";
+				  	//document.getElementById('diasRestantes').value= "";
+				  	//document.getElementById('diasAdicionales').value= "";
 				  }
 				});
 			

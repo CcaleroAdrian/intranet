@@ -5,11 +5,14 @@
 	
 	$objsesion = new Sesion();
 	$objsesion->init();
-
+ 
 	$USUARIO = isset($_SESSION['USUARIO']) ? trim( $_SESSION['USUARIO']) : null ;
 	$AREA = isset($_SESSION['AREAID']) ? trim($_SESSION['AREAID']) : null ;
 	$ID_USR = isset($_SESSION['IDUSUARIO'])? trim($_SESSION['IDUSUARIO']) : null;
 	$PERFIL_USR = isset($_SESSION['PERFIL_ID']) ? trim($_SESSION['PERFIL_ID']) : null;
+	$AREAN = isset($_SESSION['AREA']) ? trim($_SESSION['AREA']) : null;
+	$LIDER = isset($_SESSION['LIDER']) ? trim($_SESSION['LIDER']) : null;
+	$NOMBRE = isset($_SESSION['NOMBRE']) ? trim($_SESSION['NOMBRE']) : null;
 	$HoraIngreso = isset($_SESSION['HoraIngreso']) ? trim($_SESSION['HoraIngreso']) : null;
 	// Evitar los warnings the variables no definidas!!!
 	$error = isset($_GET['ERROR']) ? $_GET['ERROR'] : "" ;
@@ -39,8 +42,6 @@
 </head>
 <body>
 <script type="text/javascript">
-	
-
 	$(document).ready(function(){
 		var xmlhttp;
 		if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari

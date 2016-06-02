@@ -66,8 +66,9 @@
             console.log(data);
             swal({
               title: "Confirmacion",
-              text: "Información actualizada correctamente",
-              type: "success",
+              text: "<span style='color:#000099'>Información actualizada correctamente</span>",
+              html:true,
+              imageUrl: "intraImg/logoITWfinal.png",
               showConfirmButton:false,
               timer:3000
               });

@@ -1,0 +1,157 @@
+EMPLEADO_ID,NOMBRE,APELLIDO_PATERNO,APELLIDO_MATERNO,RFC,ROL_ID,CELULAR,TELEFONO,EMAIL_1,EMAIL_2,ESTATUS,FECHA_BAJA,FECHA_ANTIGUEDAD,CALLE,FECHA_NACIMIENTO,AREA_ID,ESTADO_CIVL_ID
+152,Erika,Valencia,Urbina,VAUE8803286V3,18,5560645704,57501994,,reorbiekrato@hotmail.com,ACTIVO,,2016-03-01T00:00:00,Nicolás Bravo,1988-03-28T00:00:00,63,3
+155,Ricardo,Cruz ,Bautista,CUBR910608QWA,,55.4942.3627,,,cruz.r230@gmail.com,ACTIVO,,2016-04-04T00:00:00,Real del oro ,1991-06-08T00:00:00,,3
+156,Diego,Contreras,Murillo,COMD841112A61,3,55.2327.7335,50811212,,li.diegocontreras@gmail.com,ACTIVO,,2016-04-04T00:00:00,Ezequiel Ordóñez,,22,3
+157,Carlos Eduardo,Pacheco,Soria,PASC9310118G4,,55.6318.0380,58638691,,eduardopacheco_11@hotmail.com,ACTIVO,,2016-04-04T00:00:00,Cerrada  12,1993-10-11T00:00:00,21,3
+94,Nayeli,Hernandez,Anaya,HEAN811125JW4,14,5514449902,63058622,,nayehernandez@gmail.com,ACTIVO,,2014-09-17T00:00:00,Avenida 414 A,1981-11-25T00:00:00,,
+7,Hector,Ortiz,Jimenez,OIJH840531DA1,14,5530198970,31823213,,hector.ortiz@outlook.com,ACTIVO,,2011-09-15T00:00:00,Calle Sur,1984-05-31T00:00:00,22,3
+64,Angelica,Loyo,Gil,LOGA721021,10,5517018669,58159867,,acilegnaoyol@hotmail.com,ACTIVO,,2014-04-01T00:00:00,Prolongación Ocote,1972-10-21T00:00:00,,1
+109,Diana de la Mercedes,Mesa,Babastro,MEBD890923NK0,11,5564213422,5635.0735,,asem.diana@hotmail.com,ACTIVO,,2015-01-23T00:00:00,Picagregros,1989-09-23T00:00:00,63,3
+117,Angela Michelle,Montero,De la Torre,MOTA7201315C7,4,5514766438,53897320,,angela9mx@hotmail.com,BAJA,2016-04-12T00:00:00,2015-03-30T00:00:00,Calzada Vallejo,1972-01-31T00:00:00,21,
+24,Mayra,Montes,Ruiz,MORM840309M71,6,5529925185,41190914,,mayra_monru219@hotmail.com,ACTIVO,,2012-10-01T00:00:00,Segunda Cerrada Benito Juárez,1984-03-09T00:00:00,22,1
+127,Antonio,Morales,Suarez,MOSA630705V53,16,5534683415,55715157,,amoralessuarez@hotmail.com,ACTIVO,,2015-06-15T00:00:00,UH Jardín Balbuena,1963-07-05T00:00:00,63,1
+69,Emili Anel,Picazo,Lendizabal,PILE820520K7,14,5543570250,57519527,,emily.picazo@gmail.com,ACTIVO,,2014-03-24T00:00:00,Cairo,1982-05-20T00:00:00,22,3
+92,Gabriela,Ramirez,Jimenez,RAJG850822EX3,7,5513383181,59704248,,gabrielarj22@yahoo.com,ACTIVO,,2014-08-25T00:00:00,Plutarco Elias Calles,1985-08-22T00:00:00,22,
+5,Oscar Gonzalo,Reyes,Mendoza,REMO7903013Z3,14,5516483268,55358172,,oszcar_reyes@hotmail.com,ACTIVO,,2011-11-01T00:00:00,Antonio Caso,1979-03-01T00:00:00,22,1
+95,Angelica,Rosillo,Leal,ROLA8502281F5,9,5532201714,51204321,,angelica.rosillo09@gmail.com,ACTIVO,,2014-09-17T00:00:00,Av. Independencia,1985-02-28T00:00:00,21,
+97,Jose Angel,Sanchez,Aguirre,SAAA7302235JA,9,5532293792,56120402,,angelsanchezaguirre@hotmail.com,ACTIVO,,2014-09-22T00:00:00,Sabadell 110,1973-02-23T00:00:00,21,
+139,Fernando Alexis,Torres,Cervantes,TOCF920323V48,9,5544793657,,,ingftorressupvm@hotmail.com,ACTIVO,,2015-10-05T00:00:00,Lomas de Andalucía,1992-03-23T00:00:00,21,3
+140,Guillermo,Trujillo,Gamba,TUGG5712237L6,3,5570673470,(+57)3014505045,,gtrujiga@hotmail.com,ACTIVO,,2015-10-19T00:00:00,Coyoacán ,1957-12-23T00:00:00,22,1
+53,Aldo Higinio,Zarza,Perez,ZAPA9003291C9,13,55.3506.1920,53887743,,azarza.90@gmail.com,ACTIVO,,2013-05-20T00:00:00,Cale 22,1990-03-29T00:00:00,21,3
+45,Guillermo,Leon,Sanchez,,9,,,,,BAJA,2013-11-08T00:00:00,,,,,
+65,Luis Adrian,Aparicio,Saucedo,,13,,,,,BAJA,2014-03-15T00:00:00,,,,,
+74,Nancy,Eguiluz,Brito,,9,,,,,BAJA,2014-05-05T00:00:00,,,,,
+80,Marco Antonio,Robles,Lopez,,9,,,,,BAJA,2014-11-28T00:00:00,,,,,
+84,Ericka,Hernandez,Castillo,,9,,,,,BAJA,,,,,,
+98,Erazael,Gonzalez,Rios,,9,,,,,BAJA,2014-12-12T00:00:00,,,,,
+88,Raul,Granados,Arenas,GAAR801031TY3,7,,,,,BAJA,2016-03-18T00:00:00,,,,,
+46,Rafael,Granados,Bautista,GABR840922,9,,,,,ACTIVO,,,,,,
+102,Banamex,Prestamo,,,,,,,,ACTIVO,,,,,,
+159,Jesús,De la Rosa,Godinez,rogj720513q81,14,,,,,ACTIVO,,2016-05-02T00:00:00,,,22,
+51,Hector Alberto,Hernandez,Santiago,HESH840719I11,7,5517010749,52900886,,hector_centi@hotmail.com,ACTIVO,,2013-05-06T00:00:00,Av. Cuajimalpa,1984-07-19T00:00:00,,3
+90,Maria Guadalupe,Leon,Arana,LEAG920116FH2,8,5529726849,58792807,,lupitaleonarana@gmail.com,ACTIVO,,2014-07-28T00:00:00,Belisario Domínguez,1992-01-16T00:00:00,,3
+2,Uriel Surid,Gonzalez,Acosta,GOAU730513R92,2,5518720226,5543490646,,urielsan@hotmail.com,ACTIVO,,2011-09-01T00:00:00,Tenayuca,1973-05-13T00:00:00,22,2
+55,Daniel,Martinez,Guapo,MAGD870306Q64,5,55.2712.6836,5942.8460,,dani_notdeam@hotmail.com,ACTIVO,,2013-04-01T00:00:00,Francisco Villa,1987-03-06T00:00:00,21,3
+19,Ricardo Agustin,Martinez,Morales,MAMR830403TZA,4,5532739588,56144787,,visualx1999@gmail.com,ACTIVO,,2012-03-15T00:00:00,Cerrada de Carril,1983-04-03T00:00:00,22,1
+143,Juana,Picazo,Lendizabal,PILJ730909DC6,17,5510089851,57519527,,,ACTIVO,,2015-12-08T00:00:00,Cairo,1973-09-09T00:00:00,63,1
+110,Daniel,Rodriguez,Vazquez,ROVD840302CLA,8,5544801419,11077693,,thedamn@gmail.com,ACTIVO,,2015-01-21T00:00:00,Viaducto Río Becerra,1984-03-02T00:00:00,21,3
+126,Mireya,Trejo,Rodriguez,TERM890805SJ7,7,5513056424,26511096,,yeya050889@hotmail.com,ACTIVO,,2015-05-24T00:00:00,Cerrada Lucha Reyes,1989-08-05T00:00:00,22,3
+81,Jose Emmanuel,Viveros,Lara,VILE810522843,9,5554386611,55653198,,poeta_df@hotmail.com,ACTIVO,,2014-05-26T00:00:00,Sauce,1981-05-22T00:00:00,21,1
+154,Michel,Rosas,Cardenas,ROCM900917UC8,9,55.3727.1988,55.2844.6439,,michelrosascardenas@gmail.com,ACTIVO,,2016-03-28T00:00:00,Ezequiel Ordoñez,1990-09-17T00:00:00,21,3
+82,Veronica,Herrera,Gallardo,HEGV811022H12,9,5536661945,01545183055,,vhg_reloaded@hotmail.com,ACTIVO,,2014-05-27T00:00:00,Minería,1981-10-22T00:00:00,,3
+72,Cristopher,Herrera,Noyola,HENC861207IB7,6,5522657340,56960529,,lithochris@hotmail.com,ACTIVO,,2014-04-04T00:00:00,Fermina Rivera,1986-12-07T00:00:00,,3
+89,Yuliana,Hernandez,Rodriguez,HERY860619PP1,8,5545669208,57560140,,yuly.zoe@gmail.com,ACTIVO,,2015-09-01T00:00:00,Ave. Circunvalación Calle 4,1986-06-19T00:00:00,,3
+158,Javier Eduardo,Vazquez,Fernandez,VAFJ9001143Q5,19,55.1007.1736,,,javierjevf@gmail.com,ACTIVO,,2016-03-01T00:00:00,Puente de Xoco,1981-10-02T00:00:00,63,3
+116,Irwin Ulises,Marin,Cordova,MACI9212109A5,9,55.7083.1220,5892.4256,,ircordova00@gmail.com,ACTIVO,,2015-05-16T00:00:00,Av. 2 de Marzo,1992-12-10T00:00:00,21,3
+131,Maria Fernanda,Morales,Ramirez,MORF9010125C0,7,5548967283,57670582,,mafer.mor1710@gmail.com,ACTIVO,,2015-07-06T00:00:00,Puerto Marquéz,1990-10-12T00:00:00,21,3
+128,Alberto,Ramirez,Lopez,RALA9108099VA,9,5539256360,56172304,,albert_rl80@hotmail.com,ACTIVO,,2015-07-02T00:00:00,Avenida Aztecas,1991-08-09T00:00:00,21,
+34,Jose Gabriel,Resendiz,Garcia,REGG850921000,8,5534039596,58662756,,jresendiz021@hotmail.com,ACTIVO,,2013-02-18T00:00:00,Francisco Villa,1985-09-21T00:00:00,21,1
+144,Rene Rolando,Rodriguez,de Diaz,RODR310316,11,,,,,ACTIVO,,2015-12-01T00:00:00,Carlos B Zentina,1931-03-16T00:00:00,64,1
+111,Ana Rosa,Salazar,Calvillo,SACA921127CZ5,9,5568863034,55772207,,annierouzze55@gmail.com,ACTIVO,,2015-04-16T00:00:00,UH Izcalli Pirámide I,1992-11-27T00:00:00,21,
+35,Claudia Marcela,Trujillo,Giraldo,TUGC790829NC6,14,5534336434,,,claudiatru@gmail.com,ACTIVO,,2013-01-28T00:00:00,Miguel Angel Bounarroti,1979-08-29T00:00:00,21,1
+14,Elvia,Galicia,Tapia,,10,,,,,ACTIVO,,,,,,
+112,Olivia Guadalupe,Lopez,Rangel,,9,,,,,BAJA,,,,,,
+113,Alan Sebastian,Trejo,Gonzalez,,9,,,,,BAJA,2015-12-18T00:00:00,,,,,
+114,Antonio Essau,Reyes,Palacios,REPA880823J66,7,5524150103,0454421769120,,retyes.essau@gmail.com,ACTIVO,,2015-02-16T00:00:00,Calle 20,1988-08-23T00:00:00,22,3
+115,Miguel Angel,Diaz,Coria,DICM650106I92,3,5545582808,53445555,,mad.consultor@gmail.com,ACTIVO,,2015-02-23T00:00:00,Redensión,1965-01-06T00:00:00,22,1
+118,Diego Ivan,Gonzalez,Ledezma,,11,,,,,BAJA,,,,,,
+119,Citlamina,Albino,Parada,,11,,,,,BAJA,,,,,,
+120,Eduardo Antonio,Campuzano,Garcia,CAGE950719BQ8,9,0445530474740,56732461,,eduardo_campuzano19@hotmail.com,ACTIVO,,2015-04-27T00:00:00,Colegio de la Caridad,1995-07-19T00:00:00,21,3
+124,Mario de Jesus,Torres,Melchor,TOMM890815QF5,10,5540469482,53160747,,torres.mario54@yahoo.com,ACTIVO,,2015-06-01T00:00:00,Limón,1989-08-15T00:00:00,21,3
+132,Luis Armando,Ceja,Ramirez,,5,,,,,BAJA,2015-10-31T00:00:00,,,,,
+134,Grisel,Flores,Hernandez,FOHG830820IQ7,8,5566090541,62818852,,taty_boris@hotmail.com,ACTIVO,,2015-08-03T00:00:00,Mario Almada,1983-08-20T00:00:00,,3
+135,Mario,Alanis,Fonseca,AAFM750726UR5,,0445543515425,26035655,,malanisf@hotmail.com,ACTIVO,,2015-08-17T00:00:00,NORTE 92,1975-07-26T00:00:00,22,1
+137,Valentin,Angoa,Salvador,AOSV870912BY8,6,0445559951198,52336631,,valentin.angoa@gmail.com,ACTIVO,,2015-09-14T00:00:00,Nicaragua,1987-09-12T00:00:00,22,3
+138,Jourdan Omar,Dominguez,Hernandez,DOHJ9401122F9,9,5523318256,56245270,,jourdan.dominguez@hotmail.com,ACTIVO,,2015-10-05T00:00:00,Atlicolco,1994-01-12T00:00:00,21,3
+142,Luis David,Ramirez,Vargas,RAVL8812019V2,7,5537171861,58112746,,davicho_-16@hotmail.com,ACTIVO,,2015-11-17T00:00:00,Cam. a Atliburros,1988-12-01T00:00:00,22,3
+42,Enriqueta Guadalupe,Barrios,Bautista,BAE840807CI5,7,0445519655626,5526220063,,gbb0807@gmail.com,ACTIVO,,2013-05-06T00:00:00,Unid. CTM San Pablo,1984-08-07T00:00:00,21,4
+91,Manuel,Corona,Lara,COLM891106L47,9,0445525079073,5527124550,,ma.corona.la@gmail.com,ACTIVO,,2014-08-21T00:00:00,Rinconada del Laurel,1989-11-06T00:00:00,21,3
+123,Tanya Mariana,Blakely,Barron,BABT8306125S0,11,0445522415951,67311100,,tblakely7@hotmail.com,ACTIVO,,2015-06-08T00:00:00,Anaxagoras,1983-06-12T00:00:00,41,3
+107,Homero,Jimenez,Maldonado,JIMH6511245U4,12,0445526905425,55946421,,hojimenez@me.com,ACTIVO,,2014-12-01T00:00:00,Hacienda de Corralejo,1965-11-24T00:00:00,21,1
+58,Elia Angelica,Castro,Lara,CALE8511073V7,9,5555013831,30087266,,angelica.castro.lara@gmail.com,ACTIVO,,2013-01-15T00:00:00,Anaxagoras,1985-11-07T00:00:00,22,4
+75,Cynthia,Cruz,Mayoral,CUMC830208659,13,5523140896,2620-2192,,cycroma_609@hotmail.com,ACTIVO,,2014-04-11T00:00:00,Av. Morelos,1983-02-08T00:00:00,21,1
+26,Jesus,Castro,Pacheco,CAPJ910310M3A,3,5521414356,22284302,,casjesuspacheco@gmail.com,ACTIVO,,2012-12-01T00:00:00,Av. Central,1991-03-10T00:00:00,21,3
+87,Noel,Martinez,Mata,,9,,,,,BAJA,,,,,,
+93,Diana,Estrada,Hernandez,,4,,,,,BAJA,,,,,,
+99,Ingrid Andrea,Gutierrez,Miranda,,9,,,,,BAJA,,,,,,
+103,Banamex,Revolvente,,,,,,,,ACTIVO,,,,,,
+86,Manuel Bernardo,Gonzalez,Paniagua,,13,,,,,BAJA,,,,,,
+96,Mirna Lissette,Menchaca,Gutierrez,MEGM880705V35,7,55.1452.2449,,,lissette_mg@hotmail.com,ACTIVO,,2014-09-22T00:00:00,Cantera,1988-07-05T00:00:00,22,
+101,Claudia,Rodriguez,Arrollo,,4,,,,,BAJA,,,,,,
+1,Roberto Carlos,Galicia,Galicia,GAGR730824LQ5,1,0445554351885,55239447,Roberto.galicia@itworkers.com.mx,rcgalicia@hotmail.com,ACTIVO,,2011-09-01T00:00:00,Antonio Noemi,1973-08-24T00:00:00,64,1
+37,Laura,Mata,Hernandez,MAHL780617V3A,9,,,,,BAJA,2016-04-01T00:00:00,,,,,
+40,Juana,Castillo,Cabrera,,3,,,,,BAJA,2014-03-28T00:00:00,,,,,
+41,Elvia,Lopez,Castillo,,9,,,,,BAJA,,,,,,
+47,Mauricio,Jara,Nava,JANM850331FX9,6,5538635775,56431984,,mjn_3331@yahoo.com.mx,ACTIVO,,2013-08-29T00:00:00,Calzada de las carretas,1985-03-31T00:00:00,,3
+52,Lucero,Fuentes,Martinez,FUML860705G64,8,5548600901,26096042,,luz_ftscan19@hotmail.com,ACTIVO,,2013-05-06T00:00:00,PRL Amado Nervo,1986-07-05T00:00:00,,3
+61,Oscar,Flores,Gonzalez,,5,,,,,BAJA,2014-06-28T00:00:00,,,,,
+62,Dulce,Martinez,Herrara,,5,,,,,BAJA,2013-10-31T00:00:00,,,,,
+63,Hector,Ortiz,Seguro,,4,,,,,ACTIVO,,,,,,
+79,Julio Adrian,Fabian,Cordova,FACJ870818TKA,8,5533699960,50449286,,fadrian9@hotmail.com,ACTIVO,,2014-05-12T00:00:00,Tamaulipas,1987-08-18T00:00:00,,3
+3,Beatriz,Lopez,Botello,,2,,,,,ACTIVO,,,,,,
+4,Yazmin,Gonzalez,Bayardo,,3,,,,,BAJA,2012-03-31T00:00:00,,,,,
+6,Israel,Hernandez,Hernandez,,4,,,,,BAJA,2014-03-28T00:00:00,,,,,
+8,Angela,Arellano,Franco,AEFA831119U40,3,0445515131390,56423921,,aangie_18@hotmail.com,ACTIVO,,2011-09-15T00:00:00,Vito Alessio Robles,1983-11-19T00:00:00,22,3
+9,Fabiola,Martinez,Medrano,,4,,,,,BAJA,2013-09-06T00:00:00,,,,,
+12,Jesus,Garcia,Flores,,2,,,,,ACTIVO,2013-01-23T00:00:00,,,,,
+13,Hector,Galicia,Garcia,,10,,,,,ACTIVO,,,,,,
+20,Juan Manuel,Chavez,Llamas,,4,,,,,BAJA,2014-08-15T00:00:00,,,,,
+33,Hector,Ramirez,Jimenez 4,,10,,,,,BAJA,,,,,,
+23,Jose Victor,Valero,Hernandez,,9,,,,,BAJA,,,,,,
+25,Cesar Arturo,Granados,Lucas,,9,,,,,BAJA,2013-04-05T00:00:00,,,,,
+31,Hector,Ramirez,Jimenez 2,,10,,,,,BAJA,,,,,,
+36,Daniela,Gonzalez,Mera,,9,,,,,BAJA,2013-10-31T00:00:00,,,,,
+39,Carlos Mauricio,Guzman,Davila,,9,,,,,BAJA,2013-08-14T00:00:00,,,,,
+49,Cielo Ayeret,Alonso,Hernandez,AOHC8801211l3,3,0445551056722,13145094,,cieloalonso@gmail.com,ACTIVO,,2013-05-06T00:00:00,Alvaro Obregon,1988-01-21T00:00:00,22,3
+50,Eliud,Hernandez,Pastrana,,8,,,,,BAJA,2013-09-18T00:00:00,,,,,
+66,Roman,Mendoza,Colin,MECR820121DH9,13,0457222407760,17224891837,,roman.mendoza.colin@gmail.com,ACTIVO,,2014-09-08T00:00:00,Privada Matgaritas,1982-01-21T00:00:00,21,1
+15,Viviana,Garcia,Ramos,,11,,,,,BAJA,,,,,,
+54,Emannuel,Del Angel,Meza,,9,,,,,BAJA,2013-01-27T00:00:00,,,,,
+56,Claudia,Rodriguez,Garcia,ROCG840823,9,,,,,BAJA,2016-04-15T00:00:00,,,,,
+77,Tania,Torres,Pineda,,14,,,,,BAJA,,,,,,
+78,Jose Leon,Castro,Cisneros,,9,,,,,BAJA,,,,,,
+83,Rogelio,Flores,Cortes,FOCR8110029B5,15,5564151341,57728018,,rogeliofloress@yahoo.com,ACTIVO,,2014-05-27T00:00:00,Aurora,1981-10-02T00:00:00,,3
+30,Luis Hector,Galicia,Galicia,,10,,,,,ACTIVO,,,,,,
+29,Andres,Margutii,Rodriguez,,11,,,,,BAJA,,,,,,
+43,Yesica,Nava,De Leon,,9,,,,,BAJA,2014-03-07T00:00:00,,,,,
+44,Adolfo,Hernandez,Cruz,HETA8404043W7,8,5549686143,015959542235,,adolfohdz332@hotmail.com,ACTIVO,,2013-04-14T00:00:00,Alborada,1984-04-04T00:00:00,,3
+48,Luis Enrique,Ramos,Gomez,,9,,,,,BAJA,,,,,,
+59,Juan Carlos,Torres,Murillo,,4,,,,,BAJA,2013-04-30T00:00:00,,,,,
+70,Mario Eduardo,Alvarez,Vargas,,9,,,,,BAJA,2014-04-01T00:00:00,,,,,
+71,Ruben,Godinez,Ortega,,6,,,,,BAJA,2014-05-15T00:00:00,,,,,
+76,Manuel Alejandro,Guisa,Vela,,9,,,,,BAJA,2014-09-30T00:00:00,,,,,
+16,Juan Miguel,Sanchez,Mendoza,,9,,,,,BAJA,2012-11-15T00:00:00,,,,,
+17,Jesica Yasmin,Martinez,Lopez,,12,,,,,BAJA,2012-07-15T00:00:00,,,,,
+22,Eduardo,Calderon,Villa,,9,,,,,BAJA,2014-12-31T00:00:00,,,,,
+27,Victor,Vivia,Gonzalez,VIVG740129G40,2,,,,,ACTIVO,,,,,,
+28,Hector,Ramirez,Jimenez 1,,10,,,,,BAJA,,,,,,
+32,Hector,Ramirez,Jimenez 3,,10,,,,,BAJA,,,,,,
+57,Yanin Doreth,Hernandez,Diaz,HEDY8506192D8,7,5539713263,51159342,,doreth_kika@hotmail.com,ACTIVO,,2013-10-07T00:00:00,C 13,1985-06-19T00:00:00,,3
+60,Gloria,Rodriguez,Banda,ROBG721217TB0,11,5554038275,56015600,,glorirod@hotmail.com,ACTIVO,,2013-06-01T00:00:00,Pirineos,1972-12-17T00:00:00,64,1
+68,Silvia,Uraga,Castillo,,14,,,,,BAJA,,,,,,
+73,Arturo,Davila,Hernandez,DAHA751209BF,4,5565256085,57182406,,arturoenlaweb@yahoo.com.mx ,ACTIVO,,2014-04-15T00:00:00,Rosario Castellanos,1975-12-09T00:00:00,21,3
+100,Beatriz,Tornel,Lopez Ortega,TOLB700530CU6,9,5528651110,54231215,,btlo19@@hotmail.com,ACTIVO,,2014-10-13T00:00:00,Avenida Centenario,1970-05-30T00:00:00,21,1
+104,Nora Guadalupe,Macias,Leos,,9,,,,,BAJA,,,,,,
+105,Aldo,Barco,Morelos,,9,,,,,BAJA,,,,,,
+108,Jorge Carlos,Aleman,Tovar,AETJ801009LB5,13,045(722)2408-324,045(722)1082-867,,,ACTIVO,,2015-01-05T00:00:00,Hacienda de las Camelias,1980-10-09T00:00:00,21,1
+121,Daniel,Hurtado,Robledo,HURD891028KX1,7,,,,,ACTIVO,,,,,,
+122,Maria de los Angeles,Cestellos,Ramirez,CERM890818U11,11,56040401,5541933203,,mcestellos@gmail.com,BAJA,,2015-05-25T00:00:00,Miguel Laurent,1989-08-18T00:00:00,41,3
+125,Miguel Angel,Arana,Alvarez,AAAM871010QD9,9,0445546700486,53618871,,werewolf101087@hotmail.com,ACTIVO,,2015-06-01T00:00:00,Adolfo Ruiz Cortinez,1987-10-10T00:00:00,21,3
+129,Miguel Angel,Solis,Perez,,14,,,,,BAJA,,,,,,
+130,Victor,Montiel,Reynoso,MORV891228JC7,9,7711865675,(771)1700018,,montiel_4545@hotmail.com,ACTIVO,,2015-07-22T00:00:00,Doctor José María Vértiz,1989-12-28T00:00:00,21,1
+133,Marcos Humberto,Rosas,Gutierrez,,5,,,,,BAJA,2015-10-31T00:00:00,,,,,
+136,Roberto,Castelan,Pendiente,,,,,,,ACTIVO,,,,,,
+106,Guillermo,George,Ishikawa,,9,,,,,BAJA,2015-10-31T00:00:00,,,,,
+145,Jesus Adrian,Calero,Hidalgo,CAHJ93225PD2,4,5559636423,2431146085,,calero.adrian93@gmail.com,ACTIVO,,2016-01-18T00:00:00,Rafael Alducin,1993-12-25T00:00:00,41,3
+147,Erick Alfredo,Chias,Zalapa,CIZE930116JP9,9,5516107042,5560622077,,erickchias_coa@hotmail.com,ACTIVO,,2016-01-25T00:00:00,Maria Mazarello,1993-01-16T00:00:00,21,3
+148,Michelle,Cerrillo,Lopez,CELM8310128Z3,7,5534298649,50773429,,michellecerrillo97@gmail.com@GMAIL.COM,BAJA,2016-03-08T00:00:00,2016-01-25T00:00:00,Av. las Aguilas,1983-10-12T00:00:00,22,1
+149,Julio Cesar,Angeles,Becerril,AEBJ8810126Y5,9,5514847385,53075617,,cesar.angeles88@gmail.com,ACTIVO,,2016-02-08T00:00:00,C.Principal,1988-10-12T00:00:00,21,3
+10,Osvaldo,Peña,Altamirano,,6,,,,,BAJA,,,,,,
+141,Monica Gabriela,Becerril,Vazquez,BEVM820504RG0,13,0445541863121,58245904,,mgbecerrilv@gmail.com,ACTIVO,,2015-11-17T00:00:00,Paseo de las Palomas,1982-05-04T00:00:00,22,3
+146,Oscar Ivan,Figueroa,Ordoñez,FIOO9203086U3,15,5543473036,57791946,,oscarivan_fordonez@hotmail.com,ACTIVO,,2016-01-18T00:00:00,Chalco,1992-03-08T00:00:00,,3
+38,Nancy,Ibañez,Garcia,IAGN840513KQ9,6,5537797595,12261313,,higor_nan_c@hotmail.com,ACTIVO,,2016-01-19T00:00:00,Bejucos,1984-05-13T00:00:00,,3
+67,Martha Isabel,Coutiño,Trejo,COTM801231ST2,3,5525366440,51205022,,martha.coutino@gmail.com,ACTIVO,,2014-03-03T00:00:00,Valle de San Fernando,1980-12-31T00:00:00,22,3
+85,Martha Beatriz,Olivares,Garduño,,9,,,,,BAJA,,,,,,
+18,Sofia Silvia,Jimenez,Yañez,,10,,,,,BAJA,,,,,,
+151,Juan Angel,Vera,Medina,VEMJ910401ML2,15,5518284456,,,javera6723@gmail.com,ACTIVO,,2016-02-16T00:00:00,Av. Niños Heres,1991-04-01T00:00:00,21,3
+153,Gabriela,Perez,Ramirez,PERG841126CC3,11,5543192842,55837404,,gperezramirez91@gmail.com,ACTIVO,,2016-03-01T00:00:00,Wagner,1984-11-26T00:00:00,63,3

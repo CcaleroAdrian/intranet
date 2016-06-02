@@ -1,22 +1,23 @@
  <?php
-include("intraHeader.php");
+include("intraHeader.php"); 
 if ( $USUARIO == "" OR  $USUARIO == null ) { 
 		header('Location: index.php');
-	}
+	} 
  
 	$ID_USR;
 	$VisualizarR = false;
-	$DESCPERFIL_USR; //Descripcion de perfil;
-
+	$PERFIL_USR; //Descripcion de perfil;
+	$mensaje="";
 	//*******PAGINACION DE RESULATADO********
 	$url = "/intranet/submenu_SolicitudesVacaciones_Recibidas.php";
 	//Instanciamos la clase que tiene las operaciones a la base de datos
 	$objUsuarios = new ActionsDB();
 	// Obtenemos los campos de la tabla usuarios
-	$user = $objUsuarios->verSolicitudesIDB($ID_USR,$DESCPERFIL_USR);
+	$user = $objUsuarios->verSolicitudesIDB($ID_USR);
 	//print_r($user);
 	if ( $user == -1  OR $user == 0 ) {
 		$VisualizarR = false;
+		$mensaje = "<span style='color:#F8BB86'>No hay solicitudes disponibles por el momento.</span>";
 	}else{
 		$VisualizarR = true;
 
@@ -38,7 +39,8 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 
 		//calculo el total de páginas 
 		$total_paginas = ceil($numRegi / $TAMANO_PAGINA); 
-		$USR = $objUsuarios->verSolicitudesID($ID_USR,$DESCPERFIL_USR,$inicio,$TAMANO_PAGINA,"");
+		$USR = $objUsuarios->verSolicitudesID($ID_USR,$inicio,$TAMANO_PAGINA,"");
+		print_r($USR);
 	}
 ?>
 <html>
@@ -46,11 +48,45 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 <script type="text/javascript" src="js/busqueda.js"></script>
 </head>
 <script type="text/javascript">
+	
+	var id = "<?php echo $ID_USR; ?>";
+	//console.log(jsonObject.length);
+	
+	function mostrarSolicitud(){
+		var nombre=[];
+		var jsonObject =eval('<?php echo json_encode($USR); ?>');
+		for (var i = 0; i <=jsonObject.length-1; i++) {
+			var empleado_id =jsonObject[i].user_ID;
+			$.ajax({
+		        method: "GET",
+		        url: "https://apex-a261292.db.us2.oraclecloudapps.com/apex/itw/nombres/",
+		        dataType: "json",
+		        timeout: 6000,
+		        headers:{ID :empleado_id},
+			    beforeSend:function(){
+			        var div = document.getElementById('mensaje');
+			        var spinner = new Spinner(opts).spin(div);
+			    },
+			    success: function(data) {
+			    	console.log("data"+data['nombre']);
+			    	nombre.push(data['nombre']);
+			    	console.log("i"+i);
+			    	console.log("nombre"+nombre[i]);
+			    }
+		    });	    
+		    $('#cuerpo').append("<tr><td></td><td>"+jsonObject[i].fechaI+"</td><td>"+jsonObject[i].fechaF+"</td><td>"+jsonObject[i].diasCorrespondientes+"</td><td>"+jsonObject[i].diasSolicitados+"</td><td>"+jsonObject[i].diasAdicionales+"</td><td><a>"+jsonObject[i].documentoURL+"</a></td><td><a onclick='aceptar({id:"+jsonObject[i].user_ID+", perfil:"+id+"})'>Aceptar</a></td><td><a onclick='rechazar({id:"+jsonObject[i].user_ID+", perfil:"+id+"})'>Rechazar</a></td></tr>");
+		}
+		$( ".spinner" ).remove();
+	}
+	
+
 	$(document).ready(function(){
 		var error =  "<?php echo $mensaje; ?>";
 		if (error != "") {
-			swal({title: "CONFIRMACIÓN",text: error,type: "info",timer:3000,showConfirmButton:false});
+			swal({title: "CONFIRMACIÓN",imageUrl: "intraImg/logoITWfinal.png",text: error,html: true,timer:3000,showConfirmButton:false});
 		}
+		//mostrar solicitudes recibidas
+		mostrarSolicitud();
 	});
 </script>
 <body>
@@ -61,7 +97,7 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
     	<?php
     	if ($VisualizarR == true) {
     	?>
-    	<form >
+    	<form id="mensaje">
   			<div class="input-group col-sm-12">
     		<span class="glyphicon glyphicon-search input-group-addon"></span>
   			<input id="filtroTabla" onkeyup="busqueda({opcion : 2,id : <?php echo $ID_USR;?>})" class="form-control glyphicon glyphicon-search" size="35" align="center" autofocus>
@@ -80,29 +116,7 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 		          <th  colspan="2" style="text-align: center;">Acción</th>
 		        </tr>
 		      	</thead>
-		      	<tbody id="cuerpo">
-		      		<?php 
-		      			foreach($USR as $value){
-		      				$user = $objUsuarios->notificarUsuario($value["user_ID"]);
-		      				foreach ($user as $key){
-		      					$nombre = utf8_encode($key['nombre'].' '.$key['paterno'].' '.$key['materno']);
-		      				?>
-		      						<tr><td><?php echo $nombre; ?></td>
-									<td><?php echo $value["fechaI"]; ?></td><td><?php echo $value["fechaF"]; ?></td>
-									<td><?php echo $value["diasCorrespondientes"]; ?></td>
-									<td><?php echo $value["diasSolicitados"]; ?></td>
-									<td><?php echo $value["diasAdicionales"]; ?></td>
-									<td>
-										<a <?php echo($value["documentoURL"] != "cargar documento") ? "href='' " : "";?> ><?php echo $value["documentoURL"]; ?></a>
-									</td>
-									<td><a onclick="aceptar({id:'.$value['user_ID'].', perfil: '.$DESCPERFIL_USR.'})"  href="">Aceptar</a></td>
-									<td><a onclick="rechazar({id:'.$value['user_ID'].', perfil: '.$DESCPERFIL_USR.'})"  href="">Rechazar</a></td>
-									</tr>';
-						<?php
-		      				}
-						}		
-		      		?>
-		      	</tbody>
+		      	<tbody id="cuerpo"></tbody>
     		</table>
 		      			<?php 
 							if ($total_paginas > 1) {

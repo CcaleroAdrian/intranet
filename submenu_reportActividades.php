@@ -7,7 +7,6 @@
 	$ID_USR;
 	//Instanciamos la clase que tiene las operaciones a la base de datos
 	$objOperaciones = new ActionsDB();
-	
 	$usuarios = $objOperaciones->verUsuariosActividades();
 	$anio = date('Y');
 	$anioI = date('Y',mktime(0,0,0,1,1,date('Y')-10));
@@ -253,7 +252,6 @@
   			<button id="descarga" class="btn btn-link" style="margin-left: 80%; display:none;" onclick="descarga()"><span class="fa fa-arrow-down"></span></span> DESCARGAR</button>
    		</div>
    	</div>
-
 <?php
 	include("intraFooter.php"); 
 ?>

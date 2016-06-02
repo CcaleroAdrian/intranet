@@ -33,8 +33,9 @@ include("intraHeader.php");
 		var error = "<?php echo $error; ?>";
 		if (mensaje != "") {
 			swal({title: "SOLICITUD DE VACACIONES",
-				   text: "¿Desea solicitar días de vacaciones adicionales?",
-				   type:  "success",
+				   text: "<span style='color:#000099'>¿Desea solicitar días de vacaciones adicionales?</span>",
+				   html:true,
+				   imageUrl: "intraImg/logoITWfinal.png",
 				   confirmButtonColor: " #337ab7",
 				   confirmButtonText: "ACEPTAR",
 				   closeOnConfirm: false,
@@ -46,7 +47,7 @@ include("intraHeader.php");
 			});
 		}
 		if (error != "") {
-			swal({title: "CONFIRMACIÓN",text: error,type: "error",timer:3000,showConfirmButton:false});
+			swal({title: "CONFIRMACIÓN",text: error,html:true,imageUrl: "intraImg/logoITWfinal.png",timer:3000,showConfirmButton:false});
 		}
 	});
 	function verDetalle(id){

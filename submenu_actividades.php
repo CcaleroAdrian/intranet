@@ -22,10 +22,6 @@
 
 
  ?> 
- <!DOCTYPE>
-<html>
-<head>
-	<title></title>
 	<script type="text/javascript">
 		var respuesta = "";
 		var id = "<?php echo $ID_USR;?>";
@@ -56,11 +52,11 @@
 			}
 	 
 			if(fecha == ""){
-				swal({title: "Confirmacion",text:'Favor de ingresar la fecha',type: "warning",timer:2500,showConfirmButton:false});
+				swal({title: "Confirmacion",text:'<span style="color:#F8BB86">Favor de ingresar la fecha.</span>',imageUrl: "intraImg/logoITWfinal.png",html:true,timer:2500,showConfirmButton:false});
 			}else if (actividad == "") {
-				swal({title: "Confirmacion",text:'Favor de llenar el campo "ACTIVIDAD"',type: "warning",timer:2500,showConfirmButton:false});
+				swal({title: "Confirmacion",text:'<span style="color:#F8BB86">Favor de llenar el campo "ACTIVIDAD".</span>',imageUrl: "intraImg/logoITWfinal.png",html:true,timer:2500,showConfirmButton:false});
 			}else if (L == "" && Ma == "" &&  M == "" && J == "" && V == ""){
-				swal({title: "Confirmacion",text:'Favor de capturar el número de horas',type: "warning",timer:2500,showConfirmButton:false});
+				swal({title: "Confirmacion",text:'<span style="color:#F8BB86">Favor de capturar el número de horas.</span>',imageUrl: "intraImg/logoITWfinal.png",html:true,timer:2500,showConfirmButton:false});
 			}else{
 				manejoDatos(id,actividad,gerente,L,Ma,M,J,V,fecha,Mes);
 				limpiarTable();
@@ -448,7 +444,6 @@
 			}
 
 		}
-		contenteditable="false"
 
 	</script>
 <style type="text/css">

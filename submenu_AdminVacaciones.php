@@ -8,7 +8,7 @@ include("intraHeader.php");
 	$objeRestultado = new ActionsDB();
 	$datos = $objeRestultado->verDetalle();
 	//print_r($datos);
-	$DESCPERFIL_USR;
+	$PERFIL_USR;
 	$mensaje = isset($_GET['mensaje']) ? trim($_GET['mensaje']) : "";
 	$error = isset($_GET['error']) ? trim($_GET['error']) : "";
 ?>
@@ -78,7 +78,7 @@ include("intraHeader.php");
 				<th width="10%" style="text-align: center;">Días Solicitados</th>
 				<th style="text-align: center;">Fecha de Solicitud</th>
 				<th style="text-align: center;">Estatus</th>
-				<?php if($DESCPERFIL_USR == 'SuperUsuario'){
+				<?php if($PERFIL_USR == 5){
 					echo '<th style="text-align: center;">Acción</th>';
 					}?>
 			</thead>
@@ -87,12 +87,6 @@ include("intraHeader.php");
 				$n = 0;
 				foreach ($datos as $key ) {
 					$n +=1;
-					$us = $objeRestultado->notificarUsuario($key["user_ID"]);
-					//print_r($us);
-					foreach ($us as $value) {
-						$Nombre= utf8_encode($value['nombre'].' '.$value['paterno'].' '.$value['materno']);
-					}
-
 					//Determinar estutus solicitud
 		      		if (($key["aprobacion_L"] == 1 AND $key["aprobacion_D"] == 1) OR ($key["aprobacion_L"] == 2 AND $key["aprobacion_D"] == 1) OR ($key["aprobacion_L"] == 3 AND $key["aprobacion_D"] == 1)) {//pendientes
 		      			$Estatus = "PENDIENTE";
@@ -104,12 +98,12 @@ include("intraHeader.php");
 		      	?>
 					<tr style="text-align:center">
 							<td><?php echo $n; ?></td>
-							<td style="text-align:left;"><a id="link" href="" onclick="verDetalle(<?php echo $key["user_ID"]; ?>)"><?php echo $Nombre; ?></a></td>
+							<td style="text-align:left;"><a id="link" href="" onclick="verDetalle(<?php echo $key["user_ID"]; ?>)">Nombre</a></td>
 							<td><?php echo $key['diasCorrespondientes']; ?></td>
 							<td><?php echo $key['diasSolicitados']; ?></td>
 							<td><?php echo $key['fechaSolicitud']; ?></td>
 							<td><?php echo $Estatus; ?></td>
-							<?php if($DESCPERFIL_USR == 'SuperUsuario'){?>
+							<?php if($PERFIL_USR == 5){?>
 							<td id="editarReg" style="text-align: center;"><a id="admin" href="" onclick="editarSolicitu(<?php echo $key["user_ID"];?>)">Editar</a></td>
 							<?php }?>
 					</tr>

@@ -40,7 +40,7 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 		//calculo el total de páginas 
 		$total_paginas = ceil($numRegi / $TAMANO_PAGINA); 
 		$USR = $objUsuarios->verSolicitudesID($ID_USR,$inicio,$TAMANO_PAGINA,"");
-		print_r($USR);
+		//print_r($USR);
 	}
 ?>
 <html>
@@ -49,11 +49,11 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 </head>
 <script type="text/javascript">
 	
-	var id = "<?php echo $ID_USR; ?>";
-	//console.log(jsonObject.length);
+	var usuario = "<?php echo $ID_USR; ?>";
 	
 	function mostrarSolicitud(){
 		var nombre=[];
+		var n;
 		var jsonObject =eval('<?php echo json_encode($USR); ?>');
 		for (var i = 0; i <=jsonObject.length-1; i++) {
 			var empleado_id =jsonObject[i].user_ID;
@@ -67,14 +67,11 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 			        var div = document.getElementById('mensaje');
 			        var spinner = new Spinner(opts).spin(div);
 			    },
-			    success: function(data) {
-			    	console.log("data"+data['nombre']);
-			    	nombre.push(data['nombre']);
-			    	console.log("i"+i);
-			    	console.log("nombre"+nombre[i]);
+			    succes:function(data) {
+			    	n=data['nombre'];
 			    }
-		    });	    
-		    $('#cuerpo').append("<tr><td></td><td>"+jsonObject[i].fechaI+"</td><td>"+jsonObject[i].fechaF+"</td><td>"+jsonObject[i].diasCorrespondientes+"</td><td>"+jsonObject[i].diasSolicitados+"</td><td>"+jsonObject[i].diasAdicionales+"</td><td><a>"+jsonObject[i].documentoURL+"</a></td><td><a onclick='aceptar({id:"+jsonObject[i].user_ID+", perfil:"+id+"})'>Aceptar</a></td><td><a onclick='rechazar({id:"+jsonObject[i].user_ID+", perfil:"+id+"})'>Rechazar</a></td></tr>");
+			});	    
+		    $('#cuerpo').append("<tr><td>"+n+"</td><td>"+jsonObject[i].fechaI+"</td><td>"+jsonObject[i].fechaF+"</td><td>"+jsonObject[i].diasCorrespondientes+"</td><td>"+jsonObject[i].diasSolicitados+"</td><td>"+jsonObject[i].diasAdicionales+"</td><td><a href='descargarArchivo.php?id="+jsonObject[i].solicitud_ID+"'>"+jsonObject[i].documentoURL+"</a></td><td><a id='aceptar' onclick='aceptar("+jsonObject[i].solicitud_ID+","+usuario+")'>Aceptar</a></td><td><a id='rechazar' onclick='rechazar("+jsonObject[i].solicitud_ID+","+usuario+")'>Rechazar</a></td></tr>");
 		}
 		$( ".spinner" ).remove();
 	}
@@ -87,8 +84,22 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 		}
 		//mostrar solicitudes recibidas
 		mostrarSolicitud();
+
+		//Evitar eventos default
+		$('#aceptar').on('click',function(event){
+			event.preventDefault();
+		});
+		$('#rechazar').on('click',function(event){
+			event.preventDefault();
+		});
 	});
 </script>
+<style type="text/css">
+	a{
+		cursor: pointer;
+	}
+</style>
+
 <body>
 	<h3>SOLICITUDES DE VACACIONES</h3>
 	<div class="panel panel-primary">
@@ -103,13 +114,13 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
   			<input id="filtroTabla" onkeyup="busqueda({opcion : 2,id : <?php echo $ID_USR;?>})" class="form-control glyphicon glyphicon-search" size="35" align="center" autofocus>
   			</div>
 		</form><br>
-    		<table class="table table-responsive table-bordered" id="myTable" >
+    		<table class="table table-bordered" id="myTable" >
     			<thead>
 		        <tr>
 		          <th >Nombre</th>
 		          <th >Fecha Inicio</th>
 		          <th >Fecha Fin</th>
-		          <th >Días Correspondientes</th>
+		          <th >Días Ley</th>
 		          <th >Días Solicitados</th>
 		          <th >Días Adicionales</th>
 		          <th>Documento Soporte</th>

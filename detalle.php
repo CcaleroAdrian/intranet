@@ -9,7 +9,6 @@ $diasLey = 0;
 $usr = $objOperaciones->getDatosPerfilID($id); 
 if ($usr != 0 || $usr != -1)   {
   foreach ($usr as $key) {
-  $nombre = utf8_encode($key["nombre"].' '.$key['paterno'].' '.$key['materno']);
   $fechaIngreso = $key['fechaIngreso'];
   $diasLey = $key['DiasLey'];
   }
@@ -53,9 +52,11 @@ if ($dat != 0 OR $dat != -1) {
 	<link href="intraCss/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 	<link href="intraCss/intraItw.min.css" rel="stylesheet" type="text/css">
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
 	<script type="text/javascript" src="intraCss/bootstrap/js/jquery.js"></script>
-  	<script type="text/javascript" src="intraCss/bootstrap/js/bootstrap.min.js"></script>
-  	<script type="text/javascript" src="js/busqueda.js"></script>
+  <script type="text/javascript" src="intraCss/bootstrap/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/busqueda.js"></script>
+  <script type="text/javascript" src="js/spin.min.js"></script>
 </head>
 <style type="text/css">
 	.disabled:hover{ 
@@ -68,8 +69,47 @@ if ($dat != 0 OR $dat != -1) {
   }
 </style>
 <script type="text/javascript">
+var opts = {
+        lines: 13, // The number of lines to draw
+      length: 23, // The length of each line
+      width: 15, // The line thickness
+      radius: 46, // The radius of the inner circle
+      scale: 2.5, // Scales overall size of the spinner
+      corners: 0.7, // Corner roundness (0..1)
+      color: '#e60000', // #rgb or #rrggbb or array of colors
+      opacity: 0.20, // Opacity of the lines
+      rotate: 85, // The rotation offset
+      direction: -1, // 1: clockwise-1: counterclockwise
+      speed: 0.5, // Rounds per second
+      trail: 85, // Afterglow percentage
+      fps: 20, // Frames per second when using setTimeout() as a fallback for CSS
+      zIndex: 2e9, // The z-index (defaults to 2000000000)
+      className: 'spinner', // The CSS class to assign to the spinner
+      top: '65%', // Top position relative to parent
+      left: '50%', // Left position relative to parent
+      shadow: true, // Whether to render a shadow
+      hwaccel: false, // Whether to use hardware acceleration
+      position: 'absolute' // Element positioning
+};
+var user = "<?php echo $id; ?>";
   $(document).load(function(){
     window.close();
+  });
+  $(document).ready(function(){
+    $.ajax({
+            method: "GET",
+            url: "https://apex-a261292.db.us2.oraclecloudapps.com/apex/itw/nombres/",
+            dataType: "json",
+            timeout: 6000,
+            headers:{ID :user},
+          beforeSend:function(){
+              var div = document.getElementById('mensaje');
+              var spinner = new Spinner(opts).spin(div);
+          },
+          succes:function(data) {
+            document.getElementById('nombre').value(data['nombre']);
+          }
+      });
   });
 </script>
 <?php   //Codigo para realizar l
@@ -85,7 +125,7 @@ if ($dat != 0 OR $dat != -1) {
     		</tr>
     		<tr>
     			<td><strong>NOMBRE:</strong></td>
-    			<td colspan="4"><input type="text" value="<?php echo $nombre; ?>" disabled class="textboxBloqueado"></input></td>
+    			<td colspan="4"><input id="nombre" type="text" disabled class="textboxBloqueado"></input></td>
     		</tr>
     		<tr>
     			<td><strong>FECHA INGRESO:</strong></td>
@@ -188,15 +228,10 @@ if ($dat != 0 OR $dat != -1) {
 
 
       ?>
-    <link rel="shortcut icon" type="image/gif" href="intraImg/animated_favicon1.gif" >
-	<link href="intraCss/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-	<link href="intraCss/intraItw.min.css" rel="stylesheet" type="text/css">
-	<script type="text/javascript" src="intraCss/bootstrap/js/jquery.js"></script>
-  	<script type="text/javascript" src="intraCss/bootstrap/js/bootstrap.min.js"></script>
   	<script type="text/javascript">
-  		var diasAdicionales = "<?php echo $adicionales; ?>";
-  		if (diasAdicionales == 0) {
+  		var diasAdicionales= "<?php echo $adicionales;?>";
+      var user = "<?php echo $id; ?>";
+  		if(diasAdicionales == 0) {
   			$('#directorLabel').attr("display","none");
   			$('#directorSelect').attr("display","none");
   		}
@@ -220,6 +255,22 @@ if ($dat != 0 OR $dat != -1) {
           $("#diasRestantes").val(diasV-diasS);
         }
       }
+      $(document).ready(function(){
+        $.ajax({
+                method: "GET",
+                url: "https://apex-a261292.db.us2.oraclecloudapps.com/apex/itw/nombres/",
+                dataType: "json",
+                timeout: 6000,
+                headers:{ID :user},
+              beforeSend:function(){
+                  var div = document.getElementById('mensaje');
+                  var spinner = new Spinner(opts).spin(div);
+              },
+              succes:function(data) {
+                $('#nombre').val(data['nombre']);
+              }
+          });
+      });
 
   	</script>
     <style type="text/css">
@@ -235,7 +286,7 @@ if ($dat != 0 OR $dat != -1) {
    			<table>
    			<tr>
    			<td><label>Nombre:</label></td>
-   			<td><input type="text" name="nombre" readonly value="<?php echo $nombre; ?>" class="textboxBloqueado" ></input></td>
+   			<td><input id="nombre" type="text" name="nombre" readonly class="textboxBloqueado" ></input></td>
    			</tr>
    			<tr><td>&#32;</td></tr>
    			<tr>

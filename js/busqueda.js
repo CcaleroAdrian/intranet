@@ -22,19 +22,110 @@ function busqueda(opcion){
 }
 
 function rechazar(id,perfil){
-	var opcion = confirm('¿Desea rechazar la solicitud de vacaciones?');
-	if (opcion) {
-		var url = "procesarSolicitudes.php?id="+id+"&opcion=2&perfil="+perfil+"";
-		window.open(url,"_blank");
-	}
+	swal({   title: "SOLICITUD DE VACACIONES",
+				   text: "<span style='color:#000099'>¿Desea rechazar la solicitud de vacaciones?</span>",
+				   imageUrl: "intraImg/logoITWfinal.png",
+				   html:true,
+				   showCancelButton: true,
+				   confirmButtonColor: " #337ab7",
+				   cancelButtonColor: "#ff3333",
+				   confirmButtonText: "Rechazar vacaciones",
+				   cancelButtonText: "Cancelar",
+				   closeOnConfirm: false,
+				   closeOnCancel: false
+				}, 
+				function(isConfirm){ 
+				  	if (isConfirm) {
+				  	  var opcion = 2;
+				  		swal({title:"SOLICITUD RECHAZADA",
+				  		  text:"<span style='color:#000099'>El estatus de la solicitud esta siendo guardada.</span>",
+				  		  imageUrl: "intraImg/logoITWfinal.png",
+				  		  html:true,
+				  		  confirmButtonColor: " #337ab7",
+				  		  showConfirmButton:false,
+				  		  timer:3000
+				  		}); 
+
+						$.post("procesarSolicitudes.php",{ID:id,OPCION:opcion,PERFIL:perfil})
+							.done(function(data){ 
+								if (data != "") {
+									swal({title: "CONFIRMACIÓN",
+										text: "<span style='color:#000099'>El estatus de la solicitud se guardo con exito.<br>En breve el usuario sera notificado</span>",
+										imageUrl: "intraImg/logoITWfinal.png",
+										html:true,
+										timer:5000,
+										showConfirmButton:false
+										});	
+									//mostrarSolicitud();	
+									//console.log(data);							
+								}else{
+									swal({title: "ERROR",
+										text: "<span style='color:#F8BB86'>Hubo un error al guardar el estatus de la solicitud. Favor de intentarlo más tarde.</span>",
+										imageUrl: "intraImg/logoITWfinal.png",
+										html:true,
+										timer:4000,
+										showConfirmButton:false
+									});
+								}
+							});
+
+				  	}else{
+				  		swal.close();
+				  	}
+				});
 }
 
 function aceptar(id,perfil){
-	var opcion = confirm('¿Desea aceptar la solicitude de vacaciones?');
-	if (opcion) {
-		var url = "procesarSolicitudes.php?id="+id+"&opcion=1&perfil="+perfil+"";
-		window.open(url,"_blank");
-	}
+	swal({   title: "SOLICITUD DE VACACIONES",
+				   text: "<span style='color:#000099'>¿Desea aceptar la solicitud de vacaciones?</span>",
+				   imageUrl: "intraImg/logoITWfinal.png",
+				   html:true,
+				   showCancelButton: true,
+				   confirmButtonColor: " #337ab7",
+				   cancelButtonColor: "#ff3333",
+				   confirmButtonText: "Aprovar vacaciones",
+				   cancelButtonText: "Cancelar",
+				   closeOnConfirm: false,
+				   closeOnCancel: false
+				}, 
+				function(isConfirm){ 
+				  	if (isConfirm) {
+				  	var opcion = 1;
+				  		swal({title:"SOLICITUD APROBADA",
+				  		  text:"<span style='color:#000099'>El estatus de la solicitud esta siendo guardada.</span>",
+				  		  imageUrl: "intraImg/logoITWfinal.png",
+				  		  html:true,
+				  		  confirmButtonColor: " #337ab7",
+				  		  showConfirmButton:false,
+				  		  timer:3000
+				  		}); 
+
+						$.post("procesarSolicitudes.php",{ID:id,OPCION:opcion,PERFIL:perfil})
+							.done(function(data){
+								if (data != "") {
+									swal({title: "CONFIRMACIÓN",
+										text: "<span style='color:#000099'>El estatus de la solicitud se guardo con exito.<br>En breve el usuario sera notificado</span>",
+										imageUrl: "intraImg/logoITWfinal.png",
+										html:true,
+										timer:5000,
+										showConfirmButton:false
+									});	
+									//$.get('submen_SolicitudesVacaciones_Recibidas.php',{pagina:0});								
+								}else{
+									swal({title: "ERROR",
+										text: "<span style='color:#F8BB86'>Hubo un error al guardar el estatus de la solicitud. Favor de intentarlo más tarde.</span>",
+										imageUrl: "intraImg/logoITWfinal.png",
+										html:true,
+										timer:4000,
+										showConfirmButton:false
+									});
+								}
+						});
+				  	}else{
+				  		swal.close();
+				  	}
+				  	mostrarSolicitud();
+				});
 }
 
 function solicitud(id){

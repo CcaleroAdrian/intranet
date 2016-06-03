@@ -1,7 +1,7 @@
 <?php
 require 'clases/actionsDB.php'; 
 require_once("clases/class.phpmailer.php");
-
+sleep(2);
 $DIRECTOR = 1;
 $objOperaciones = new ActionsDB();
 $mensaje= "";

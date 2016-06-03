@@ -38,6 +38,31 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 	$usuarios = $objUsuarios->getDirectorioB($inicio,$TAMANO_PAGINA);
 
 ?>
+<script type="text/javascript">
+	$(document).ready(function(){
+		verContactos();
+	});
+
+	function verContactos(){
+			$.ajax({
+		        method: "GET",
+		        url: "https://apex-a261292.db.us2.oraclecloudapps.com/apex/itw/empleado/",
+		        dataType: "json",
+		        timeout: 6000,
+			    beforeSend:function(){
+			        var div = document.getElementById('mensaje');
+			        var spinner = new Spinner(opts).spin(div);
+			    },
+			    succes:function(data) {
+			    	console.log(data);
+			    	for (var i =0 ; i<data.length;i++) {
+			    		$('#cuerpo').html("<tr><td>"+data['items'][i].nombres+"</td><td>"+data['items'][i].email_1+"</td><td>"+data['items'][i].email_2+"</td><td>"+data['items'][i].celular+"</td><td>"+data['items'][i].telefono+"</td></tr>");
+			    	}
+			    }
+			});	    
+		$( ".spinner" ).remove();
+	}	
+</script>
 <!DOCTYPE html>
 <meta http-equiv=content-type content=text/html; charset=utf-8>
 <html>
@@ -60,23 +85,12 @@ if ( $USUARIO == "" OR  $USUARIO == null ) {
 		        <tr>
 		          <th data-priority="6">Nombre</th>
 		          <th data-priority="1">Email ITW</th>
-		          <th data-priority="2">Celular Oficina</th>
-		          <th data-priority="3">Telefono Oficina</th>
-		          <th data-priority="4">Celular Personal</th>
-		          <th data-priority="5">Telefono Personal</th>
+		          <th data-priority="1">Email P.</th>
+		          <th data-priority="2">Celular</th>
+		          <th data-priority="3">Telefono</th>
 		        </tr>
 		      	</thead>
-		      	<tbody id="cuerpo">
-		      		<?php 
-		      			foreach($usuarios as $row) {
-		      				$nombre = utf8_decode($row['nombre'].' '.$row['paterno'].' '.$row['materno']);
-							echo '<tr><td>'.$nombre.'</td>
-									<td>'.$row["usrIntranet"].'</td><td>'.$row["celOfna"].'</td>
-									<td>'.$row["telOfna"].'</td><td>'.$row["celPersonal"].'</td>
-									<td>'.$row["telPersonal"].'</td></tr>';
-						}		
-		      		?>
-		      	</tbody>
+		      	<tbody id="cuerpo"></tbody>
     		</table>
 		      			<?php 
 							if ($total_paginas > 1) {

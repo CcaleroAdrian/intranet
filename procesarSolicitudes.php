@@ -1,23 +1,25 @@
 <?php
 	require 'clases/actionsDB.php'; 
  
-	$opcion = $_GET['opcion'];
-	$id= isset($_GET['id']) ? trim($_GET['id']) : "" ;
-	$perfil = isset($_GET['perfil']) ? trim($_GET['perfil']) : "" ;
-
-	if ($opcion == 1) {
+	$opcion =  isset($_POST['OPCION']) ? trim($_POST['OPCION']) : "";
+	$id= isset($_POST['ID']) ? trim($_POST['ID']) : "" ;
+	$perfil = isset($_POST['PERFIL']) ? trim($_POST['PERFIL']) : "" ;
+	$mensaje="";
+	if ($opcion == 1) {//Aceotar solicitud
+		sleep(3);
 		$objOperaciones = new ActionsDB();
 		$resultado = $objOperaciones->procesarSolicitudes($id,$perfil,$opcion);
 		if ($resultado) {
-			$mensaje ="La solicitud fué aceptada";
+			$mensaje ="La solicitud fue aceptada";
 		}
-	}elseif ($opcion == 2) {
+	}elseif ($opcion == 2) {//Rechazar la solicitud
+		sleep(3);
 		$objOperaciones = new ActionsDB();
 		$resultado = $objOperaciones->procesarSolicitudes($id,$perfil,$opcion);
 		if ($resultado) {
-			$mensaje ="La solicitud fué rechazada";
+			$mensaje ="La solicitud fue rechazada";
 		}
-	}elseif ($opcion == 3) {
+	}elseif ($opcion == 3) {//Notificar solicitudes
 		$objOperaciones = new ActionsDB();
 		//Buscar usuarios con solicitudes aceptadas y que no hayan recibido correo de notificacion
 		$resultado = $objOperaciones->buscarSolicitudesAceptadas();
@@ -61,5 +63,5 @@
 		}else{
 		}
 	}
-	header("Location : intranet/submenu_SolicitudesVacaciones_Recibidas.php?mensaje=".$mensaje."");
+	echo $mensaje;
 ?>

@@ -727,19 +727,19 @@ class ActionsDB{
 		}
 	}
 
-	public function procesarSolicitudes($id,$descripPerfil,$opcion = null){
+	public function procesarSolicitudes($id,$Perfil,$opcion = null){
 
 		if ($opcion == 1) {
-			if ($descripPerfil == "ADMINISTRADOR") { 
-				$query = "UPDATE `solicitudvaciones` SET `aprobacion_D`= 2 WHERE `user_ID` ='".$id."'";
+			if ($Perfil == 1) { 
+				$query = "UPDATE `solicitudvaciones` SET `aprobacion_D`= 2 WHERE `solicitud_ID` ='".$id."'";
 			}else{
-			$query = "UPDATE `solicitudvaciones` SET `aprobacion_L`= 2 WHERE `user_ID` ='".$id."'";
+			$query = "UPDATE `solicitudvaciones` SET `aprobacion_L`= 2 WHERE `solicitud_ID` ='".$id."'";
 			}
 		} else if ($opcion ==2 ) {
-			if ($descripPerfil == "ADMINISTRADOR" ) {
-				$query = "UPDATE `solicitudvaciones` SET `aprobacion_D`= 3 WHERE `user_ID` ='".$id."'";
+			if ($Perfil == 1 ) {
+				$query = "UPDATE `solicitudvaciones` SET `aprobacion_D`= 3 WHERE `solicitud_ID` ='".$id."'";
 			}else{
-			$query = "UPDATE `solicitudvaciones` SET `aprobacion_L`= 3 WHERE `user_ID` ='".$id."'";
+			$query = "UPDATE `solicitudvaciones` SET `aprobacion_L`= 3 WHERE `solicitud_ID` ='".$id."'";
 			}
 		}
 		$resultado = false;
